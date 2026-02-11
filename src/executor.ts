@@ -10,18 +10,12 @@ export function getIsRunning(): boolean {
 }
 
 /** Remove the current iframe and reset execution state. */
-export function stopExecution(
-  runBtn: HTMLButtonElement,
-  stopBtn: HTMLButtonElement,
-): void {
+export function stopExecution(): void {
   if (currentIframe) {
     currentIframe.remove();
     currentIframe = null;
   }
   isRunning = false;
-  runBtn.disabled = false;
-  runBtn.textContent = 'Run';
-  stopBtn.disabled = true;
 }
 
 /** Build iframe srcdoc HTML for the given VPython source. */
@@ -203,17 +197,16 @@ export async function executeInIframe(
   });
 }
 
-/** Run the current code, managing button states. */
+/** Run the current code, managing execution state. */
 export async function runCode(
   getCode: () => string,
   outputDiv: HTMLElement,
-  runBtn: HTMLButtonElement,
-  stopBtn: HTMLButtonElement,
   callbacks: {
     onError: (message: string) => void;
     onConsoleLog: (message: string) => void;
     hideError: () => void;
     clearConsole: () => void;
+    onRunStateChange: (running: boolean) => void;
   },
 ): Promise<void> {
   if (isRunning) return;
@@ -222,22 +215,19 @@ export async function runCode(
 
   callbacks.hideError();
   callbacks.clearConsole();
-  stopExecution(runBtn, stopBtn);
+  stopExecution();
 
   outputDiv.innerHTML = '<div class="loading">Initializing GlowScript...</div>';
 
   isRunning = true;
-  runBtn.disabled = true;
-  runBtn.textContent = 'Running...';
-  stopBtn.disabled = false;
+  callbacks.onRunStateChange(true);
 
   try {
     await executeInIframe(code, outputDiv, {
       onError: callbacks.onError,
       onConsoleLog: callbacks.onConsoleLog,
       onReady: () => {
-        runBtn.disabled = false;
-        runBtn.textContent = 'Run';
+        callbacks.onRunStateChange(false);
       },
     });
   } catch (error) {

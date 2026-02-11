@@ -1,5 +1,3 @@
-import type { ExampleKey } from './types';
-
 // ---- SVG icon helpers (inline, no external deps) ----
 
 const ICONS = {
@@ -14,7 +12,6 @@ const ICONS = {
   dark: `<svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 12.79A9 9 0 1111.21 3 7 7 0 0021 12.79z"/></svg>`,
   projector: `<svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="5"/><line x1="12" y1="1" x2="12" y2="3"/><line x1="12" y1="21" x2="12" y2="23"/><line x1="4.22" y1="4.22" x2="5.64" y2="5.64"/><line x1="18.36" y1="18.36" x2="19.78" y2="19.78"/><line x1="1" y1="12" x2="3" y2="12"/><line x1="21" y1="12" x2="23" y2="12"/><line x1="4.22" y1="19.78" x2="5.64" y2="18.36"/><line x1="18.36" y1="5.64" x2="19.78" y2="4.22"/></svg>`,
   console: `<svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="4 17 10 11 4 5"/><line x1="12" y1="19" x2="20" y2="19"/></svg>`,
-  examples: `<svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M2 3h6a4 4 0 014 4v14a3 3 0 00-3-3H2z"/><path d="M22 3h-6a4 4 0 00-4 4v14a3 3 0 013-3h7z"/></svg>`,
 } as const;
 
 // ---- State ----
@@ -22,6 +19,7 @@ const ICONS = {
 let isCollapsed = true;
 let isFullScreen = false;
 let sidebarEl: HTMLElement | null = null;
+let storedCallbacks: SidebarCallbacks | null = null;
 
 // ---- Public API ----
 
@@ -31,8 +29,8 @@ export interface SidebarCallbacks {
   onSave: () => void;
   onLoad: () => void;
   onReset: () => void;
-  onExample: (key: ExampleKey) => void;
   onToggleConsole: () => void;
+  onThemeChange?: (dark: boolean) => void;
 }
 
 /**
@@ -44,6 +42,7 @@ export function createSidebar(callbacks: SidebarCallbacks): HTMLElement {
   sidebar.id = 'sidebar';
   sidebar.className = 'sidebar collapsed';
   sidebarEl = sidebar;
+  storedCallbacks = callbacks;
 
   // Hamburger toggle
   const toggle = document.createElement('button');
@@ -71,22 +70,6 @@ export function createSidebar(callbacks: SidebarCallbacks): HTMLElement {
   nav.appendChild(sectionLabel('File'));
   nav.appendChild(navButton('save-sidebar-btn', ICONS.save, 'Save', callbacks.onSave));
   nav.appendChild(navButton('load-sidebar-btn', ICONS.load, 'Load', callbacks.onLoad));
-
-  // --- Examples section ---
-  nav.appendChild(divider());
-  nav.appendChild(sectionLabel('Examples'));
-  const exampleEntries: [ExampleKey, string][] = [
-    ['basic', 'Basic Shapes'],
-    ['animation', 'Bouncing Ball'],
-    ['solar', 'Solar System'],
-    ['spring', 'Spring Oscillation'],
-    ['projectile', 'Projectile Motion'],
-  ];
-  for (const [key, label] of exampleEntries) {
-    nav.appendChild(
-      navButton(`ex-${key}`, ICONS.examples, label, () => callbacks.onExample(key)),
-    );
-  }
 
   // --- View section ---
   nav.appendChild(divider());
@@ -164,6 +147,8 @@ function setDarkMode(dark: boolean): void {
   const projBtn = document.getElementById('projector-sidebar-btn');
   darkBtn?.classList.toggle('active', dark);
   projBtn?.classList.toggle('active', !dark);
+
+  storedCallbacks?.onThemeChange?.(dark);
 }
 
 // ---- DOM helpers ----
