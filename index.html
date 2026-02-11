@@ -1,0 +1,58 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>VPython Browser Editor</title>
+    <link rel="stylesheet" href="css/style.css">
+</head>
+<body>
+    <header>
+        <h1>VPython Editor</h1>
+        <div class="controls">
+            <select id="examples-select" title="Load example code">
+                <option value="">-- Examples --</option>
+                <option value="basic">Basic Shapes</option>
+                <option value="animation">Bouncing Ball</option>
+                <option value="solar">Solar System</option>
+                <option value="spring">Spring Oscillation</option>
+                <option value="projectile">Projectile Motion</option>
+            </select>
+            <div class="button-group">
+                <button id="run-btn" title="Run code (Ctrl+Enter)">▶ Run</button>
+                <button id="stop-btn" title="Stop animation" disabled>◼ Stop</button>
+            </div>
+            <div class="button-group">
+                <button id="save-btn" title="Save to browser">💾 Save</button>
+                <button id="load-btn" title="Load from browser">📂 Load</button>
+            </div>
+            <button id="clear-btn" title="Clear output">Clear</button>
+        </div>
+    </header>
+
+    <main>
+        <div class="panel editor-panel">
+            <div class="panel-header">Editor</div>
+            <div id="editor"></div>
+        </div>
+        <div class="gutter" id="gutter"></div>
+        <div class="panel output-panel">
+            <div class="panel-header">
+                Output
+                <button id="toggle-console" class="console-toggle" title="Toggle console">Console ▼</button>
+            </div>
+            <div id="output"></div>
+            <div id="console-panel">
+                <div class="console-header">
+                    <span>Console Output</span>
+                    <button id="clear-console" title="Clear console">Clear</button>
+                </div>
+                <div id="console-output"></div>
+            </div>
+            <div id="error-display"></div>
+        </div>
+    </main>
+
+    <script type="module" src="js/main.js"></script>
+</body>
+</html>

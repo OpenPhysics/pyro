@@ -1,0 +1,30 @@
+{
+  "name": "pyro",
+  "version": "1.0.0",
+  "description": "A browser-based VPython editor with 3D visualization using GlowScript",
+  "main": "index.html",
+  "scripts": {
+    "start": "python3 -m http.server 8080",
+    "serve": "npx serve ."
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/OpenPhysics/pyro.git"
+  },
+  "keywords": [
+    "vpython",
+    "glowscript",
+    "physics",
+    "3d",
+    "visualization",
+    "education",
+    "simulation",
+    "editor"
+  ],
+  "author": "OpenPhysics",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/OpenPhysics/pyro/issues"
+  },
+  "homepage": "https://openphysics.github.io/pyro"
+}
