@@ -78,27 +78,29 @@ function buildIframeContent(glowCode: string): string {
             document.body.appendChild(errorDiv);
         }
 
+        // Intercept console.log only after program starts executing
+        // to capture user print() statements
+        var userCodeRunning = false;
         (function() {
             var origLog = console.log;
             console.log = function() {
                 origLog.apply(console, arguments);
-                var message = Array.prototype.slice.call(arguments).map(function(a) {
-                    return typeof a === 'object' ? JSON.stringify(a) : String(a);
-                }).join(' ');
-                parent.postMessage({ type: 'console-log', message: message }, '*');
+                // Only forward to parent when user code is running
+                if (userCodeRunning) {
+                    var message = Array.prototype.slice.call(arguments).map(function(a) {
+                        return typeof a === 'object' ? JSON.stringify(a) : String(a);
+                    }).join(' ');
+                    parent.postMessage({ type: 'console-log', message: message }, '*');
+                }
             };
         })();
 
         async function loadAndRun() {
             try {
-                console.log('Loading GlowScript compiler...');
                 await new Promise(function(resolve, reject) {
                     var script = document.createElement('script');
                     script.src = 'https://glowscript.org/package/RScompiler.${GS_VERSION}.min.js';
-                    script.onload = function() {
-                        console.log('Compiler loaded');
-                        resolve();
-                    };
+                    script.onload = resolve;
                     script.onerror = function() {
                         reject(new Error('Failed to load compiler'));
                     };
@@ -122,11 +124,12 @@ function buildIframeContent(glowCode: string): string {
                     version: '${GS_VERSION}'
                 });
 
-                console.log('Executing program...');
-
                 window.__context = {
                     glowscript_container: $(container).removeAttr('id')
                 };
+
+                // Enable forwarding of console.log to parent for user print() statements
+                userCodeRunning = true;
 
                 eval(program);
 
