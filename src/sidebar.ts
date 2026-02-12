@@ -4,8 +4,6 @@ const ICONS = {
   menu: `<svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" aria-hidden="true"><line x1="3" y1="6" x2="21" y2="6"/><line x1="3" y1="12" x2="21" y2="12"/><line x1="3" y1="18" x2="21" y2="18"/></svg>`,
   play: `<svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><polygon points="5,3 19,12 5,21"/></svg>`,
   stop: `<svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><rect x="4" y="4" width="16" height="16" rx="2"/></svg>`,
-  save: `<svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M19 21H5a2 2 0 01-2-2V5a2 2 0 012-2h11l5 5v11a2 2 0 01-2 2z"/><polyline points="17 21 17 13 7 13 7 21"/><polyline points="7 3 7 8 15 8"/></svg>`,
-  load: `<svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M22 19a2 2 0 01-2 2H4a2 2 0 01-2-2V5a2 2 0 012-2h5l2 3h9a2 2 0 012 2z"/></svg>`,
   reset: `<svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><polyline points="23 4 23 10 17 10"/><path d="M20.49 15a9 9 0 11-2.12-9.36L23 10"/></svg>`,
   fullscreen: `<svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><polyline points="15 3 21 3 21 9"/><polyline points="9 21 3 21 3 15"/><line x1="21" y1="3" x2="14" y2="10"/><line x1="3" y1="21" x2="10" y2="14"/></svg>`,
   exitFullscreen: `<svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><polyline points="4 14 10 14 10 20"/><polyline points="20 10 14 10 14 4"/><line x1="14" y1="10" x2="21" y2="3"/><line x1="3" y1="21" x2="10" y2="14"/></svg>`,
@@ -30,8 +28,6 @@ let storedCallbacks: SidebarCallbacks | null = null;
 export interface SidebarCallbacks {
   onRun: () => void;
   onStop: () => void;
-  onSave: () => void;
-  onLoad: () => void;
   onReset: () => void;
   onToggleConsole: () => void;
   onSnippets?: () => void;
@@ -85,8 +81,6 @@ export function createSidebar(callbacks: SidebarCallbacks): HTMLElement {
   // --- File section ---
   nav.appendChild(divider());
   nav.appendChild(sectionLabel('File'));
-  nav.appendChild(navButton('save-sidebar-btn', ICONS.save, 'Save', callbacks.onSave));
-  nav.appendChild(navButton('load-sidebar-btn', ICONS.load, 'Load', callbacks.onLoad));
   nav.appendChild(
     navButton('snippets-sidebar-btn', ICONS.snippet, 'Snippets', () => callbacks.onSnippets?.()),
   );
@@ -241,7 +235,6 @@ function buildShortcutsDialog(): HTMLElement {
       title: 'Editor',
       shortcuts: [
         { keys: `${ctrlKey} + Enter`, description: 'Run code' },
-        { keys: `${ctrlKey} + S`, description: 'Save code' },
       ],
     },
     {

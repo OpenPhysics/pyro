@@ -10,13 +10,10 @@ import {
   addConsoleLog,
   clearConsole,
   toggleConsole,
-  showNotification,
   announce,
 } from './ui';
 import { initSnippetsDialog, buildSnippetsDialog, openSnippetsDialog, closeSnippetsDialog } from './snippetsDialog';
 import type { ExampleKey } from './types';
-
-const STORAGE_KEY = 'vpython-editor-code';
 
 // ---- DOM references (populated in init) ----
 
@@ -62,22 +59,6 @@ function handleRun(): void {
 function handleStop(): void {
   stopExecution();
   updateRunState(false);
-}
-
-function handleSave(): void {
-  const code = getCode();
-  localStorage.setItem(STORAGE_KEY, code);
-  showNotification('Code saved to browser!');
-}
-
-function handleLoad(): void {
-  const savedCode = localStorage.getItem(STORAGE_KEY);
-  if (savedCode) {
-    setCode(savedCode);
-    showNotification('Code loaded!', 'info');
-  } else {
-    showNotification('No saved code found', 'error');
-  }
 }
 
 function handleSnippets(): void {
@@ -222,8 +203,6 @@ function init(): void {
   const sidebar = createSidebar({
     onRun: handleRun,
     onStop: handleStop,
-    onSave: handleSave,
-    onLoad: handleLoad,
     onReset: handleReset,
     onToggleConsole: handleToggleConsole,
     onSnippets: handleSnippets,
@@ -235,7 +214,7 @@ function init(): void {
 
   // Initialize editor
   const editorContainer = document.getElementById('editor')!;
-  initEditor(editorContainer, handleRun, handleSave);
+  initEditor(editorContainer, handleRun);
 
   // Initialize snippets dialog
   initSnippetsDialog(getCode, setCode);
