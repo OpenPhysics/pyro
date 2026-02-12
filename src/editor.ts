@@ -1,5 +1,6 @@
 import type { CompletionContext, CompletionResult } from "@codemirror/autocomplete";
 import { autocompletion } from "@codemirror/autocomplete";
+import { defaultKeymap, history, historyKeymap, indentWithTab } from "@codemirror/commands";
 import { python } from "@codemirror/lang-python";
 import { Compartment } from "@codemirror/state";
 import { oneDark } from "@codemirror/theme-one-dark";
@@ -97,6 +98,8 @@ export function initEditor(container: HTMLElement, onRun: () => void): void {
       basicSetup,
       python(),
       themeCompartment.of(oneDark),
+      history(),
+      keymap.of([...defaultKeymap, ...historyKeymap, indentWithTab]),
       runKeymap,
       EditorView.lineWrapping,
       autocompletion({
