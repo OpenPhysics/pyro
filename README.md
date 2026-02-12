@@ -1,21 +1,32 @@
-# VPython Browser Editor
+# Pyro - VPython Browser Editor
 
-A minimal single-page web application for writing and running VPython code directly in the browser with 3D visualization.
+A modern single-page web application for writing and running VPython code directly in the browser with 3D visualization.
 
 ## Features
 
-- **CodeMirror 6 Editor** - Python syntax highlighting with the One Dark theme
-- **GlowScript VPython** - Browser-based VPython implementation for 3D graphics
-- **Live Execution** - Run your VPython code and see results immediately
-- **Keyboard Shortcuts** - Press `Ctrl+Enter` (or `Cmd+Enter` on Mac) to run code
+- **CodeMirror 6 Editor** - Python syntax highlighting, autocomplete for VPython objects/functions, One Dark theme
+- **GlowScript VPython 3.2** - Browser-based VPython implementation for 3D graphics
+- **Live Execution** - Run your VPython code and see results immediately in a sandboxed iframe
+- **Collapsible Sidebar** - Run, stop, save, load, reset, console, fullscreen, font size, and theme controls
+- **View Modes** - Switch between code-only, split (half/half), and output-only views via the top bar
+- **Font Size Controls** - Increase or decrease editor font size from the sidebar
+- **Dark / Projector Themes** - Dark mode (default) and a light projector mode for presentations
+- **Console Panel** - Toggleable console output for `print()` statements
+- **Keyboard Shortcuts** - `Ctrl+Enter` / `Cmd+Enter` to run, `Ctrl+S` / `Cmd+S` to save
+- **Built-in Examples** - Basic Shapes, Bouncing Ball, Solar System, Spring Oscillation, Projectile Motion
+- **Local Storage** - Code is saved to and loaded from the browser's local storage
+- **Resizable Panels** - Drag the gutter between editor and output to resize
 - **Responsive Layout** - Works on desktop and tablet devices
 
 ## Usage
 
-1. Write VPython code in the editor panel on the left
-2. Click the "Run" button (or press `Ctrl+Enter`) to execute
-3. View the 3D visualization in the output panel on the right
-4. Use "Clear" to reset the output
+1. Write VPython code in the editor panel
+2. Click **Run** in the sidebar (or press `Ctrl+Enter`) to execute
+3. View the 3D visualization in the output panel
+4. Use the **view mode buttons** in the top bar to toggle between code-only, split, and output-only views
+5. Adjust editor font size with the **A+** / **A-** buttons in the sidebar
+6. Toggle the **Console** to see `print()` output
+7. Switch between **Dark Mode** and **Projector Mode** for different environments
 
 ## Example Code
 
@@ -37,51 +48,70 @@ while True:
         ball.velocity.x = -ball.velocity.x
 ```
 
-## Deployment
-
-This is a static site suitable for GitHub Pages:
-
-1. Push to a GitHub repository
-2. Enable GitHub Pages in repository settings
-3. Select the branch and root folder
-4. Access via `https://username.github.io/repository-name/`
-
 ## Local Development
 
-Simply open `index.html` in a modern web browser, or serve with a local server:
-
 ```bash
-# Using Python
-python -m http.server 8000
-
-# Using Node.js
-npx serve .
+npm install
+npm run dev
 ```
 
-Then open `http://localhost:8000` in your browser.
+Then open `http://localhost:5173` in your browser.
+
+To build for production:
+
+```bash
+npm run build
+```
+
+Output will be in the `dist/` directory.
+
+## Deployment
+
+This is a static site suitable for GitHub Pages. The repository includes a GitHub Actions workflow (`.github/workflows/deploy.yml`) for automatic deployment:
+
+1. Push to the main branch
+2. GitHub Actions builds and deploys to GitHub Pages
+3. Access via `https://<username>.github.io/pyro/`
 
 ## Technical Stack
 
-- **Editor**: [CodeMirror 6](https://codemirror.net/) with Python language support
-- **Runtime**: [GlowScript VPython](https://www.glowscript.org/)
+- **Language**: TypeScript 5.4
+- **Build Tool**: [Vite 5.4](https://vitejs.dev/)
+- **Editor**: [CodeMirror 6](https://codemirror.net/) with Python language support and custom VPython autocomplete
+- **Runtime**: [GlowScript VPython 3.2](https://www.glowscript.org/)
 - **Styling**: Custom CSS (no framework)
 
 ## File Structure
 
 ```
 /
-├── index.html      # Main HTML file
+├── index.html              # Main HTML file
+├── package.json            # Dependencies & scripts
+├── tsconfig.json           # TypeScript configuration
+├── vite.config.ts          # Vite build configuration
+├── src/
+│   ├── main.ts             # App bootstrap & event handling
+│   ├── editor.ts           # CodeMirror initialization & font size control
+│   ├── sidebar.ts          # Sidebar UI component (buttons, icons, theme toggle)
+│   ├── ui.ts               # UI utilities (notifications, console, errors)
+│   ├── executor.ts         # Code execution in sandboxed iframe
+│   ├── resizable.ts        # Panel resize handling
+│   ├── completions.ts      # VPython autocomplete definitions
+│   ├── examples.ts         # Built-in example code snippets
+│   ├── types.ts            # TypeScript type definitions
+│   └── styles/
+│       └── main.css        # Application stylesheet
 ├── css/
-│   └── style.css   # Application styles
-├── js/
-│   └── main.js     # CodeMirror and GlowScript integration
-└── README.md       # This file
+│   └── style.css           # Legacy styles
+└── .github/
+    └── workflows/
+        └── deploy.yml      # GitHub Pages deployment
 ```
 
 ## Browser Support
 
 Works in modern browsers with WebGL support:
-- Chrome/Edge (recommended)
+- Chrome / Edge (recommended)
 - Firefox
 - Safari
 
