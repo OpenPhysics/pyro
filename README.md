@@ -2,6 +2,8 @@
 
 A modern single-page web application for writing and running VPython code directly in the browser with 3D visualization.
 
+<img width="1091" height="715" alt="image" src="https://github.com/user-attachments/assets/ac568898-4757-477e-be3f-950ec97e8cb1" />
+
 ## Features
 
 - **CodeMirror 6 Editor** - Python syntax highlighting, autocomplete for VPython objects/functions, One Dark theme
