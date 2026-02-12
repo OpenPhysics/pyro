@@ -78,44 +78,56 @@ function buildIframeContent(glowCode: string): string {
             document.body.appendChild(errorDiv);
         }
 
-        // Capture print output by observing DOM changes
-        // GlowScript's print() creates DOM elements with text content
-        var printedMessages = new Set(); // Avoid duplicates
-        var printObserver = new MutationObserver(function(mutations) {
-            mutations.forEach(function(mutation) {
-                // Check added nodes for text content (print output)
-                mutation.addedNodes.forEach(function(node) {
-                    // Skip non-element nodes
-                    if (node.nodeType !== Node.ELEMENT_NODE) return;
+        // GlowScript's print() uses console.log internally
+        // Intercept console.log to capture print output
+        var programStarted = false;
+        (function() {
+            var origLog = console.log;
+            var origWarn = console.warn;
+            var origError = console.error;
 
-                    var el = node;
-                    var tag = el.tagName ? el.tagName.toUpperCase() : '';
-
-                    // Skip canvas, scripts, and other non-text elements
-                    if (['CANVAS', 'SCRIPT', 'STYLE', 'SVG', 'LINK', 'META'].indexOf(tag) >= 0) return;
-                    // Skip elements with many children (likely structural)
-                    if (el.children.length > 2) return;
-
-                    // Check for text content in simple divs/spans
-                    var text = el.textContent ? el.textContent.trim() : '';
-                    if (text && text.length < 1000 && !printedMessages.has(text)) {
-                        // Avoid GlowScript loading messages
-                        if (text.indexOf('GlowScript') === -1 &&
-                            text.indexOf('Loading') === -1 &&
-                            text.indexOf('Compil') === -1) {
-                            printedMessages.add(text);
-                            parent.postMessage({ type: 'console-log', message: text }, '*');
-                        }
+            function sendToParent(args) {
+                if (!programStarted) return;
+                var msg = Array.prototype.slice.call(args).map(function(a) {
+                    if (a === null) return 'None';
+                    if (a === undefined) return 'undefined';
+                    if (typeof a === 'object') {
+                        try { return JSON.stringify(a); } catch(e) { return String(a); }
                     }
-                });
-            });
-        });
+                    return String(a);
+                }).join(' ');
 
-        // Start observing document body for any print output
-        printObserver.observe(document.body, {
-            childList: true,
-            subtree: true
-        });
+                // Filter out GlowScript system messages
+                if (msg.indexOf('GlowScript') >= 0 ||
+                    msg.indexOf('glowscript') >= 0 ||
+                    msg.indexOf('Loading') >= 0 ||
+                    msg.indexOf('Compil') >= 0 ||
+                    msg.indexOf('WARNING') >= 0 ||
+                    msg === '') {
+                    return;
+                }
+
+                parent.postMessage({ type: 'console-log', message: msg }, '*');
+            }
+
+            console.log = function() {
+                origLog.apply(console, arguments);
+                sendToParent(arguments);
+            };
+            console.warn = function() {
+                origWarn.apply(console, arguments);
+                sendToParent(arguments);
+            };
+            console.error = function() {
+                origError.apply(console, arguments);
+                sendToParent(arguments);
+            };
+        })();
+
+        // Mark when program actually starts (after GlowScript setup)
+        function markProgramStart() {
+            programStarted = true;
+        }
 
         async function loadAndRun() {
             try {
@@ -151,6 +163,9 @@ function buildIframeContent(glowCode: string): string {
                 };
 
                 eval(program);
+
+                // Mark that user code is about to run - start capturing console output
+                markProgramStart();
 
                 if (typeof __main__ === 'function') {
                     await __main__();
