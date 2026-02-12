@@ -1,6 +1,7 @@
 import "./styles/main.css";
+import { marked } from "marked";
 import { changeEditorFontSize, getCode, initEditor, setCode, setEditorTheme } from "./editor";
-import { EXAMPLES } from "./examples";
+import { EXAMPLE_DISPLAY_NAMES, EXAMPLE_INSTRUCTIONS, EXAMPLE_KEYS, EXAMPLES } from "./examples";
 import { runCode, stopExecution } from "./executor";
 import { initResizable } from "./resizable";
 import { closeShortcutsDialog, createSidebar, openShortcutsDialog, toggleSidebar } from "./sidebar";
@@ -10,7 +11,6 @@ import {
   initSnippetsDialog,
   openSnippetsDialog,
 } from "./snippetsDialog";
-import type { ExampleKey } from "./types";
 import { addConsoleLog, announce, clearConsole, hideError, showError, toggleConsole } from "./ui";
 
 // ---- DOM references (populated in init) ----
@@ -24,6 +24,8 @@ let clearConsoleBtn: HTMLButtonElement;
 let gutter: HTMLElement;
 let editorPanel: HTMLElement;
 let outputPanel: HTMLElement;
+let instructionsBody: HTMLElement;
+let currentExampleKey: string | null = null;
 
 // ---- Run/Stop state management via sidebar buttons ----
 
@@ -72,10 +74,53 @@ function handleReset(): void {
   hideError(errorDisplay);
 }
 
-function handleExample(key: ExampleKey): void {
+function handleExample(key: string): void {
   if (EXAMPLES[key]) {
     setCode(EXAMPLES[key]);
+    currentExampleKey = key;
+    updateInstructionsDisplay();
   }
+}
+
+function updateInstructionsDisplay(): void {
+  if (!instructionsBody) {
+    return;
+  }
+  const md =
+    currentExampleKey && EXAMPLE_INSTRUCTIONS[currentExampleKey]
+      ? EXAMPLE_INSTRUCTIONS[currentExampleKey]
+      : null;
+  instructionsBody.innerHTML = md
+    ? marked(md, { async: false })
+    : '<p class="instructions-placeholder">Select an example from the dropdown to see its instructions.</p>';
+}
+
+type OutputTab = "output" | "instructions";
+
+function setOutputTab(tab: OutputTab): void {
+  const outputTabBtn = document.getElementById("tab-output");
+  const instructionsTabBtn = document.getElementById("tab-instructions");
+  const outputContent = document.getElementById("output-content");
+  const instructionsContent = document.getElementById("instructions-content");
+
+  if (!(outputTabBtn && instructionsTabBtn && outputContent && instructionsContent)) {
+    return;
+  }
+
+  const isOutput = tab === "output";
+  outputTabBtn.setAttribute("aria-selected", String(isOutput));
+  instructionsTabBtn.setAttribute("aria-selected", String(!isOutput));
+  outputContent.hidden = !isOutput;
+  instructionsContent.hidden = isOutput;
+}
+
+function getDefaultOutputTab(): OutputTab {
+  const params = new URLSearchParams(window.location.search);
+  const showInstructions = params.get("showInstructions");
+  if (showInstructions === "false") {
+    return "output";
+  }
+  return "instructions";
 }
 
 function handleToggleConsole(): void {
@@ -111,7 +156,10 @@ function setViewMode(mode: ViewMode): void {
   outPanel.style.width = "";
 
   // Remove all view-mode classes and add the correct one
-  const main = document.querySelector("main")!;
+  const main = document.querySelector("main");
+  if (!main) {
+    return;
+  }
   main.classList.remove("view-code-only", "view-output-only");
 
   if (mode === "code") {
@@ -148,58 +196,71 @@ function setViewMode(mode: ViewMode): void {
 
 // ---- Global keyboard shortcuts ----
 
-function initGlobalShortcuts(): void {
-  document.addEventListener("keydown", (e) => {
-    // Don't trigger shortcuts when typing in inputs/textareas
-    const target = e.target as HTMLElement;
-    const tagName = target.tagName.toLowerCase();
-    const isEditing = tagName === "input" || tagName === "textarea" || tagName === "select";
-    const isInEditor = target.closest(".cm-editor") !== null;
+function handleShortcutsKeydown(e: KeyboardEvent): void {
+  const target = e.target as HTMLElement;
+  const tagName = target.tagName.toLowerCase();
+  const isEditing = tagName === "input" || tagName === "textarea" || tagName === "select";
+  const isInEditor = target.closest(".cm-editor") !== null;
 
-    // ? key (without modifiers) opens shortcuts dialog — only when not editing
-    if (e.key === "?" && !e.ctrlKey && !e.metaKey && !e.altKey && !isEditing && !isInEditor) {
-      e.preventDefault();
-      openShortcutsDialog();
+  if (e.key === "?" && !e.ctrlKey && !e.metaKey && !e.altKey && !isEditing && !isInEditor) {
+    e.preventDefault();
+    openShortcutsDialog();
+    return;
+  }
+
+  if ((e.ctrlKey || e.metaKey) && e.key === "b" && !e.altKey && !e.shiftKey && !isInEditor) {
+    e.preventDefault();
+    toggleSidebar();
+    return;
+  }
+
+  if (e.key === "Escape") {
+    const snippetsOverlay = document.getElementById("snippets-dialog-overlay");
+    if (snippetsOverlay?.classList.contains("visible")) {
+      closeSnippetsDialog();
       return;
     }
-
-    // Ctrl/Cmd + B toggles sidebar
-    if ((e.ctrlKey || e.metaKey) && e.key === "b" && !e.altKey && !e.shiftKey) {
-      // Don't prevent default in editor (bold text in some contexts)
-      if (!isInEditor) {
-        e.preventDefault();
-        toggleSidebar();
-      }
+    const overlay = document.getElementById("shortcuts-dialog-overlay");
+    if (overlay?.classList.contains("visible")) {
+      closeShortcutsDialog();
     }
+  }
+}
 
-    // Escape closes dialogs
-    if (e.key === "Escape") {
-      const snippetsOverlay = document.getElementById("snippets-dialog-overlay");
-      if (snippetsOverlay?.classList.contains("visible")) {
-        closeSnippetsDialog();
-        return;
-      }
-      const overlay = document.getElementById("shortcuts-dialog-overlay");
-      if (overlay?.classList.contains("visible")) {
-        closeShortcutsDialog();
-      }
-    }
-  });
+function initGlobalShortcuts(): void {
+  document.addEventListener("keydown", handleShortcutsKeydown);
 }
 
 // ---- Bootstrap ----
 
+function getRequiredElement(id: string): HTMLElement {
+  const el = document.getElementById(id);
+  if (!el) {
+    throw new Error(`Required element #${id} not found`);
+  }
+  return el;
+}
+
+function getRequiredElementBySelector(selector: string): HTMLElement {
+  const el = document.querySelector(selector);
+  if (!(el && el instanceof HTMLElement)) {
+    throw new Error(`Required element ${selector} not found`);
+  }
+  return el;
+}
+
 function init(): void {
   // Resolve DOM elements
-  outputDiv = document.getElementById("output")!;
-  errorDisplay = document.getElementById("error-display")!;
-  consoleOutput = document.getElementById("console-output")!;
-  consolePanel = document.getElementById("console-panel")!;
-  toggleConsoleBtn = document.getElementById("toggle-console") as HTMLButtonElement;
-  clearConsoleBtn = document.getElementById("clear-console") as HTMLButtonElement;
-  gutter = document.getElementById("gutter")!;
-  editorPanel = document.querySelector(".editor-panel")!;
-  outputPanel = document.querySelector(".output-panel")!;
+  outputDiv = getRequiredElement("output");
+  errorDisplay = getRequiredElement("error-display");
+  consoleOutput = getRequiredElement("console-output");
+  consolePanel = getRequiredElement("console-panel");
+  toggleConsoleBtn = getRequiredElement("toggle-console") as HTMLButtonElement;
+  clearConsoleBtn = getRequiredElement("clear-console") as HTMLButtonElement;
+  gutter = getRequiredElement("gutter");
+  editorPanel = getRequiredElementBySelector(".editor-panel");
+  outputPanel = getRequiredElementBySelector(".output-panel");
+  instructionsBody = getRequiredElement("instructions-body");
 
   // Build & mount sidebar
   const sidebar = createSidebar({
@@ -215,7 +276,7 @@ function init(): void {
   document.body.insertBefore(sidebar, document.body.firstChild);
 
   // Initialize editor
-  const editorContainer = document.getElementById("editor")!;
+  const editorContainer = getRequiredElement("editor");
   initEditor(editorContainer, handleRun);
 
   // Initialize snippets dialog
@@ -225,14 +286,31 @@ function init(): void {
   // Resizable panels
   initResizable(gutter, editorPanel, outputPanel);
 
-  // Header examples combobox
+  // Header examples combobox (populated from src/examples/)
   const examplesSelect = document.getElementById("examples-select") as HTMLSelectElement;
+  for (const key of EXAMPLE_KEYS) {
+    const opt = document.createElement("option");
+    opt.value = key;
+    opt.textContent = EXAMPLE_DISPLAY_NAMES[key] ?? key;
+    examplesSelect.appendChild(opt);
+  }
   examplesSelect.addEventListener("change", (e) => {
-    const key = (e.target as HTMLSelectElement).value as ExampleKey;
+    const key = (e.target as HTMLSelectElement).value;
     if (key) {
       handleExample(key);
       examplesSelect.value = "";
     }
+  });
+
+  // Output panel tabs (Output | Instructions)
+  currentExampleKey = EXAMPLE_KEYS[0] ?? null;
+  updateInstructionsDisplay();
+  setOutputTab(getDefaultOutputTab());
+
+  document.getElementById("tab-output")?.addEventListener("click", () => setOutputTab("output"));
+  document.getElementById("tab-instructions")?.addEventListener("click", () => {
+    setOutputTab("instructions");
+    updateInstructionsDisplay();
   });
 
   // Console panel buttons

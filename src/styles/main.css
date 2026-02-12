@@ -384,6 +384,125 @@ main {
   border-bottom: 1px solid #404040;
 }
 
+/* Output panel tabs (Output | Instructions) */
+.output-panel-tabs {
+  display: flex;
+  gap: 0;
+  align-items: center;
+}
+
+.output-panel-tabs button {
+  padding: 0.35rem 0.9rem;
+  font-size: 0.8rem;
+  background: transparent;
+  color: #888;
+  border: none;
+  border-bottom: 2px solid transparent;
+  cursor: pointer;
+  transition:
+    color 0.15s,
+    border-color 0.15s;
+}
+
+.output-panel-tabs button:hover {
+  color: #ccc;
+}
+
+.output-panel-tabs button[aria-selected="true"] {
+  color: #fff;
+  border-bottom-color: #007acc;
+}
+
+.output-tab-content,
+.instructions-tab-content {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  min-height: 0;
+  overflow: hidden;
+}
+
+.output-tab-content[hidden],
+.instructions-tab-content[hidden] {
+  display: none;
+}
+
+.instructions-body {
+  flex: 1;
+  overflow-y: auto;
+  padding: 1rem 1.25rem;
+  font-size: 0.9rem;
+  line-height: 1.6;
+  color: #d4d4d4;
+}
+
+.instructions-body h1 {
+  font-size: 1.4rem;
+  margin-bottom: 0.75rem;
+  color: #fff;
+}
+
+.instructions-body h2 {
+  font-size: 1.15rem;
+  margin: 1rem 0 0.5rem;
+  color: #e0e0e0;
+}
+
+.instructions-body p {
+  margin-bottom: 0.75rem;
+}
+
+.instructions-body ul,
+.instructions-body ol {
+  margin: 0.5rem 0 0.75rem 1.5rem;
+}
+
+.instructions-body code {
+  background-color: #3c3c3c;
+  padding: 0.15rem 0.35rem;
+  border-radius: 4px;
+  font-size: 0.85em;
+}
+
+.instructions-body pre {
+  background-color: #2a2a2a;
+  padding: 0.75rem 1rem;
+  border-radius: 4px;
+  overflow-x: auto;
+  margin: 0.75rem 0;
+}
+
+.instructions-body pre code {
+  background-color: transparent;
+  padding: 0;
+}
+
+.instructions-body a {
+  color: #4a9eff;
+  text-decoration: underline;
+}
+
+.instructions-body a:hover {
+  color: #6bb3ff;
+}
+
+.instructions-body blockquote {
+  border-left: 4px solid #555;
+  padding-left: 1rem;
+  margin: 0.75rem 0;
+  color: #aaa;
+}
+
+.instructions-body strong {
+  font-weight: 600;
+  color: #fff;
+}
+
+.instructions-placeholder {
+  color: #888;
+  font-style: italic;
+}
+
 /* View mode: code only */
 main.view-code-only .output-panel,
 main.view-code-only .gutter {
@@ -1161,6 +1280,71 @@ body.projector-mode #error-display {
   background-color: rgba(255, 240, 240, 0.95);
   color: #c00;
   border-top-color: #c00;
+}
+
+/* Projector instructions panel - WCAG compliant colors */
+body.projector-mode .instructions-body {
+  color: #222;
+  background-color: #fff;
+}
+
+body.projector-mode .instructions-body h1 {
+  color: #000;
+}
+
+body.projector-mode .instructions-body h2 {
+  color: #222;
+}
+
+body.projector-mode .instructions-body code {
+  background-color: #f0f0f0;
+  color: #222;
+  border: 1px solid #ddd;
+}
+
+body.projector-mode .instructions-placeholder {
+  color: #666;
+}
+
+body.projector-mode .output-panel-tabs button {
+  color: #555;
+}
+
+body.projector-mode .output-panel-tabs button:hover {
+  color: #000;
+}
+
+body.projector-mode .output-panel-tabs button[aria-selected="true"] {
+  color: #000;
+  border-bottom-color: #007acc;
+}
+
+body.projector-mode .instructions-body pre {
+  background-color: #f5f5f5;
+  border: 1px solid #ddd;
+}
+
+body.projector-mode .instructions-body pre code {
+  color: #222;
+}
+
+body.projector-mode .instructions-body a {
+  color: #0066cc;
+  text-decoration: underline;
+}
+
+body.projector-mode .instructions-body a:hover {
+  color: #003d7a;
+}
+
+body.projector-mode .instructions-body blockquote {
+  border-left-color: #ccc;
+  color: #555;
+}
+
+body.projector-mode .instructions-body strong {
+  color: #000;
+  font-weight: 600;
 }
 
 /* Projector editor (CodeMirror light theme) overrides */

@@ -6,11 +6,8 @@ export interface CompletionItem {
   detail?: string;
 }
 
-/** Keys for the built-in example code snippets. */
-export type ExampleKey = "basic" | "animation" | "solar" | "spring" | "projectile";
-
-/** Map of example keys to their source code. */
-export type ExamplesMap = Record<ExampleKey, string>;
+/** Map of example keys (filename without extension) to their source code. */
+export type ExamplesMap = Record<string, string>;
 
 /** Message types sent from the execution iframe to the parent window. */
 export interface IframeMessage {

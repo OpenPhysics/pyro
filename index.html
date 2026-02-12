@@ -31,11 +31,7 @@
                 </div>
                 <select id="examples-select" title="Load example code" aria-label="Load example code">
                     <option value="">-- Examples --</option>
-                    <option value="basic">Basic Shapes</option>
-                    <option value="animation">Bouncing Ball</option>
-                    <option value="solar">Solar System</option>
-                    <option value="spring">Spring Oscillation</option>
-                    <option value="projectile">Projectile Motion</option>
+                    <!-- Options populated dynamically from src/examples/ -->
                 </select>
             </div>
         </header>
@@ -46,20 +42,28 @@
                 <div id="editor" role="textbox" aria-label="VPython code editor" aria-multiline="true"></div>
             </div>
             <div class="gutter" id="gutter" role="separator" aria-label="Resize panels: use left/right arrows to adjust, Home/End for min/max" aria-orientation="horizontal" aria-valuenow="50" aria-valuemin="0" aria-valuemax="100" tabindex="0"></div>
-            <div class="panel output-panel" role="region" aria-label="Output and visualization">
-                <div class="panel-header">
-                    Output
+            <div class="panel output-panel" role="region" aria-label="Output and instructions">
+                <div class="panel-header output-panel-header">
+                    <div class="output-panel-tabs" role="tablist" aria-label="Output panel tabs">
+                        <button id="tab-output" role="tab" aria-selected="false" aria-controls="output-content" data-tab="output">Output</button>
+                        <button id="tab-instructions" role="tab" aria-selected="true" aria-controls="instructions-content" data-tab="instructions">Instructions</button>
+                    </div>
                     <button id="toggle-console" class="console-toggle" title="Toggle console" aria-label="Toggle console panel" aria-expanded="false">Console</button>
                 </div>
-                <div id="output" aria-label="3D visualization output"></div>
-                <div id="console-panel" role="log" aria-label="Console output">
-                    <div class="console-header">
-                        <span>Console Output</span>
-                        <button id="clear-console" title="Clear console" aria-label="Clear console output">Clear</button>
+                <div id="output-content" role="tabpanel" class="output-tab-content" aria-labelledby="tab-output" hidden>
+                    <div id="output" aria-label="3D visualization output"></div>
+                    <div id="console-panel" role="log" aria-label="Console output">
+                        <div class="console-header">
+                            <span>Console Output</span>
+                            <button id="clear-console" title="Clear console" aria-label="Clear console output">Clear</button>
+                        </div>
+                        <div id="console-output" aria-live="polite"></div>
                     </div>
-                    <div id="console-output" aria-live="polite"></div>
+                    <div id="error-display" role="alert" aria-label="Error messages"></div>
                 </div>
-                <div id="error-display" role="alert" aria-label="Error messages"></div>
+                <div id="instructions-content" role="tabpanel" class="instructions-tab-content" aria-labelledby="tab-instructions">
+                    <div id="instructions-body" class="instructions-body"></div>
+                </div>
             </div>
         </main>
     </div>

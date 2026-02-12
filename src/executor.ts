@@ -189,25 +189,24 @@ export async function executeInIframe(
     }, 20000);
 
     const messageHandler = (event: MessageEvent<IframeMessage>) => {
-      if (!currentIframe || event.source !== currentIframe.contentWindow) {
+      if (!currentIframe || event.source !== currentIframe.contentWindow || !event.data) {
         return;
       }
-
-      if (event.data) {
-        if (event.data.type === "glowscript-error") {
-          callbacks.onError(event.data.message ?? "Unknown error");
-          isRunning = false;
-          callbacks.onReady();
-          window.removeEventListener("message", messageHandler);
-        } else if (event.data.type === "glowscript-ready") {
-          clearTimeout(timeout);
-          // Note: We do NOT call onReady() here or set isRunning=false
-          // because the animation continues running. The stop button
-          // should remain enabled while the iframe exists.
-          resolve();
-        } else if (event.data.type === "console-log") {
-          callbacks.onConsoleLog(event.data.message ?? "");
-        }
+      const data = event.data;
+      if (data.type === "glowscript-error") {
+        callbacks.onError(data.message ?? "Unknown error");
+        isRunning = false;
+        callbacks.onReady();
+        window.removeEventListener("message", messageHandler);
+        return;
+      }
+      if (data.type === "glowscript-ready") {
+        clearTimeout(timeout);
+        resolve();
+        return;
+      }
+      if (data.type === "console-log") {
+        callbacks.onConsoleLog(data.message ?? "");
       }
     };
 
