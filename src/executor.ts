@@ -78,28 +78,6 @@ function buildIframeContent(glowCode: string): string {
             document.body.appendChild(errorDiv);
         }
 
-        // Save the browser's native print function and replace it
-        // GlowScript's VPython print() should NOT trigger the browser print dialog
-        var browserPrint = window.print;
-
-        // Create a proper print function for VPython
-        window.print = function() {
-            var args = Array.prototype.slice.call(arguments);
-            var msg = args.map(function(a) {
-                if (a === null) return 'None';
-                if (a === undefined) return 'undefined';
-                if (typeof a === 'object') {
-                    try { return JSON.stringify(a); } catch(e) { return String(a); }
-                }
-                return String(a);
-            }).join(' ');
-
-            // Send to parent window console
-            parent.postMessage({ type: 'console-log', message: msg }, '*');
-
-            // Also log to browser console for debugging
-            console.log('[VPython print]', msg);
-        };
 
         async function loadAndRun() {
             try {
@@ -130,8 +108,27 @@ function buildIframeContent(glowCode: string): string {
                     version: '${GS_VERSION}'
                 });
 
+                // Replace print calls in compiled code with our custom function
+                // This handles cases where GlowScript uses the global print
+                program = program.replace(/\bprints*(/g, 'window.GS_print(');
+
                 window.__context = {
                     glowscript_container: $(container).removeAttr('id')
+                };
+
+                // Define our print function
+                window.GS_print = function() {
+                    var args = Array.prototype.slice.call(arguments);
+                    var msg = args.map(function(a) {
+                        if (a === null) return 'None';
+                        if (a === undefined) return 'undefined';
+                        if (typeof a === 'object') {
+                            try { return JSON.stringify(a); } catch(e) { return String(a); }
+                        }
+                        return String(a);
+                    }).join(' ');
+                    parent.postMessage({ type: 'console-log', message: msg }, '*');
+                    console.log('[VPython]', msg);
                 };
 
                 eval(program);
