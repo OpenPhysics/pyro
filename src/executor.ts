@@ -110,8 +110,9 @@ function buildIframeContent(glowCode: string): string {
 
                 // Replace print calls in compiled code with our custom function
                 // This handles cases where GlowScript uses the global print
-                var printRegex = new RegExp('\\bprint\\s*\\(', 'g');
-                program = program.replace(printRegex, 'window.GS_print(');
+                // Use simple string split/join to avoid regex escaping issues
+                program = program.split('print(').join('window.GS_print(');
+                program = program.split('print (').join('window.GS_print(');
 
                 window.__context = {
                     glowscript_container: $(container).removeAttr('id')
