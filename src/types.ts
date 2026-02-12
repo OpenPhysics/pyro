@@ -17,3 +17,10 @@ export interface IframeMessage {
   type: 'glowscript-error' | 'glowscript-ready' | 'console-log';
   message?: string;
 }
+
+/** A locally saved code snippet. */
+export interface Snippet {
+  name: string;
+  code: string;
+  createdAt: number;
+}
