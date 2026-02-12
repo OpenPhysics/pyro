@@ -78,22 +78,39 @@ function buildIframeContent(glowCode: string): string {
             document.body.appendChild(errorDiv);
         }
 
-        // Intercept console.log only after program starts executing
-        // to capture user print() statements
-        var userCodeRunning = false;
-        (function() {
-            var origLog = console.log;
-            console.log = function() {
-                origLog.apply(console, arguments);
-                // Only forward to parent when user code is running
-                if (userCodeRunning) {
-                    var message = Array.prototype.slice.call(arguments).map(function(a) {
-                        return typeof a === 'object' ? JSON.stringify(a) : String(a);
-                    }).join(' ');
-                    parent.postMessage({ type: 'console-log', message: message }, '*');
-                }
-            };
-        })();
+        // Store reference to glowscript container before it's modified
+        var glowContainer = null;
+
+        // Watch for GlowScript print output (it writes to DOM, not console)
+        var printObserver = new MutationObserver(function(mutations) {
+            mutations.forEach(function(mutation) {
+                mutation.addedNodes.forEach(function(node) {
+                    if (node.nodeType === Node.ELEMENT_NODE) {
+                        var el = node;
+                        var tag = el.tagName ? el.tagName.toUpperCase() : '';
+                        // Skip non-text elements (canvas, scripts, etc.)
+                        if (['CANVAS', 'SCRIPT', 'STYLE', 'SVG', 'IFRAME', 'VIDEO', 'AUDIO', 'IMG'].indexOf(tag) >= 0) {
+                            return;
+                        }
+                        // GlowScript print creates simple divs with just text content
+                        if (tag === 'DIV' && el.children.length === 0) {
+                            var text = el.textContent;
+                            if (text && text.trim()) {
+                                parent.postMessage({ type: 'console-log', message: text.trim() }, '*');
+                            }
+                        }
+                    }
+                });
+            });
+        });
+
+        $(document).ready(function() {
+            // Get container reference before GlowScript modifies it
+            glowContainer = document.getElementById('glowscript');
+            if (glowContainer) {
+                printObserver.observe(glowContainer, { childList: true, subtree: true });
+            }
+        });
 
         async function loadAndRun() {
             try {
@@ -128,10 +145,31 @@ function buildIframeContent(glowCode: string): string {
                     glowscript_container: $(container).removeAttr('id')
                 };
 
-                // Enable forwarding of console.log to parent for user print() statements
-                userCodeRunning = true;
+                // Store original print before GlowScript modifies it
+                var nativePrint = window.print;
 
                 eval(program);
+
+                // After eval, GlowScript has set up its print function
+                // Wrap it to capture output
+                if (typeof window.print === 'function' && window.print !== nativePrint) {
+                    var gsPrint = window.print;
+                    window.print = function() {
+                        // Send to parent console
+                        var args = Array.prototype.slice.call(arguments);
+                        var msg = args.map(function(a) {
+                            if (a === null) return 'None';
+                            if (a === undefined) return 'undefined';
+                            if (typeof a === 'object') {
+                                try { return JSON.stringify(a); } catch(e) { return String(a); }
+                            }
+                            return String(a);
+                        }).join(' ');
+                        parent.postMessage({ type: 'console-log', message: msg }, '*');
+                        // Call original GlowScript print
+                        return gsPrint.apply(this, arguments);
+                    };
+                }
 
                 if (typeof __main__ === 'function') {
                     await __main__();
