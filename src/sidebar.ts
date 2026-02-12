@@ -276,6 +276,7 @@ function buildShortcutsDialog(): HTMLElement {
       title: "Navigation",
       shortcuts: [
         { keys: `${ctrlKey} + B`, description: "Toggle sidebar" },
+        { keys: `${ctrlKey} + S`, description: "Open save/load snippets dialog" },
         { keys: "?", description: "Show this shortcuts dialog" },
         { keys: "Escape", description: "Close dialog / Exit fullscreen" },
       ],

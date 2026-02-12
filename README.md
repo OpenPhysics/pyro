@@ -7,26 +7,31 @@ A modern single-page web application for writing and running VPython code direct
 - **CodeMirror 6 Editor** - Python syntax highlighting, autocomplete for VPython objects/functions, One Dark theme
 - **GlowScript VPython 3.2** - Browser-based VPython implementation for 3D graphics
 - **Live Execution** - Run your VPython code and see results immediately in a sandboxed iframe
+- **Output & Instructions Tabs** - Switch between simulation output and markdown instructions for each example
+- **Dynamic Examples** - Examples loaded from `src/examples/`; each has a `.py` file and matching `.md` instructions
 - **Collapsible Sidebar** - Run, stop, save, load, reset, console, fullscreen, font size, and theme controls
 - **View Modes** - Switch between code-only, split (half/half), and output-only views via the top bar
 - **Font Size Controls** - Increase or decrease editor font size from the sidebar
-- **Dark / Projector Themes** - Dark mode (default) and a light projector mode for presentations
+- **Dark / Projector Themes** - Dark mode (default) and a light projector mode for presentations (WCAG-compliant)
 - **Console Panel** - Toggleable console output for `print()` statements
-- **Keyboard Shortcuts** - `Ctrl+Enter` / `Cmd+Enter` to run, `Ctrl+S` / `Cmd+S` to save
-- **Built-in Examples** - Basic Shapes, Bouncing Ball, Solar System, Spring Oscillation, Projectile Motion
+- **Keyboard Shortcuts** - `Ctrl+Enter` / `Cmd+Enter` to run, `Ctrl+S` / `Cmd+S` to save, `?` for shortcuts
 - **Local Storage** - Code is saved to and loaded from the browser's local storage
 - **Resizable Panels** - Drag the gutter between editor and output to resize
 - **Responsive Layout** - Works on desktop and tablet devices
 
 ## Usage
 
-1. Write VPython code in the editor panel
+1. Write VPython code in the editor panel (or load an example from the dropdown)
 2. Click **Run** in the sidebar (or press `Ctrl+Enter`) to execute
-3. View the 3D visualization in the output panel
+3. View the 3D visualization in the **Output** tab, or read **Instructions** for the current example
 4. Use the **view mode buttons** in the top bar to toggle between code-only, split, and output-only views
 5. Adjust editor font size with the **A+** / **A-** buttons in the sidebar
 6. Toggle the **Console** to see `print()` output
 7. Switch between **Dark Mode** and **Projector Mode** for different environments
+
+### URL Parameters
+
+- `?showInstructions=false` - Start with the Output tab selected instead of Instructions
 
 ## Example Code
 
@@ -48,6 +53,15 @@ while True:
         ball.velocity.x = -ball.velocity.x
 ```
 
+## Adding Examples
+
+Examples live in `src/examples/`. Each example needs:
+
+- `example-name.py` - The VPython source code
+- `example-name.md` - Markdown instructions (shown in the Instructions tab)
+
+Add a new pair of files to include it in the examples dropdown automatically.
+
 ## Local Development
 
 ```bash
@@ -55,7 +69,7 @@ npm install
 npm run dev
 ```
 
-Then open `http://localhost:5173` in your browser.
+Then open `http://localhost:8080` in your browser.
 
 To build for production:
 
@@ -65,20 +79,30 @@ npm run build
 
 Output will be in the `dist/` directory.
 
+### Scripts
+
+- `npm run dev` - Start development server
+- `npm run build` - Build for production
+- `npm run preview` - Preview production build
+- `npm run check` - Lint and format check (Biome)
+- `npm run lint:fix` - Auto-fix lint and format issues
+
 ## Deployment
 
 This is a static site suitable for GitHub Pages. The repository includes a GitHub Actions workflow (`.github/workflows/deploy.yml`) for automatic deployment:
 
-1. Push to the main branch
+1. Fork and push to the main branch
 2. GitHub Actions builds and deploys to GitHub Pages
 3. Access via `https://<username>.github.io/pyro/`
 
 ## Technical Stack
 
-- **Language**: TypeScript 5.4
-- **Build Tool**: [Vite 5.4](https://vitejs.dev/)
+- **Language**: TypeScript 5.9
+- **Build Tool**: [Vite 7](https://vitejs.dev/)
 - **Editor**: [CodeMirror 6](https://codemirror.net/) with Python language support and custom VPython autocomplete
 - **Runtime**: [GlowScript VPython 3.2](https://www.glowscript.org/)
+- **Linting & Formatting**: [Biome](https://biomejs.dev/)
+- **Markdown**: [marked](https://marked.js.org/) for rendering instructions
 - **Styling**: Custom CSS (no framework)
 
 ## File Structure
@@ -87,6 +111,7 @@ This is a static site suitable for GitHub Pages. The repository includes a GitHu
 /
 ├── index.html              # Main HTML file
 ├── package.json            # Dependencies & scripts
+├── biome.json              # Biome lint/format configuration
 ├── tsconfig.json           # TypeScript configuration
 ├── vite.config.ts          # Vite build configuration
 ├── src/
@@ -97,7 +122,10 @@ This is a static site suitable for GitHub Pages. The repository includes a GitHu
 │   ├── executor.ts         # Code execution in sandboxed iframe
 │   ├── resizable.ts        # Panel resize handling
 │   ├── completions.ts      # VPython autocomplete definitions
-│   ├── examples.ts         # Built-in example code snippets
+│   ├── examples.ts         # Loads examples from src/examples/
+│   ├── examples/           # Example .py and .md files (one pair per example)
+│   ├── snippets.ts         # Local storage snippets logic
+│   ├── snippetsDialog.ts   # Save/load snippets UI
 │   ├── types.ts            # TypeScript type definitions
 │   └── styles/
 │       └── main.css        # Application stylesheet
@@ -109,6 +137,7 @@ This is a static site suitable for GitHub Pages. The repository includes a GitHu
 ## Browser Support
 
 Works in modern browsers with WebGL support:
+
 - Chrome / Edge (recommended)
 - Firefox
 - Safari

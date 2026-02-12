@@ -214,6 +214,12 @@ function handleShortcutsKeydown(e: KeyboardEvent): void {
     return;
   }
 
+  if ((e.ctrlKey || e.metaKey) && e.key === "s" && !e.altKey && !e.shiftKey) {
+    e.preventDefault();
+    openSnippetsDialog();
+    return;
+  }
+
   if (e.key === "Escape") {
     const snippetsOverlay = document.getElementById("snippets-dialog-overlay");
     if (snippetsOverlay?.classList.contains("visible")) {

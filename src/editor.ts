@@ -95,12 +95,12 @@ export function initEditor(container: HTMLElement, onRun: () => void): void {
   editor = new EditorView({
     doc: initialCode,
     extensions: [
+      runKeymap,
       basicSetup,
       python(),
       themeCompartment.of(oneDark),
       history(),
       keymap.of([...defaultKeymap, ...historyKeymap, indentWithTab]),
-      runKeymap,
       EditorView.lineWrapping,
       autocompletion({
         override: [vpythonCompletions],
