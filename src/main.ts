@@ -33,7 +33,9 @@ function updateRunState(running: boolean): void {
   if (runBtn) {
     runBtn.disabled = running;
     const label = runBtn.querySelector(".sidebar-label");
-    if (label) label.textContent = running ? "Running..." : "Run";
+    if (label) {
+      label.textContent = running ? "Running..." : "Run";
+    }
     runBtn.setAttribute("aria-label", running ? "Running..." : "Run");
   }
   if (stopBtn) {
@@ -45,7 +47,7 @@ function updateRunState(running: boolean): void {
 // ---- Callbacks wired to the DOM ----
 
 function handleRun(): void {
-  runCode(getCode, outputDiv, {
+  void runCode(getCode, outputDiv, {
     onError: (msg) => showError(errorDisplay, msg),
     onConsoleLog: (msg) => addConsoleLog(consoleOutput, consolePanel, toggleConsoleBtn, msg),
     hideError: () => hideError(errorDisplay),
@@ -100,7 +102,9 @@ function setViewMode(mode: ViewMode): void {
   const edPanel = document.querySelector(".editor-panel") as HTMLElement | null;
   const outPanel = document.querySelector(".output-panel") as HTMLElement | null;
   const gutterEl = document.getElementById("gutter");
-  if (!edPanel || !outPanel || !gutterEl) return;
+  if (!(edPanel && outPanel && gutterEl)) {
+    return;
+  }
 
   // Reset inline styles from resizable dragging
   edPanel.style.width = "";
@@ -244,7 +248,9 @@ function init(): void {
 
   // Initialize sidebar stop button as disabled
   const stopBtn = document.getElementById("stop-sidebar-btn") as HTMLButtonElement | null;
-  if (stopBtn) stopBtn.disabled = true;
+  if (stopBtn) {
+    stopBtn.disabled = true;
+  }
 
   // Initial output placeholder
   outputDiv.innerHTML = '<div class="loading">Click "Run" to execute your VPython code</div>';

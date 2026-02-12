@@ -20,7 +20,9 @@ export function initResizable(
   });
 
   document.addEventListener("mousemove", (e: MouseEvent) => {
-    if (!isDragging) return;
+    if (!isDragging) {
+      return;
+    }
 
     const dx = e.clientX - startX;
     const totalWidth = startEditorWidth + startOutputWidth;
@@ -28,9 +30,9 @@ export function initResizable(
     const newOutputWidth = totalWidth - newEditorWidth;
 
     editorPanel.style.flex = "none";
-    editorPanel.style.width = newEditorWidth + "px";
+    editorPanel.style.width = `${newEditorWidth}px`;
     outputPanel.style.flex = "none";
-    outputPanel.style.width = newOutputWidth + "px";
+    outputPanel.style.width = `${newOutputWidth}px`;
   });
 
   document.addEventListener("mouseup", () => {

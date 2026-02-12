@@ -5,10 +5,14 @@ const SNIPPETS_KEY = "vpython-snippets";
 /** Load all saved snippets from localStorage. */
 export function loadSnippets(): Snippet[] {
   const raw = localStorage.getItem(SNIPPETS_KEY);
-  if (!raw) return [];
+  if (!raw) {
+    return [];
+  }
   try {
     const parsed = JSON.parse(raw);
-    if (!Array.isArray(parsed)) return [];
+    if (!Array.isArray(parsed)) {
+      return [];
+    }
     return parsed as Snippet[];
   } catch {
     return [];

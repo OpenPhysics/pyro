@@ -166,7 +166,7 @@ export async function executeInIframe(
 
   let glowCode = code.trim();
   glowCode = glowCode.replace(/^(GlowScript|Web VPython).*\n?/i, "");
-  glowCode = `GlowScript ${GS_VERSION} VPython\n` + glowCode;
+  glowCode = `GlowScript ${GS_VERSION} VPython\n${glowCode}`;
 
   iframe.srcdoc = buildIframeContent(glowCode);
 
@@ -176,7 +176,9 @@ export async function executeInIframe(
     }, 20000);
 
     const messageHandler = (event: MessageEvent<IframeMessage>) => {
-      if (!currentIframe || event.source !== currentIframe.contentWindow) return;
+      if (!currentIframe || event.source !== currentIframe.contentWindow) {
+        return;
+      }
 
       if (event.data) {
         if (event.data.type === "glowscript-error") {
@@ -209,7 +211,9 @@ export async function runCode(
     onRunStateChange: (running: boolean) => void;
   },
 ): Promise<void> {
-  if (isRunning) return;
+  if (isRunning) {
+    return;
+  }
 
   const code = getCode();
 

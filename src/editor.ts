@@ -21,7 +21,9 @@ const themeCompartment = new Compartment();
 /** Custom completion source for VPython. */
 function vpythonCompletions(context: CompletionContext): CompletionResult | null {
   const beforeCursor = context.matchBefore(/[\w.]+/);
-  if (!beforeCursor) return null;
+  if (!beforeCursor) {
+    return null;
+  }
 
   const text = beforeCursor.text;
   const dotIndex = text.lastIndexOf(".");
@@ -109,13 +111,17 @@ export function initEditor(container: HTMLElement, onRun: () => void): void {
 
 /** Get the current editor content. */
 export function getCode(): string {
-  if (!editor) return "";
+  if (!editor) {
+    return "";
+  }
   return editor.state.doc.toString();
 }
 
 /** Replace the editor content. */
 export function setCode(code: string): void {
-  if (!editor) return;
+  if (!editor) {
+    return;
+  }
   editor.dispatch({
     changes: { from: 0, to: editor.state.doc.length, insert: code },
   });
@@ -123,7 +129,9 @@ export function setCode(code: string): void {
 
 /** Switch the editor between dark (oneDark) and light (default) themes. */
 export function setEditorTheme(dark: boolean): void {
-  if (!editor) return;
+  if (!editor) {
+    return;
+  }
   editor.dispatch({
     effects: themeCompartment.reconfigure(dark ? oneDark : []),
   });
@@ -138,6 +146,6 @@ export function changeEditorFontSize(delta: number): void {
   currentFontSize = Math.max(MIN_FONT_SIZE, Math.min(MAX_FONT_SIZE, currentFontSize + delta));
   const cmEditor = document.querySelector(".cm-editor") as HTMLElement | null;
   if (cmEditor) {
-    cmEditor.style.fontSize = currentFontSize + "px";
+    cmEditor.style.fontSize = `${currentFontSize}px`;
   }
 }

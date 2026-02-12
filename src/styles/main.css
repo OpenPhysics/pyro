@@ -436,8 +436,8 @@ main.view-output-only .gutter {
 
 #output canvas {
   display: block;
-  width: 100% !important;
-  height: 100% !important;
+  width: 100%;
+  height: 100%;
 }
 #output .glowscript {
   width: 100%;
@@ -589,42 +589,42 @@ main.view-output-only .gutter {
 
 /* ----- 14. CodeMirror autocomplete ----- */
 .cm-tooltip-autocomplete {
-  background-color: #252526 !important;
-  border: 1px solid #404040 !important;
-  border-radius: 4px !important;
-  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.4) !important;
+  background-color: #252526;
+  border: 1px solid #404040;
+  border-radius: 4px;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.4);
 }
 
 .cm-tooltip-autocomplete > ul {
-  font-family: "Consolas", "Monaco", monospace !important;
-  font-size: 13px !important;
+  font-family: "Consolas", "Monaco", monospace;
+  font-size: 13px;
 }
 .cm-tooltip-autocomplete > ul > li {
-  padding: 4px 8px !important;
-  color: #e0e0e0 !important;
+  padding: 4px 8px;
+  color: #e0e0e0;
 }
 .cm-tooltip-autocomplete > ul > li[aria-selected="true"] {
-  background-color: #094771 !important;
-  color: #ffffff !important;
+  background-color: #094771;
+  color: #ffffff;
 }
 .cm-tooltip-autocomplete > ul > li:hover {
-  background-color: #2a2d2e !important;
+  background-color: #2a2d2e;
 }
 
 .cm-completionLabel {
-  color: #e0e0e0 !important;
+  color: #e0e0e0;
 }
 .cm-completionDetail {
-  color: #888 !important;
+  color: #888;
   font-style: italic;
   margin-left: 8px;
 }
 .cm-completionInfo {
-  background-color: #1e1e1e !important;
-  border: 1px solid #404040 !important;
-  color: #b0b0b0 !important;
-  padding: 8px !important;
-  font-size: 12px !important;
+  background-color: #1e1e1e;
+  border: 1px solid #404040;
+  color: #b0b0b0;
+  padding: 8px;
+  font-size: 12px;
 }
 
 .cm-completionIcon-function::after {
@@ -1182,38 +1182,38 @@ body.projector-mode .cm-cursor {
   border-left-color: #333;
 }
 body.projector-mode .cm-selectionBackground {
-  background-color: #b3d9ff !important;
+  background-color: #b3d9ff;
 }
 body.projector-mode .cm-matchingBracket {
   background-color: #c8e6c9;
-  color: #222 !important;
+  color: #222;
 }
 
 /* Projector autocomplete overrides */
 body.projector-mode .cm-tooltip-autocomplete {
-  background-color: #fff !important;
-  border-color: #ccc !important;
+  background-color: #fff;
+  border-color: #ccc;
 }
 body.projector-mode .cm-tooltip-autocomplete > ul > li {
-  color: #333 !important;
+  color: #333;
 }
 body.projector-mode .cm-tooltip-autocomplete > ul > li[aria-selected="true"] {
-  background-color: #b3d9ff !important;
-  color: #000 !important;
+  background-color: #b3d9ff;
+  color: #000;
 }
 body.projector-mode .cm-tooltip-autocomplete > ul > li:hover {
-  background-color: #eee !important;
+  background-color: #eee;
 }
 body.projector-mode .cm-completionLabel {
-  color: #333 !important;
+  color: #333;
 }
 body.projector-mode .cm-completionDetail {
-  color: #777 !important;
+  color: #777;
 }
 body.projector-mode .cm-completionInfo {
-  background-color: #f9f9f9 !important;
-  border-color: #ccc !important;
-  color: #444 !important;
+  background-color: #f9f9f9;
+  border-color: #ccc;
+  color: #444;
 }
 
 /* Projector shortcuts dialog overrides */
@@ -1349,7 +1349,7 @@ body.projector-mode .skip-nav {
 /* ----- 18. Responsive ----- */
 @media (max-width: 768px) {
   .sidebar {
-    width: 48px !important;
+    width: 48px;
   }
   .sidebar.collapsed {
     width: 48px;
@@ -1358,7 +1358,7 @@ body.projector-mode .skip-nav {
     width: 48px;
   }
   #app-wrapper {
-    margin-left: 48px !important;
+    margin-left: 48px;
   }
 
   main {

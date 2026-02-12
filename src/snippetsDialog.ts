@@ -18,7 +18,9 @@ export function buildSnippetsDialog(): HTMLElement {
   overlay.className = "snippets-overlay";
   overlay.setAttribute("role", "presentation");
   overlay.addEventListener("click", (e) => {
-    if (e.target === overlay) closeSnippetsDialog();
+    if (e.target === overlay) {
+      closeSnippetsDialog();
+    }
   });
 
   const dialog = document.createElement("div");
@@ -105,7 +107,9 @@ export function buildSnippetsDialog(): HTMLElement {
 /** Open the snippets dialog and refresh the list. */
 export function openSnippetsDialog(): void {
   const overlay = document.getElementById("snippets-dialog-overlay");
-  if (!overlay) return;
+  if (!overlay) {
+    return;
+  }
   overlay.classList.add("visible");
   refreshSnippetsList();
   const nameInput = document.getElementById("snippet-name-input") as HTMLInputElement | null;
@@ -116,7 +120,9 @@ export function openSnippetsDialog(): void {
 /** Close the snippets dialog. */
 export function closeSnippetsDialog(): void {
   const overlay = document.getElementById("snippets-dialog-overlay");
-  if (!overlay) return;
+  if (!overlay) {
+    return;
+  }
   overlay.classList.remove("visible");
   overlay.removeEventListener("keydown", trapFocusInSnippetsDialog);
   const triggerBtn = document.getElementById("snippets-sidebar-btn");
@@ -130,7 +136,9 @@ function handleSaveSnippet(nameInput: HTMLInputElement): void {
     nameInput.focus();
     return;
   }
-  if (!getCodeFn) return;
+  if (!getCodeFn) {
+    return;
+  }
   const code = getCodeFn();
   if (!code.trim()) {
     showNotification("Nothing to save — editor is empty", "error");
@@ -155,7 +163,9 @@ function handleSaveSnippet(nameInput: HTMLInputElement): void {
 
 function refreshSnippetsList(): void {
   const container = document.getElementById("snippets-list");
-  if (!container) return;
+  if (!container) {
+    return;
+  }
   container.innerHTML = "";
 
   const snippets = loadSnippets();
@@ -205,7 +215,9 @@ function buildSnippetRow(snippet: Snippet): HTMLElement {
   loadBtn.textContent = "Load";
   loadBtn.setAttribute("aria-label", `Load snippet "${snippet.name}"`);
   loadBtn.addEventListener("click", () => {
-    if (!setCodeFn) return;
+    if (!setCodeFn) {
+      return;
+    }
     setCodeFn(snippet.code);
     showNotification(`Loaded "${snippet.name}"`, "info");
     announce(`Loaded snippet: ${snippet.name}`);
@@ -246,24 +258,29 @@ function trapFocusInSnippetsDialog(e: KeyboardEvent): void {
     closeSnippetsDialog();
     return;
   }
-  if (e.key !== "Tab") return;
+  if (e.key !== "Tab") {
+    return;
+  }
   const dialog = document.getElementById("snippets-dialog");
-  if (!dialog) return;
+  if (!dialog) {
+    return;
+  }
   const focusable = dialog.querySelectorAll<HTMLElement>(
     'button, [href], input, select, textarea, [tabindex]:not([tabindex="-1"])',
   );
-  if (focusable.length === 0) return;
-  const first = focusable[0];
-  const last = focusable[focusable.length - 1];
+  if (focusable.length === 0) {
+    return;
+  }
+  // Safe assertions: length > 0 is checked above
+  const first = focusable[0]!;
+  const last = focusable[focusable.length - 1]!;
   if (e.shiftKey) {
     if (document.activeElement === first) {
       e.preventDefault();
       last.focus();
     }
-  } else {
-    if (document.activeElement === last) {
-      e.preventDefault();
-      first.focus();
-    }
+  } else if (document.activeElement === last) {
+    e.preventDefault();
+    first.focus();
   }
 }

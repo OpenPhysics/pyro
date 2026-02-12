@@ -146,7 +146,9 @@ export function createSidebar(callbacks: SidebarCallbacks): HTMLElement {
 // ---- Sidebar collapse / expand ----
 
 export function toggleSidebar(): void {
-  if (!sidebarEl) return;
+  if (!sidebarEl) {
+    return;
+  }
   isCollapsed = !isCollapsed;
   sidebarEl.classList.toggle("collapsed", isCollapsed);
 }
@@ -163,9 +165,13 @@ function toggleFullScreen(): void {
   const btn = document.getElementById("fullscreen-sidebar-btn");
   if (btn) {
     const icon = btn.querySelector(".sidebar-icon");
-    if (icon) icon.innerHTML = isFullScreen ? ICONS.exitFullscreen : ICONS.fullscreen;
+    if (icon) {
+      icon.innerHTML = isFullScreen ? ICONS.exitFullscreen : ICONS.fullscreen;
+    }
     const label = btn.querySelector(".sidebar-label");
-    if (label) label.textContent = isFullScreen ? "Exit Full Screen" : "Full Screen";
+    if (label) {
+      label.textContent = isFullScreen ? "Exit Full Screen" : "Full Screen";
+    }
     btn.setAttribute("aria-label", isFullScreen ? "Exit full screen" : "Full screen");
   }
 }
@@ -177,9 +183,13 @@ document.addEventListener("fullscreenchange", () => {
     const btn = document.getElementById("fullscreen-sidebar-btn");
     if (btn) {
       const icon = btn.querySelector(".sidebar-icon");
-      if (icon) icon.innerHTML = ICONS.fullscreen;
+      if (icon) {
+        icon.innerHTML = ICONS.fullscreen;
+      }
       const label = btn.querySelector(".sidebar-label");
-      if (label) label.textContent = "Full Screen";
+      if (label) {
+        label.textContent = "Full Screen";
+      }
       btn.setAttribute("aria-label", "Full screen");
     }
   }
@@ -208,7 +218,9 @@ function buildShortcutsDialog(): HTMLElement {
   overlay.className = "shortcuts-overlay";
   overlay.setAttribute("role", "presentation");
   overlay.addEventListener("click", (e) => {
-    if (e.target === overlay) closeShortcutsDialog();
+    if (e.target === overlay) {
+      closeShortcutsDialog();
+    }
   });
 
   const dialog = document.createElement("div");
@@ -308,7 +320,9 @@ function buildShortcutsDialog(): HTMLElement {
 
 export function openShortcutsDialog(): void {
   const overlay = document.getElementById("shortcuts-dialog-overlay");
-  if (!overlay) return;
+  if (!overlay) {
+    return;
+  }
   overlay.classList.add("visible");
   // Focus the close button for keyboard accessibility
   const closeBtn = overlay.querySelector(".shortcuts-close-btn") as HTMLElement | null;
@@ -319,7 +333,9 @@ export function openShortcutsDialog(): void {
 
 export function closeShortcutsDialog(): void {
   const overlay = document.getElementById("shortcuts-dialog-overlay");
-  if (!overlay) return;
+  if (!overlay) {
+    return;
+  }
   overlay.classList.remove("visible");
   overlay.removeEventListener("keydown", trapFocusInDialog);
   // Return focus to the shortcuts button
@@ -332,25 +348,30 @@ function trapFocusInDialog(e: KeyboardEvent): void {
     closeShortcutsDialog();
     return;
   }
-  if (e.key !== "Tab") return;
+  if (e.key !== "Tab") {
+    return;
+  }
   const dialog = document.getElementById("shortcuts-dialog");
-  if (!dialog) return;
+  if (!dialog) {
+    return;
+  }
   const focusable = dialog.querySelectorAll<HTMLElement>(
     'button, [href], input, select, textarea, [tabindex]:not([tabindex="-1"])',
   );
-  if (focusable.length === 0) return;
-  const first = focusable[0];
-  const last = focusable[focusable.length - 1];
+  if (focusable.length === 0) {
+    return;
+  }
+  // Safe assertions: length > 0 is checked above
+  const first = focusable[0]!;
+  const last = focusable[focusable.length - 1]!;
   if (e.shiftKey) {
     if (document.activeElement === first) {
       e.preventDefault();
       last.focus();
     }
-  } else {
-    if (document.activeElement === last) {
-      e.preventDefault();
-      first.focus();
-    }
+  } else if (document.activeElement === last) {
+    e.preventDefault();
+    first.focus();
   }
 }
 
@@ -380,7 +401,7 @@ function navButton(
 ): HTMLElement {
   const btn = document.createElement("button");
   btn.id = id;
-  btn.className = "sidebar-btn" + (extraClass ? " " + extraClass : "");
+  btn.className = `sidebar-btn${extraClass ? ` ${extraClass}` : ""}`;
   btn.title = label;
   btn.setAttribute("aria-label", label);
   btn.innerHTML = `<span class="sidebar-icon" aria-hidden="true">${iconSvg}</span><span class="sidebar-label">${label}</span>`;

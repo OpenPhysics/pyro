@@ -8,7 +8,9 @@ export function escapeHtml(text: string): string {
 /** Announce a message to screen readers via the live region. */
 export function announce(message: string): void {
   const region = document.getElementById("sr-announcements");
-  if (!region) return;
+  if (!region) {
+    return;
+  }
   region.textContent = message;
   // Clear after a delay so repeated identical messages are re-announced
   setTimeout(() => {
