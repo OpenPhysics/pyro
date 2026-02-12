@@ -41,86 +41,98 @@ export interface SidebarCallbacks {
  * Returns the sidebar root element.
  */
 export function createSidebar(callbacks: SidebarCallbacks): HTMLElement {
-  const sidebar = document.createElement('aside');
-  sidebar.id = 'sidebar';
-  sidebar.className = 'sidebar collapsed';
-  sidebar.setAttribute('role', 'navigation');
-  sidebar.setAttribute('aria-label', 'Main sidebar');
+  const sidebar = document.createElement("aside");
+  sidebar.id = "sidebar";
+  sidebar.className = "sidebar collapsed";
+  sidebar.setAttribute("role", "navigation");
+  sidebar.setAttribute("aria-label", "Main sidebar");
   sidebarEl = sidebar;
   storedCallbacks = callbacks;
 
   // Hamburger toggle
-  const toggle = document.createElement('button');
-  toggle.className = 'sidebar-toggle';
+  const toggle = document.createElement("button");
+  toggle.className = "sidebar-toggle";
   toggle.innerHTML = ICONS.menu;
-  toggle.title = 'Toggle sidebar';
-  toggle.setAttribute('aria-label', 'Toggle sidebar');
-  toggle.setAttribute('aria-expanded', String(!isCollapsed));
-  toggle.setAttribute('aria-controls', 'sidebar-nav');
-  toggle.addEventListener('click', () => {
+  toggle.title = "Toggle sidebar";
+  toggle.setAttribute("aria-label", "Toggle sidebar");
+  toggle.setAttribute("aria-expanded", String(!isCollapsed));
+  toggle.setAttribute("aria-controls", "sidebar-nav");
+  toggle.addEventListener("click", () => {
     toggleSidebar();
-    toggle.setAttribute('aria-expanded', String(!isCollapsed));
+    toggle.setAttribute("aria-expanded", String(!isCollapsed));
   });
   sidebar.appendChild(toggle);
 
   // Nav container
-  const nav = document.createElement('nav');
-  nav.className = 'sidebar-nav';
-  nav.id = 'sidebar-nav';
-  nav.setAttribute('aria-label', 'Editor tools');
+  const nav = document.createElement("nav");
+  nav.className = "sidebar-nav";
+  nav.id = "sidebar-nav";
+  nav.setAttribute("aria-label", "Editor tools");
 
   // --- Execution section ---
-  nav.appendChild(sectionLabel('Run'));
+  nav.appendChild(sectionLabel("Run"));
+  nav.appendChild(navButton("run-sidebar-btn", ICONS.play, "Run", callbacks.onRun, "sidebar-run"));
   nav.appendChild(
-    navButton('run-sidebar-btn', ICONS.play, 'Run', callbacks.onRun, 'sidebar-run'),
-  );
-  nav.appendChild(
-    navButton('stop-sidebar-btn', ICONS.stop, 'Stop', callbacks.onStop, 'sidebar-stop'),
+    navButton("stop-sidebar-btn", ICONS.stop, "Stop", callbacks.onStop, "sidebar-stop"),
   );
 
   // --- File section ---
   nav.appendChild(divider());
-  nav.appendChild(sectionLabel('File'));
+  nav.appendChild(sectionLabel("File"));
   nav.appendChild(
-    navButton('snippets-sidebar-btn', ICONS.snippet, 'Snippets', () => callbacks.onSnippets?.()),
+    navButton("snippets-sidebar-btn", ICONS.snippet, "Snippets", () => callbacks.onSnippets?.()),
   );
 
   // --- View section ---
   nav.appendChild(divider());
-  nav.appendChild(sectionLabel('View'));
+  nav.appendChild(sectionLabel("View"));
   nav.appendChild(
-    navButton('console-sidebar-btn', ICONS.console, 'Console', callbacks.onToggleConsole),
+    navButton("console-sidebar-btn", ICONS.console, "Console", callbacks.onToggleConsole),
+  );
+  nav.appendChild(navButton("reset-sidebar-btn", ICONS.reset, "Reset", callbacks.onReset));
+  nav.appendChild(
+    navButton("fullscreen-sidebar-btn", ICONS.fullscreen, "Full Screen", () => toggleFullScreen()),
   );
   nav.appendChild(
-    navButton('reset-sidebar-btn', ICONS.reset, 'Reset', callbacks.onReset),
+    navButton("font-increase-btn", ICONS.fontIncrease, "Font Larger", () =>
+      callbacks.onFontIncrease?.(),
+    ),
   );
   nav.appendChild(
-    navButton('fullscreen-sidebar-btn', ICONS.fullscreen, 'Full Screen', () => toggleFullScreen()),
-  );
-  nav.appendChild(
-    navButton('font-increase-btn', ICONS.fontIncrease, 'Font Larger', () => callbacks.onFontIncrease?.()),
-  );
-  nav.appendChild(
-    navButton('font-decrease-btn', ICONS.fontDecrease, 'Font Smaller', () => callbacks.onFontDecrease?.()),
+    navButton("font-decrease-btn", ICONS.fontDecrease, "Font Smaller", () =>
+      callbacks.onFontDecrease?.(),
+    ),
   );
 
   // --- Help section ---
   nav.appendChild(divider());
-  nav.appendChild(sectionLabel('Help'));
+  nav.appendChild(sectionLabel("Help"));
   nav.appendChild(
-    navButton('keyboard-shortcuts-btn', ICONS.keyboard, 'Shortcuts', () => openShortcutsDialog()),
+    navButton("keyboard-shortcuts-btn", ICONS.keyboard, "Shortcuts", () => openShortcutsDialog()),
   );
 
   // --- Theme section ---
   nav.appendChild(divider());
-  nav.appendChild(sectionLabel('Theme'));
+  nav.appendChild(sectionLabel("Theme"));
 
-  const darkBtn = navButton('dark-sidebar-btn', ICONS.dark, 'Dark Mode', () => setDarkMode(true), 'sidebar-theme-dark active');
-  darkBtn.setAttribute('aria-pressed', 'true');
+  const darkBtn = navButton(
+    "dark-sidebar-btn",
+    ICONS.dark,
+    "Dark Mode",
+    () => setDarkMode(true),
+    "sidebar-theme-dark active",
+  );
+  darkBtn.setAttribute("aria-pressed", "true");
   nav.appendChild(darkBtn);
 
-  const projBtn = navButton('projector-sidebar-btn', ICONS.projector, 'Projector', () => setDarkMode(false), 'sidebar-theme-projector');
-  projBtn.setAttribute('aria-pressed', 'false');
+  const projBtn = navButton(
+    "projector-sidebar-btn",
+    ICONS.projector,
+    "Projector",
+    () => setDarkMode(false),
+    "sidebar-theme-projector",
+  );
+  projBtn.setAttribute("aria-pressed", "false");
   nav.appendChild(projBtn);
 
   sidebar.appendChild(nav);
@@ -136,7 +148,7 @@ export function createSidebar(callbacks: SidebarCallbacks): HTMLElement {
 export function toggleSidebar(): void {
   if (!sidebarEl) return;
   isCollapsed = !isCollapsed;
-  sidebarEl.classList.toggle('collapsed', isCollapsed);
+  sidebarEl.classList.toggle("collapsed", isCollapsed);
 }
 
 // ---- Full-screen toggle ----
@@ -148,27 +160,27 @@ function toggleFullScreen(): void {
   } else {
     document.exitFullscreen?.();
   }
-  const btn = document.getElementById('fullscreen-sidebar-btn');
+  const btn = document.getElementById("fullscreen-sidebar-btn");
   if (btn) {
-    const icon = btn.querySelector('.sidebar-icon');
+    const icon = btn.querySelector(".sidebar-icon");
     if (icon) icon.innerHTML = isFullScreen ? ICONS.exitFullscreen : ICONS.fullscreen;
-    const label = btn.querySelector('.sidebar-label');
-    if (label) label.textContent = isFullScreen ? 'Exit Full Screen' : 'Full Screen';
-    btn.setAttribute('aria-label', isFullScreen ? 'Exit full screen' : 'Full screen');
+    const label = btn.querySelector(".sidebar-label");
+    if (label) label.textContent = isFullScreen ? "Exit Full Screen" : "Full Screen";
+    btn.setAttribute("aria-label", isFullScreen ? "Exit full screen" : "Full screen");
   }
 }
 
 // listen for browser-initiated fullscreen changes (e.g. Escape key)
-document.addEventListener('fullscreenchange', () => {
+document.addEventListener("fullscreenchange", () => {
   if (!document.fullscreenElement && isFullScreen) {
     isFullScreen = false;
-    const btn = document.getElementById('fullscreen-sidebar-btn');
+    const btn = document.getElementById("fullscreen-sidebar-btn");
     if (btn) {
-      const icon = btn.querySelector('.sidebar-icon');
+      const icon = btn.querySelector(".sidebar-icon");
       if (icon) icon.innerHTML = ICONS.fullscreen;
-      const label = btn.querySelector('.sidebar-label');
-      if (label) label.textContent = 'Full Screen';
-      btn.setAttribute('aria-label', 'Full screen');
+      const label = btn.querySelector(".sidebar-label");
+      if (label) label.textContent = "Full Screen";
+      btn.setAttribute("aria-label", "Full screen");
     }
   }
 });
@@ -176,14 +188,14 @@ document.addEventListener('fullscreenchange', () => {
 // ---- Dark / Projector mode ----
 
 function setDarkMode(dark: boolean): void {
-  document.body.classList.toggle('projector-mode', !dark);
+  document.body.classList.toggle("projector-mode", !dark);
 
-  const darkBtn = document.getElementById('dark-sidebar-btn');
-  const projBtn = document.getElementById('projector-sidebar-btn');
-  darkBtn?.classList.toggle('active', dark);
-  projBtn?.classList.toggle('active', !dark);
-  darkBtn?.setAttribute('aria-pressed', String(dark));
-  projBtn?.setAttribute('aria-pressed', String(!dark));
+  const darkBtn = document.getElementById("dark-sidebar-btn");
+  const projBtn = document.getElementById("projector-sidebar-btn");
+  darkBtn?.classList.toggle("active", dark);
+  projBtn?.classList.toggle("active", !dark);
+  darkBtn?.setAttribute("aria-pressed", String(dark));
+  projBtn?.setAttribute("aria-pressed", String(!dark));
 
   storedCallbacks?.onThemeChange?.(dark);
 }
@@ -191,94 +203,94 @@ function setDarkMode(dark: boolean): void {
 // ---- Keyboard Shortcuts Dialog ----
 
 function buildShortcutsDialog(): HTMLElement {
-  const overlay = document.createElement('div');
-  overlay.id = 'shortcuts-dialog-overlay';
-  overlay.className = 'shortcuts-overlay';
-  overlay.setAttribute('role', 'presentation');
-  overlay.addEventListener('click', (e) => {
+  const overlay = document.createElement("div");
+  overlay.id = "shortcuts-dialog-overlay";
+  overlay.className = "shortcuts-overlay";
+  overlay.setAttribute("role", "presentation");
+  overlay.addEventListener("click", (e) => {
     if (e.target === overlay) closeShortcutsDialog();
   });
 
-  const dialog = document.createElement('div');
-  dialog.id = 'shortcuts-dialog';
-  dialog.setAttribute('role', 'dialog');
-  dialog.setAttribute('aria-modal', 'true');
-  dialog.setAttribute('aria-label', 'Keyboard shortcuts');
-  dialog.className = 'shortcuts-dialog';
+  const dialog = document.createElement("div");
+  dialog.id = "shortcuts-dialog";
+  dialog.setAttribute("role", "dialog");
+  dialog.setAttribute("aria-modal", "true");
+  dialog.setAttribute("aria-label", "Keyboard shortcuts");
+  dialog.className = "shortcuts-dialog";
 
   // Header
-  const header = document.createElement('div');
-  header.className = 'shortcuts-dialog-header';
-  const title = document.createElement('h2');
-  title.textContent = 'Keyboard Shortcuts';
-  title.id = 'shortcuts-dialog-title';
-  dialog.setAttribute('aria-labelledby', 'shortcuts-dialog-title');
+  const header = document.createElement("div");
+  header.className = "shortcuts-dialog-header";
+  const title = document.createElement("h2");
+  title.textContent = "Keyboard Shortcuts";
+  title.id = "shortcuts-dialog-title";
+  dialog.setAttribute("aria-labelledby", "shortcuts-dialog-title");
 
-  const closeBtn = document.createElement('button');
-  closeBtn.className = 'shortcuts-close-btn';
+  const closeBtn = document.createElement("button");
+  closeBtn.className = "shortcuts-close-btn";
   closeBtn.innerHTML = `<svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" aria-hidden="true"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>`;
-  closeBtn.setAttribute('aria-label', 'Close keyboard shortcuts dialog');
-  closeBtn.addEventListener('click', closeShortcutsDialog);
+  closeBtn.setAttribute("aria-label", "Close keyboard shortcuts dialog");
+  closeBtn.addEventListener("click", closeShortcutsDialog);
   header.appendChild(title);
   header.appendChild(closeBtn);
   dialog.appendChild(header);
 
   // Shortcut groups
-  const body = document.createElement('div');
-  body.className = 'shortcuts-dialog-body';
+  const body = document.createElement("div");
+  body.className = "shortcuts-dialog-body";
 
-  const isMac = navigator.platform.toUpperCase().indexOf('MAC') >= 0;
-  const ctrlKey = isMac ? '\u2318' : 'Ctrl';
+  const isMac = navigator.platform.toUpperCase().indexOf("MAC") >= 0;
+  const ctrlKey = isMac ? "\u2318" : "Ctrl";
 
   const groups: { title: string; shortcuts: { keys: string; description: string }[] }[] = [
     {
-      title: 'Execution',
+      title: "Execution",
+      shortcuts: [{ keys: `${ctrlKey} + Enter`, description: "Run code" }],
+    },
+    {
+      title: "Editor",
       shortcuts: [
-        { keys: `${ctrlKey} + Enter`, description: 'Run code' },
+        { keys: `${ctrlKey} + Z`, description: "Undo" },
+        { keys: `${ctrlKey} + Shift + Z`, description: "Redo" },
+        { keys: `${ctrlKey} + A`, description: "Select all" },
+        { keys: `${ctrlKey} + D`, description: "Select next occurrence" },
+        { keys: `${ctrlKey} + /`, description: "Toggle line comment" },
+        { keys: `${ctrlKey} + F`, description: "Find" },
+        { keys: `${ctrlKey} + H`, description: "Find and replace" },
+        { keys: "Tab", description: "Indent" },
+        { keys: "Shift + Tab", description: "Dedent" },
       ],
     },
     {
-      title: 'Editor',
+      title: "Navigation",
       shortcuts: [
-        { keys: `${ctrlKey} + Z`, description: 'Undo' },
-        { keys: `${ctrlKey} + Shift + Z`, description: 'Redo' },
-        { keys: `${ctrlKey} + A`, description: 'Select all' },
-        { keys: `${ctrlKey} + D`, description: 'Select next occurrence' },
-        { keys: `${ctrlKey} + /`, description: 'Toggle line comment' },
-        { keys: `${ctrlKey} + F`, description: 'Find' },
-        { keys: `${ctrlKey} + H`, description: 'Find and replace' },
-        { keys: 'Tab', description: 'Indent' },
-        { keys: 'Shift + Tab', description: 'Dedent' },
-      ],
-    },
-    {
-      title: 'Navigation',
-      shortcuts: [
-        { keys: `${ctrlKey} + B`, description: 'Toggle sidebar' },
-        { keys: '?', description: 'Show this shortcuts dialog' },
-        { keys: 'Escape', description: 'Close dialog / Exit fullscreen' },
+        { keys: `${ctrlKey} + B`, description: "Toggle sidebar" },
+        { keys: "?", description: "Show this shortcuts dialog" },
+        { keys: "Escape", description: "Close dialog / Exit fullscreen" },
       ],
     },
   ];
 
   for (const group of groups) {
-    const section = document.createElement('div');
-    section.className = 'shortcuts-group';
-    const sTitle = document.createElement('h3');
+    const section = document.createElement("div");
+    section.className = "shortcuts-group";
+    const sTitle = document.createElement("h3");
     sTitle.textContent = group.title;
     section.appendChild(sTitle);
 
-    const list = document.createElement('dl');
-    list.className = 'shortcuts-list';
+    const list = document.createElement("dl");
+    list.className = "shortcuts-list";
     for (const shortcut of group.shortcuts) {
-      const row = document.createElement('div');
-      row.className = 'shortcut-row';
+      const row = document.createElement("div");
+      row.className = "shortcut-row";
 
-      const dt = document.createElement('dt');
-      const keys = shortcut.keys.split(' + ');
-      dt.innerHTML = keys.map(k => `<kbd>${k}</kbd>`).join('<span class="shortcut-plus">+</span>');
+      const dt = document.createElement("dt");
+      const keys = shortcut.keys.split(" + ");
+      dt.innerHTML = keys
+        .map((k) => `<kbd>${k}</kbd>`)
+        .join('<span class="shortcut-plus">+</span>');
 
-      const dd = document.createElement('dd');
+      const dd = document.createElement("dd");
       dd.textContent = shortcut.description;
 
       row.appendChild(dt);
@@ -295,33 +307,33 @@ function buildShortcutsDialog(): HTMLElement {
 }
 
 export function openShortcutsDialog(): void {
-  const overlay = document.getElementById('shortcuts-dialog-overlay');
+  const overlay = document.getElementById("shortcuts-dialog-overlay");
   if (!overlay) return;
-  overlay.classList.add('visible');
+  overlay.classList.add("visible");
   // Focus the close button for keyboard accessibility
-  const closeBtn = overlay.querySelector('.shortcuts-close-btn') as HTMLElement | null;
+  const closeBtn = overlay.querySelector(".shortcuts-close-btn") as HTMLElement | null;
   closeBtn?.focus();
   // Trap focus in dialog
-  overlay.addEventListener('keydown', trapFocusInDialog);
+  overlay.addEventListener("keydown", trapFocusInDialog);
 }
 
 export function closeShortcutsDialog(): void {
-  const overlay = document.getElementById('shortcuts-dialog-overlay');
+  const overlay = document.getElementById("shortcuts-dialog-overlay");
   if (!overlay) return;
-  overlay.classList.remove('visible');
-  overlay.removeEventListener('keydown', trapFocusInDialog);
+  overlay.classList.remove("visible");
+  overlay.removeEventListener("keydown", trapFocusInDialog);
   // Return focus to the shortcuts button
-  const triggerBtn = document.getElementById('keyboard-shortcuts-btn');
+  const triggerBtn = document.getElementById("keyboard-shortcuts-btn");
   triggerBtn?.focus();
 }
 
 function trapFocusInDialog(e: KeyboardEvent): void {
-  if (e.key === 'Escape') {
+  if (e.key === "Escape") {
     closeShortcutsDialog();
     return;
   }
-  if (e.key !== 'Tab') return;
-  const dialog = document.getElementById('shortcuts-dialog');
+  if (e.key !== "Tab") return;
+  const dialog = document.getElementById("shortcuts-dialog");
   if (!dialog) return;
   const focusable = dialog.querySelectorAll<HTMLElement>(
     'button, [href], input, select, textarea, [tabindex]:not([tabindex="-1"])',
@@ -345,17 +357,17 @@ function trapFocusInDialog(e: KeyboardEvent): void {
 // ---- DOM helpers ----
 
 function sectionLabel(text: string): HTMLElement {
-  const el = document.createElement('div');
-  el.className = 'sidebar-section-label';
+  const el = document.createElement("div");
+  el.className = "sidebar-section-label";
   el.textContent = text;
-  el.setAttribute('aria-hidden', 'true');
+  el.setAttribute("aria-hidden", "true");
   return el;
 }
 
 function divider(): HTMLElement {
-  const el = document.createElement('div');
-  el.className = 'sidebar-divider';
-  el.setAttribute('role', 'separator');
+  const el = document.createElement("div");
+  el.className = "sidebar-divider";
+  el.setAttribute("role", "separator");
   return el;
 }
 
@@ -366,12 +378,12 @@ function navButton(
   onClick: () => void,
   extraClass?: string,
 ): HTMLElement {
-  const btn = document.createElement('button');
+  const btn = document.createElement("button");
   btn.id = id;
-  btn.className = 'sidebar-btn' + (extraClass ? ' ' + extraClass : '');
+  btn.className = "sidebar-btn" + (extraClass ? " " + extraClass : "");
   btn.title = label;
-  btn.setAttribute('aria-label', label);
+  btn.setAttribute("aria-label", label);
   btn.innerHTML = `<span class="sidebar-icon" aria-hidden="true">${iconSvg}</span><span class="sidebar-label">${label}</span>`;
-  btn.addEventListener('click', onClick);
+  btn.addEventListener("click", onClick);
   return btn;
 }

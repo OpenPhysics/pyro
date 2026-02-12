@@ -1,6 +1,6 @@
-import type { IframeMessage } from './types';
+import type { IframeMessage } from "./types";
 
-const GS_VERSION = '3.2';
+const GS_VERSION = "3.2";
 
 let currentIframe: HTMLIFrameElement | null = null;
 let isRunning = false;
@@ -55,10 +55,10 @@ function buildIframeContent(glowCode: string): string {
             z-index: 1000;
         }
     </style>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.7.1/jquery.min.js"><\/script>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/jqueryui/1.13.2/jquery-ui.min.js"><\/script>
-    <script src="https://glowscript.org/package/glow.${GS_VERSION}.min.js"><\/script>
-    <script src="https://glowscript.org/package/RSrun.${GS_VERSION}.min.js"><\/script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.7.1/jquery.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jqueryui/1.13.2/jquery-ui.min.js"></script>
+    <script src="https://glowscript.org/package/glow.${GS_VERSION}.min.js"></script>
+    <script src="https://glowscript.org/package/RSrun.${GS_VERSION}.min.js"></script>
 </head>
 <body>
     <div id="glowscript"></div>
@@ -142,7 +142,7 @@ function buildIframeContent(glowCode: string): string {
         }
 
         $(document).ready(loadAndRun);
-    <\/script>
+    </script>
 </body>
 </html>`;
 }
@@ -157,15 +157,15 @@ export async function executeInIframe(
     onReady: () => void;
   },
 ): Promise<void> {
-  outputDiv.innerHTML = '';
+  outputDiv.innerHTML = "";
 
-  const iframe = document.createElement('iframe');
-  iframe.style.cssText = 'width:100%;height:100%;border:none;background:#1a1a1a;';
+  const iframe = document.createElement("iframe");
+  iframe.style.cssText = "width:100%;height:100%;border:none;background:#1a1a1a;";
   currentIframe = iframe;
   outputDiv.appendChild(iframe);
 
   let glowCode = code.trim();
-  glowCode = glowCode.replace(/^(GlowScript|Web VPython).*\n?/i, '');
+  glowCode = glowCode.replace(/^(GlowScript|Web VPython).*\n?/i, "");
   glowCode = `GlowScript ${GS_VERSION} VPython\n` + glowCode;
 
   iframe.srcdoc = buildIframeContent(glowCode);
@@ -179,21 +179,21 @@ export async function executeInIframe(
       if (!currentIframe || event.source !== currentIframe.contentWindow) return;
 
       if (event.data) {
-        if (event.data.type === 'glowscript-error') {
-          callbacks.onError(event.data.message ?? 'Unknown error');
+        if (event.data.type === "glowscript-error") {
+          callbacks.onError(event.data.message ?? "Unknown error");
           isRunning = false;
           callbacks.onReady();
-        } else if (event.data.type === 'glowscript-ready') {
+        } else if (event.data.type === "glowscript-ready") {
           clearTimeout(timeout);
           callbacks.onReady();
           resolve();
-        } else if (event.data.type === 'console-log') {
-          callbacks.onConsoleLog(event.data.message ?? '');
+        } else if (event.data.type === "console-log") {
+          callbacks.onConsoleLog(event.data.message ?? "");
         }
       }
     };
 
-    window.addEventListener('message', messageHandler);
+    window.addEventListener("message", messageHandler);
   });
 }
 

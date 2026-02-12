@@ -1,4 +1,4 @@
-import type { ExamplesMap } from './types';
+import type { ExamplesMap } from "./types";
 
 export const EXAMPLES: ExamplesMap = {
   basic: `from vpython import *

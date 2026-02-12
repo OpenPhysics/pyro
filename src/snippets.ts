@@ -1,6 +1,6 @@
-import type { Snippet } from './types';
+import type { Snippet } from "./types";
 
-const SNIPPETS_KEY = 'vpython-snippets';
+const SNIPPETS_KEY = "vpython-snippets";
 
 /** Load all saved snippets from localStorage. */
 export function loadSnippets(): Snippet[] {

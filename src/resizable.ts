@@ -9,17 +9,17 @@ export function initResizable(
   let startEditorWidth: number;
   let startOutputWidth: number;
 
-  gutter.addEventListener('mousedown', (e: MouseEvent) => {
+  gutter.addEventListener("mousedown", (e: MouseEvent) => {
     isDragging = true;
-    gutter.classList.add('dragging');
+    gutter.classList.add("dragging");
     startX = e.clientX;
     startEditorWidth = editorPanel.offsetWidth;
     startOutputWidth = outputPanel.offsetWidth;
-    document.body.style.cursor = 'col-resize';
-    document.body.style.userSelect = 'none';
+    document.body.style.cursor = "col-resize";
+    document.body.style.userSelect = "none";
   });
 
-  document.addEventListener('mousemove', (e: MouseEvent) => {
+  document.addEventListener("mousemove", (e: MouseEvent) => {
     if (!isDragging) return;
 
     const dx = e.clientX - startX;
@@ -27,18 +27,18 @@ export function initResizable(
     const newEditorWidth = Math.max(200, Math.min(startEditorWidth + dx, totalWidth - 200));
     const newOutputWidth = totalWidth - newEditorWidth;
 
-    editorPanel.style.flex = 'none';
-    editorPanel.style.width = newEditorWidth + 'px';
-    outputPanel.style.flex = 'none';
-    outputPanel.style.width = newOutputWidth + 'px';
+    editorPanel.style.flex = "none";
+    editorPanel.style.width = newEditorWidth + "px";
+    outputPanel.style.flex = "none";
+    outputPanel.style.width = newOutputWidth + "px";
   });
 
-  document.addEventListener('mouseup', () => {
+  document.addEventListener("mouseup", () => {
     if (isDragging) {
       isDragging = false;
-      gutter.classList.remove('dragging');
-      document.body.style.cursor = '';
-      document.body.style.userSelect = '';
+      gutter.classList.remove("dragging");
+      document.body.style.cursor = "";
+      document.body.style.userSelect = "";
     }
   });
 }

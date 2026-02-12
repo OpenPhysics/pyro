@@ -7,14 +7,14 @@ export interface CompletionItem {
 }
 
 /** Keys for the built-in example code snippets. */
-export type ExampleKey = 'basic' | 'animation' | 'solar' | 'spring' | 'projectile';
+export type ExampleKey = "basic" | "animation" | "solar" | "spring" | "projectile";
 
 /** Map of example keys to their source code. */
 export type ExamplesMap = Record<ExampleKey, string>;
 
 /** Message types sent from the execution iframe to the parent window. */
 export interface IframeMessage {
-  type: 'glowscript-error' | 'glowscript-ready' | 'console-log';
+  type: "glowscript-error" | "glowscript-ready" | "console-log";
   message?: string;
 }
 
