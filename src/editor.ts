@@ -2,6 +2,7 @@ import { EditorView, basicSetup } from 'codemirror';
 import { python } from '@codemirror/lang-python';
 import { oneDark } from '@codemirror/theme-one-dark';
 import { keymap } from '@codemirror/view';
+import { Compartment } from '@codemirror/state';
 import { autocompletion } from '@codemirror/autocomplete';
 import type { CompletionContext, CompletionResult } from '@codemirror/autocomplete';
 import {
@@ -15,6 +16,7 @@ import { DEFAULT_CODE } from './examples';
 const STORAGE_KEY = 'vpython-editor-code';
 
 let editor: EditorView | null = null;
+const themeCompartment = new Compartment();
 
 /** Custom completion source for VPython. */
 function vpythonCompletions(context: CompletionContext): CompletionResult | null {
@@ -84,7 +86,7 @@ export function initEditor(
     extensions: [
       basicSetup,
       python(),
-      oneDark,
+      themeCompartment.of(oneDark),
       runKeymap,
       EditorView.lineWrapping,
       autocompletion({
@@ -108,5 +110,13 @@ export function setCode(code: string): void {
   if (!editor) return;
   editor.dispatch({
     changes: { from: 0, to: editor.state.doc.length, insert: code },
+  });
+}
+
+/** Switch the editor between dark (oneDark) and light (default) themes. */
+export function setEditorTheme(dark: boolean): void {
+  if (!editor) return;
+  editor.dispatch({
+    effects: themeCompartment.reconfigure(dark ? oneDark : []),
   });
 }

@@ -1,5 +1,5 @@
 import './styles/main.css';
-import { initEditor, getCode, setCode } from './editor';
+import { initEditor, getCode, setCode, setEditorTheme } from './editor';
 import { EXAMPLES } from './examples';
 import { runCode, stopExecution } from './executor';
 import { initResizable } from './resizable';
@@ -22,27 +22,42 @@ let outputDiv: HTMLElement;
 let errorDisplay: HTMLElement;
 let consoleOutput: HTMLElement;
 let consolePanel: HTMLElement;
-let runBtn: HTMLButtonElement;
-let stopBtn: HTMLButtonElement;
 let toggleConsoleBtn: HTMLButtonElement;
 let clearConsoleBtn: HTMLButtonElement;
 let gutter: HTMLElement;
 let editorPanel: HTMLElement;
 let outputPanel: HTMLElement;
 
+// ---- Run/Stop state management via sidebar buttons ----
+
+function updateRunState(running: boolean): void {
+  const runBtn = document.getElementById('run-sidebar-btn') as HTMLButtonElement | null;
+  const stopBtn = document.getElementById('stop-sidebar-btn') as HTMLButtonElement | null;
+  if (runBtn) {
+    runBtn.disabled = running;
+    const label = runBtn.querySelector('.sidebar-label');
+    if (label) label.textContent = running ? 'Running...' : 'Run';
+  }
+  if (stopBtn) {
+    stopBtn.disabled = !running;
+  }
+}
+
 // ---- Callbacks wired to the DOM ----
 
 function handleRun(): void {
-  runCode(getCode, outputDiv, runBtn, stopBtn, {
+  runCode(getCode, outputDiv, {
     onError: (msg) => showError(errorDisplay, msg),
     onConsoleLog: (msg) => addConsoleLog(consoleOutput, consolePanel, toggleConsoleBtn, msg),
     hideError: () => hideError(errorDisplay),
     clearConsole: () => clearConsole(consoleOutput),
+    onRunStateChange: updateRunState,
   });
 }
 
 function handleStop(): void {
-  stopExecution(runBtn, stopBtn);
+  stopExecution();
+  updateRunState(false);
 }
 
 function handleSave(): void {
@@ -62,7 +77,8 @@ function handleLoad(): void {
 }
 
 function handleReset(): void {
-  stopExecution(runBtn, stopBtn);
+  stopExecution();
+  updateRunState(false);
   outputDiv.innerHTML = '<div class="loading">Click "Run" to execute your VPython code</div>';
   hideError(errorDisplay);
 }
@@ -77,6 +93,10 @@ function handleToggleConsole(): void {
   toggleConsole(consolePanel, toggleConsoleBtn);
 }
 
+function handleThemeChange(dark: boolean): void {
+  setEditorTheme(dark);
+}
+
 // ---- Bootstrap ----
 
 function init(): void {
@@ -85,8 +105,6 @@ function init(): void {
   errorDisplay = document.getElementById('error-display')!;
   consoleOutput = document.getElementById('console-output')!;
   consolePanel = document.getElementById('console-panel')!;
-  runBtn = document.getElementById('run-btn') as HTMLButtonElement;
-  stopBtn = document.getElementById('stop-btn') as HTMLButtonElement;
   toggleConsoleBtn = document.getElementById('toggle-console') as HTMLButtonElement;
   clearConsoleBtn = document.getElementById('clear-console') as HTMLButtonElement;
   gutter = document.getElementById('gutter')!;
@@ -100,8 +118,8 @@ function init(): void {
     onSave: handleSave,
     onLoad: handleLoad,
     onReset: handleReset,
-    onExample: handleExample,
     onToggleConsole: handleToggleConsole,
+    onThemeChange: handleThemeChange,
   });
   document.body.insertBefore(sidebar, document.body.firstChild);
 
@@ -112,13 +130,7 @@ function init(): void {
   // Resizable panels
   initResizable(gutter, editorPanel, outputPanel);
 
-  // Header button listeners
-  runBtn.addEventListener('click', handleRun);
-  stopBtn.addEventListener('click', handleStop);
-  document.getElementById('clear-btn')!.addEventListener('click', handleReset);
-  document.getElementById('save-btn')!.addEventListener('click', handleSave);
-  document.getElementById('load-btn')!.addEventListener('click', handleLoad);
-
+  // Header examples combobox
   const examplesSelect = document.getElementById('examples-select') as HTMLSelectElement;
   examplesSelect.addEventListener('change', (e) => {
     const key = (e.target as HTMLSelectElement).value as ExampleKey;
@@ -128,8 +140,13 @@ function init(): void {
     }
   });
 
+  // Console panel buttons
   toggleConsoleBtn.addEventListener('click', handleToggleConsole);
   clearConsoleBtn.addEventListener('click', () => clearConsole(consoleOutput));
+
+  // Initialize sidebar stop button as disabled
+  const stopBtn = document.getElementById('stop-sidebar-btn') as HTMLButtonElement | null;
+  if (stopBtn) stopBtn.disabled = true;
 
   // Initial output placeholder
   outputDiv.innerHTML = '<div class="loading">Click "Run" to execute your VPython code</div>';

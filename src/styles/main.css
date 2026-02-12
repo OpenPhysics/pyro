@@ -200,11 +200,6 @@ header h1 {
   align-items: center;
 }
 
-.button-group {
-  display: flex;
-  gap: 0.25rem;
-}
-
 button, select {
   padding: 0.4rem 0.75rem;
   border: none;
@@ -238,16 +233,6 @@ select {
 select:hover { background-color: #4a4a4a; }
 select:focus { outline: none; border-color: #007acc; }
 
-#run-btn { background-color: #4caf50; color: white; }
-#run-btn:hover:not(:disabled) { background-color: #45a049; }
-#stop-btn { background-color: #f44336; color: white; }
-#stop-btn:hover:not(:disabled) { background-color: #d32f2f; }
-#save-btn { background-color: #2196f3; color: white; }
-#save-btn:hover { background-color: #1976d2; }
-#load-btn { background-color: #ff9800; color: white; }
-#load-btn:hover { background-color: #f57c00; }
-#clear-btn { background-color: #607d8b; color: white; }
-#clear-btn:hover { background-color: #546e7a; }
 
 /* ----- 5. Main layout & panels ----- */
 main {
@@ -485,6 +470,32 @@ body.projector-mode .console-header button:hover { background-color: #d0d0d0; co
 body.projector-mode .loading { color: #888; }
 
 body.projector-mode #error-display { background-color: rgba(255,240,240,0.95); color: #c00; border-top-color: #c00; }
+
+/* Projector editor (CodeMirror light theme) overrides */
+body.projector-mode .cm-editor {
+  background-color: #fff;
+}
+body.projector-mode .cm-gutters {
+  background-color: #f5f5f5;
+  border-right-color: #ddd;
+  color: #999;
+}
+body.projector-mode .cm-activeLineGutter {
+  background-color: #e8f0fe;
+}
+body.projector-mode .cm-activeLine {
+  background-color: #f0f4ff;
+}
+body.projector-mode .cm-cursor {
+  border-left-color: #333;
+}
+body.projector-mode .cm-selectionBackground {
+  background-color: #b3d9ff !important;
+}
+body.projector-mode .cm-matchingBracket {
+  background-color: #c8e6c9;
+  color: #222 !important;
+}
 
 /* Projector autocomplete overrides */
 body.projector-mode .cm-tooltip-autocomplete { background-color: #fff !important; border-color: #ccc !important; }
