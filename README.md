@@ -101,8 +101,6 @@ This is a static site suitable for GitHub Pages. The repository includes a GitHu
 │   ├── types.ts            # TypeScript type definitions
 │   └── styles/
 │       └── main.css        # Application stylesheet
-├── css/
-│   └── style.css           # Legacy styles
 └── .github/
     └── workflows/
         └── deploy.yml      # GitHub Pages deployment
