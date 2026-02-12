@@ -232,22 +232,31 @@ function buildShortcutsDialog(): HTMLElement {
 
   const groups: { title: string; shortcuts: { keys: string; description: string }[] }[] = [
     {
-      title: 'Editor',
+      title: 'Execution',
       shortcuts: [
         { keys: `${ctrlKey} + Enter`, description: 'Run code' },
       ],
     },
     {
-      title: 'Global',
+      title: 'Editor',
       shortcuts: [
-        { keys: '?', description: 'Show this shortcuts dialog' },
-        { keys: 'Escape', description: 'Close dialog / Exit fullscreen' },
+        { keys: `${ctrlKey} + Z`, description: 'Undo' },
+        { keys: `${ctrlKey} + Shift + Z`, description: 'Redo' },
+        { keys: `${ctrlKey} + A`, description: 'Select all' },
+        { keys: `${ctrlKey} + D`, description: 'Select next occurrence' },
+        { keys: `${ctrlKey} + /`, description: 'Toggle line comment' },
+        { keys: `${ctrlKey} + F`, description: 'Find' },
+        { keys: `${ctrlKey} + H`, description: 'Find and replace' },
+        { keys: 'Tab', description: 'Indent' },
+        { keys: 'Shift + Tab', description: 'Dedent' },
       ],
     },
     {
-      title: 'Sidebar',
+      title: 'Navigation',
       shortcuts: [
         { keys: `${ctrlKey} + B`, description: 'Toggle sidebar' },
+        { keys: '?', description: 'Show this shortcuts dialog' },
+        { keys: 'Escape', description: 'Close dialog / Exit fullscreen' },
       ],
     },
   ];
