@@ -1,5 +1,5 @@
 import './styles/main.css';
-import { initEditor, getCode, setCode, setEditorTheme } from './editor';
+import { initEditor, getCode, setCode, setEditorTheme, changeEditorFontSize } from './editor';
 import { EXAMPLES } from './examples';
 import { runCode, stopExecution } from './executor';
 import { initResizable } from './resizable';
@@ -97,6 +97,51 @@ function handleThemeChange(dark: boolean): void {
   setEditorTheme(dark);
 }
 
+function handleFontIncrease(): void {
+  changeEditorFontSize(2);
+}
+
+function handleFontDecrease(): void {
+  changeEditorFontSize(-2);
+}
+
+// ---- View mode (code-only, split, output-only) ----
+
+type ViewMode = 'code' | 'split' | 'output';
+
+function setViewMode(mode: ViewMode): void {
+  const edPanel = document.querySelector('.editor-panel') as HTMLElement | null;
+  const outPanel = document.querySelector('.output-panel') as HTMLElement | null;
+  const gutterEl = document.getElementById('gutter');
+  if (!edPanel || !outPanel || !gutterEl) return;
+
+  // Reset inline styles from resizable dragging
+  edPanel.style.width = '';
+  outPanel.style.width = '';
+
+  // Remove all view-mode classes and add the correct one
+  const main = document.querySelector('main')!;
+  main.classList.remove('view-code-only', 'view-output-only');
+
+  if (mode === 'code') {
+    main.classList.add('view-code-only');
+    edPanel.style.flex = '1';
+    outPanel.style.flex = '';
+  } else if (mode === 'output') {
+    main.classList.add('view-output-only');
+    edPanel.style.flex = '';
+    outPanel.style.flex = '1';
+  } else {
+    edPanel.style.flex = '1';
+    outPanel.style.flex = '1';
+  }
+
+  // Update active button state
+  document.getElementById('view-code-btn')?.classList.toggle('active', mode === 'code');
+  document.getElementById('view-split-btn')?.classList.toggle('active', mode === 'split');
+  document.getElementById('view-output-btn')?.classList.toggle('active', mode === 'output');
+}
+
 // ---- Bootstrap ----
 
 function init(): void {
@@ -120,6 +165,8 @@ function init(): void {
     onReset: handleReset,
     onToggleConsole: handleToggleConsole,
     onThemeChange: handleThemeChange,
+    onFontIncrease: handleFontIncrease,
+    onFontDecrease: handleFontDecrease,
   });
   document.body.insertBefore(sidebar, document.body.firstChild);
 
@@ -143,6 +190,11 @@ function init(): void {
   // Console panel buttons
   toggleConsoleBtn.addEventListener('click', handleToggleConsole);
   clearConsoleBtn.addEventListener('click', () => clearConsole(consoleOutput));
+
+  // View mode buttons
+  document.getElementById('view-code-btn')?.addEventListener('click', () => setViewMode('code'));
+  document.getElementById('view-split-btn')?.addEventListener('click', () => setViewMode('split'));
+  document.getElementById('view-output-btn')?.addEventListener('click', () => setViewMode('output'));
 
   // Initialize sidebar stop button as disabled
   const stopBtn = document.getElementById('stop-sidebar-btn') as HTMLButtonElement | null;
