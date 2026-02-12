@@ -17,8 +17,9 @@
     13. Save notification
     14. CodeMirror autocomplete theming
     15. Keyboard shortcuts dialog
-    16. Projector (light) mode overrides
-    17. Responsive
+    16. Snippets dialog
+    17. Projector (light) mode overrides
+    18. Responsive
    ===================================================== */
 
 /* ----- 1. Reset & base ----- */
@@ -667,7 +668,238 @@ main.view-output-only .gutter {
   padding: 0 0.1rem;
 }
 
-/* ----- 16. Projector (light) mode ----- */
+/* ----- 16. Snippets dialog ----- */
+.snippets-overlay {
+  display: none;
+  position: fixed;
+  inset: 0;
+  z-index: 2000;
+  background-color: rgba(0, 0, 0, 0.6);
+  backdrop-filter: blur(2px);
+  justify-content: center;
+  align-items: center;
+}
+
+.snippets-overlay.visible {
+  display: flex;
+}
+
+.snippets-dialog {
+  background-color: #252526;
+  border: 1px solid #404040;
+  border-radius: 8px;
+  box-shadow: 0 8px 32px rgba(0, 0, 0, 0.5);
+  width: 520px;
+  max-width: 90vw;
+  max-height: 80vh;
+  overflow: hidden;
+  display: flex;
+  flex-direction: column;
+}
+
+.snippets-dialog-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 1rem 1.25rem;
+  border-bottom: 1px solid #404040;
+  background-color: #2d2d2d;
+}
+
+.snippets-dialog-header h2 {
+  font-size: 1rem;
+  font-weight: 600;
+  color: #e0e0e0;
+  margin: 0;
+}
+
+.snippets-close-btn {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 32px;
+  height: 32px;
+  padding: 0;
+  background: none;
+  border: none;
+  color: #888;
+  cursor: pointer;
+  border-radius: 4px;
+  transition: background-color 0.15s, color 0.15s;
+}
+
+.snippets-close-btn:hover {
+  background-color: #3c3c3c;
+  color: #fff;
+}
+
+.snippets-dialog-body {
+  padding: 1rem 1.25rem;
+  overflow-y: auto;
+}
+
+.snippets-save-section {
+  margin-bottom: 1.25rem;
+}
+
+.snippets-save-section h3,
+.snippets-list-section h3 {
+  font-size: 0.75rem;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+  color: #888;
+  margin-bottom: 0.5rem;
+}
+
+.snippets-save-form {
+  display: flex;
+  gap: 0.5rem;
+}
+
+.snippets-save-form input {
+  flex: 1;
+  padding: 0.45rem 0.65rem;
+  font-size: 0.85rem;
+  border: 1px solid #555;
+  border-radius: 4px;
+  background-color: #1e1e1e;
+  color: #e0e0e0;
+  outline: none;
+  transition: border-color 0.15s;
+}
+
+.snippets-save-form input:focus {
+  border-color: #007acc;
+}
+
+.snippets-save-form input::placeholder {
+  color: #666;
+}
+
+.snippets-save-btn {
+  padding: 0.45rem 1rem;
+  font-size: 0.85rem;
+  font-weight: 500;
+  background-color: #007acc;
+  color: #fff;
+  border: none;
+  border-radius: 4px;
+  cursor: pointer;
+  transition: background-color 0.15s;
+}
+
+.snippets-save-btn:hover {
+  background-color: #0098ff;
+  transform: none;
+}
+
+.snippets-list {
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+  max-height: 350px;
+  overflow-y: auto;
+}
+
+.snippets-empty {
+  color: #666;
+  font-size: 0.85rem;
+  font-style: italic;
+  padding: 1rem 0;
+  text-align: center;
+}
+
+.snippet-row {
+  display: flex;
+  flex-direction: column;
+  gap: 0.4rem;
+  padding: 0.65rem 0.75rem;
+  background-color: #1e1e1e;
+  border: 1px solid #333;
+  border-radius: 6px;
+  transition: border-color 0.15s;
+}
+
+.snippet-row:hover {
+  border-color: #555;
+}
+
+.snippet-info {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.snippet-name {
+  font-size: 0.9rem;
+  font-weight: 500;
+  color: #e0e0e0;
+}
+
+.snippet-date {
+  font-size: 0.7rem;
+  color: #666;
+}
+
+.snippet-preview {
+  max-height: 52px;
+  overflow: hidden;
+  border-radius: 3px;
+  background-color: #181818;
+  padding: 0.3rem 0.5rem;
+}
+
+.snippet-preview pre {
+  margin: 0;
+  font-family: 'Consolas', 'Monaco', monospace;
+  font-size: 0.7rem;
+  color: #888;
+  white-space: pre;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.snippet-actions {
+  display: flex;
+  gap: 0.4rem;
+  justify-content: flex-end;
+}
+
+.snippet-load-btn,
+.snippet-delete-btn {
+  padding: 0.3rem 0.7rem;
+  font-size: 0.75rem;
+  font-weight: 500;
+  border: none;
+  border-radius: 3px;
+  cursor: pointer;
+  transition: background-color 0.15s, color 0.15s;
+}
+
+.snippet-load-btn {
+  background-color: #094771;
+  color: #b3d9ff;
+}
+
+.snippet-load-btn:hover {
+  background-color: #007acc;
+  color: #fff;
+  transform: none;
+}
+
+.snippet-delete-btn {
+  background-color: #3c2020;
+  color: #ff8a80;
+}
+
+.snippet-delete-btn:hover {
+  background-color: #5c2020;
+  color: #fff;
+  transform: none;
+}
+
+/* ----- 17. Projector (light) mode ----- */
 body.projector-mode {
   background-color: #f5f5f5;
   color: #222;
@@ -782,6 +1014,46 @@ body.projector-mode .shortcut-row kbd {
 }
 body.projector-mode .shortcut-plus { color: #999; }
 
+/* Projector snippets dialog overrides */
+body.projector-mode .snippets-overlay {
+  background-color: rgba(0, 0, 0, 0.3);
+}
+body.projector-mode .snippets-dialog {
+  background-color: #fff;
+  border-color: #ccc;
+  box-shadow: 0 8px 32px rgba(0, 0, 0, 0.15);
+}
+body.projector-mode .snippets-dialog-header {
+  background-color: #f0f0f0;
+  border-bottom-color: #ccc;
+}
+body.projector-mode .snippets-dialog-header h2 { color: #222; }
+body.projector-mode .snippets-close-btn { color: #555; }
+body.projector-mode .snippets-close-btn:hover { background-color: #e0e0e0; color: #000; }
+body.projector-mode .snippets-save-section h3,
+body.projector-mode .snippets-list-section h3 { color: #666; }
+body.projector-mode .snippets-save-form input {
+  background-color: #f5f5f5;
+  border-color: #ccc;
+  color: #222;
+}
+body.projector-mode .snippets-save-form input::placeholder { color: #999; }
+body.projector-mode .snippets-save-form input:focus { border-color: #007acc; }
+body.projector-mode .snippet-row {
+  background-color: #f5f5f5;
+  border-color: #ddd;
+}
+body.projector-mode .snippet-row:hover { border-color: #bbb; }
+body.projector-mode .snippet-name { color: #222; }
+body.projector-mode .snippet-date { color: #888; }
+body.projector-mode .snippet-preview { background-color: #eee; }
+body.projector-mode .snippet-preview pre { color: #555; }
+body.projector-mode .snippets-empty { color: #888; }
+body.projector-mode .snippet-load-btn { background-color: #b3d9ff; color: #003d7a; }
+body.projector-mode .snippet-load-btn:hover { background-color: #007acc; color: #fff; }
+body.projector-mode .snippet-delete-btn { background-color: #ffe0e0; color: #c00; }
+body.projector-mode .snippet-delete-btn:hover { background-color: #ffb3b3; color: #800; }
+
 /* Projector focus-visible */
 body.projector-mode *:focus-visible {
   outline-color: #007acc;
@@ -793,7 +1065,7 @@ body.projector-mode .skip-nav {
   color: #fff;
 }
 
-/* ----- 17. Responsive ----- */
+/* ----- 18. Responsive ----- */
 @media (max-width: 768px) {
   .sidebar { width: 48px !important; }
   .sidebar.collapsed { width: 48px; }

@@ -13,6 +13,7 @@ import {
   showNotification,
   announce,
 } from './ui';
+import { initSnippetsDialog, buildSnippetsDialog, openSnippetsDialog, closeSnippetsDialog } from './snippetsDialog';
 import type { ExampleKey } from './types';
 
 const STORAGE_KEY = 'vpython-editor-code';
@@ -77,6 +78,10 @@ function handleLoad(): void {
   } else {
     showNotification('No saved code found', 'error');
   }
+}
+
+function handleSnippets(): void {
+  openSnippetsDialog();
 }
 
 function handleReset(): void {
@@ -184,8 +189,13 @@ function initGlobalShortcuts(): void {
       }
     }
 
-    // Escape closes shortcuts dialog
+    // Escape closes dialogs
     if (e.key === 'Escape') {
+      const snippetsOverlay = document.getElementById('snippets-dialog-overlay');
+      if (snippetsOverlay?.classList.contains('visible')) {
+        closeSnippetsDialog();
+        return;
+      }
       const overlay = document.getElementById('shortcuts-dialog-overlay');
       if (overlay?.classList.contains('visible')) {
         closeShortcutsDialog();
@@ -216,6 +226,7 @@ function init(): void {
     onLoad: handleLoad,
     onReset: handleReset,
     onToggleConsole: handleToggleConsole,
+    onSnippets: handleSnippets,
     onThemeChange: handleThemeChange,
     onFontIncrease: handleFontIncrease,
     onFontDecrease: handleFontDecrease,
@@ -225,6 +236,10 @@ function init(): void {
   // Initialize editor
   const editorContainer = document.getElementById('editor')!;
   initEditor(editorContainer, handleRun, handleSave);
+
+  // Initialize snippets dialog
+  initSnippetsDialog(getCode, setCode);
+  document.body.appendChild(buildSnippetsDialog());
 
   // Resizable panels
   initResizable(gutter, editorPanel, outputPanel);

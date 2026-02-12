@@ -15,6 +15,7 @@ const ICONS = {
   fontIncrease: `<svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><text x="2" y="17" font-size="14" font-weight="bold" fill="currentColor" stroke="none">A</text><line x1="18" y1="8" x2="18" y2="16"/><line x1="14" y1="12" x2="22" y2="12"/></svg>`,
   fontDecrease: `<svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><text x="2" y="17" font-size="14" font-weight="bold" fill="currentColor" stroke="none">A</text><line x1="14" y1="12" x2="22" y2="12"/></svg>`,
   keyboard: `<svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="2" y="4" width="20" height="16" rx="2"/><line x1="6" y1="8" x2="6" y2="8"/><line x1="10" y1="8" x2="10" y2="8"/><line x1="14" y1="8" x2="14" y2="8"/><line x1="18" y1="8" x2="18" y2="8"/><line x1="6" y1="12" x2="6" y2="12"/><line x1="10" y1="12" x2="10" y2="12"/><line x1="14" y1="12" x2="14" y2="12"/><line x1="18" y1="12" x2="18" y2="12"/><line x1="8" y1="16" x2="16" y2="16"/></svg>`,
+  snippet: `<svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><polyline points="16 18 22 12 16 6"/><polyline points="8 6 2 12 8 18"/></svg>`,
 } as const;
 
 // ---- State ----
@@ -33,6 +34,7 @@ export interface SidebarCallbacks {
   onLoad: () => void;
   onReset: () => void;
   onToggleConsole: () => void;
+  onSnippets?: () => void;
   onThemeChange?: (dark: boolean) => void;
   onFontIncrease?: () => void;
   onFontDecrease?: () => void;
@@ -85,6 +87,9 @@ export function createSidebar(callbacks: SidebarCallbacks): HTMLElement {
   nav.appendChild(sectionLabel('File'));
   nav.appendChild(navButton('save-sidebar-btn', ICONS.save, 'Save', callbacks.onSave));
   nav.appendChild(navButton('load-sidebar-btn', ICONS.load, 'Load', callbacks.onLoad));
+  nav.appendChild(
+    navButton('snippets-sidebar-btn', ICONS.snippet, 'Snippets', () => callbacks.onSnippets?.()),
+  );
 
   // --- View section ---
   nav.appendChild(divider());
