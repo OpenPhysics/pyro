@@ -120,3 +120,16 @@ export function setEditorTheme(dark: boolean): void {
     effects: themeCompartment.reconfigure(dark ? oneDark : []),
   });
 }
+
+/** Change the editor font size by a delta (in pixels). */
+let currentFontSize = 14;
+const MIN_FONT_SIZE = 10;
+const MAX_FONT_SIZE = 28;
+
+export function changeEditorFontSize(delta: number): void {
+  currentFontSize = Math.max(MIN_FONT_SIZE, Math.min(MAX_FONT_SIZE, currentFontSize + delta));
+  const cmEditor = document.querySelector('.cm-editor') as HTMLElement | null;
+  if (cmEditor) {
+    cmEditor.style.fontSize = currentFontSize + 'px';
+  }
+}

@@ -233,6 +233,46 @@ select {
 select:hover { background-color: #4a4a4a; }
 select:focus { outline: none; border-color: #007acc; }
 
+/* View mode button group */
+.view-mode-group {
+  display: flex;
+  gap: 0;
+  border: 1px solid #555;
+  border-radius: 4px;
+  overflow: hidden;
+}
+
+.view-mode-btn {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 34px;
+  height: 30px;
+  padding: 0;
+  background-color: #3c3c3c;
+  color: #aaa;
+  border: none;
+  border-right: 1px solid #555;
+  border-radius: 0;
+  cursor: pointer;
+  transition: background-color 0.15s, color 0.15s;
+}
+
+.view-mode-btn:last-child {
+  border-right: none;
+}
+
+.view-mode-btn:hover {
+  background-color: #4a4a4a;
+  color: #fff;
+  transform: none;
+}
+
+.view-mode-btn.active {
+  background-color: #007acc;
+  color: #fff;
+}
+
 
 /* ----- 5. Main layout & panels ----- */
 main {
@@ -261,6 +301,18 @@ main {
   font-size: 0.85rem;
   color: #888;
   border-bottom: 1px solid #404040;
+}
+
+/* View mode: code only */
+main.view-code-only .output-panel,
+main.view-code-only .gutter {
+  display: none;
+}
+
+/* View mode: output only */
+main.view-output-only .editor-panel,
+main.view-output-only .gutter {
+  display: none;
 }
 
 /* ----- 6. Resizable gutter ----- */
@@ -458,6 +510,11 @@ body.projector-mode #console-panel { background-color: #fafafa; border-top-color
 body.projector-mode .console-header { background-color: #eee; color: #555; border-bottom-color: #ddd; }
 body.projector-mode #console-output { color: #333; }
 body.projector-mode #console-output .log-line { border-bottom-color: #eee; }
+
+body.projector-mode .view-mode-group { border-color: #bbb; }
+body.projector-mode .view-mode-btn { background-color: #e0e0e0; color: #555; border-right-color: #bbb; }
+body.projector-mode .view-mode-btn:hover { background-color: #d0d0d0; color: #000; }
+body.projector-mode .view-mode-btn.active { background-color: #007acc; color: #fff; }
 
 body.projector-mode select { background-color: #e0e0e0; color: #333; border-color: #bbb; }
 body.projector-mode select:hover { background-color: #d0d0d0; }
