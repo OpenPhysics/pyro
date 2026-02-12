@@ -5,10 +5,20 @@ export function escapeHtml(text: string): string {
   return div.innerHTML;
 }
 
+/** Announce a message to screen readers via the live region. */
+export function announce(message: string): void {
+  const region = document.getElementById('sr-announcements');
+  if (!region) return;
+  region.textContent = message;
+  // Clear after a delay so repeated identical messages are re-announced
+  setTimeout(() => { region.textContent = ''; }, 1000);
+}
+
 /** Show an error message in the error display element. */
 export function showError(errorDisplay: HTMLElement, message: string): void {
   errorDisplay.innerHTML = `<pre>${escapeHtml(message)}</pre>`;
   errorDisplay.classList.add('visible');
+  announce(`Error: ${message}`);
 }
 
 /** Hide the error display element. */
@@ -38,6 +48,7 @@ export function addConsoleLog(
 /** Clear all console output lines. */
 export function clearConsole(consoleOutput: HTMLElement): void {
   consoleOutput.innerHTML = '';
+  announce('Console cleared');
 }
 
 /** Toggle the console panel visibility. */
@@ -47,9 +58,9 @@ export function toggleConsole(
 ): void {
   consolePanel.classList.toggle('visible');
   toggleConsoleBtn.classList.toggle('active');
-  toggleConsoleBtn.textContent = consolePanel.classList.contains('visible')
-    ? 'Console'
-    : 'Console';
+  const isVisible = consolePanel.classList.contains('visible');
+  toggleConsoleBtn.setAttribute('aria-expanded', String(isVisible));
+  toggleConsoleBtn.textContent = 'Console';
 }
 
 /** Show a toast notification. */
@@ -59,6 +70,7 @@ export function showNotification(
 ): void {
   const notification = document.createElement('div');
   notification.className = 'save-notification';
+  notification.setAttribute('role', 'status');
   notification.textContent = message;
   if (type === 'error') {
     notification.style.backgroundColor = '#f44336';
@@ -66,5 +78,6 @@ export function showNotification(
     notification.style.backgroundColor = '#2196f3';
   }
   document.body.appendChild(notification);
+  announce(message);
   setTimeout(() => notification.remove(), 2000);
 }

@@ -3,7 +3,7 @@ import { initEditor, getCode, setCode, setEditorTheme, changeEditorFontSize } fr
 import { EXAMPLES } from './examples';
 import { runCode, stopExecution } from './executor';
 import { initResizable } from './resizable';
-import { createSidebar } from './sidebar';
+import { createSidebar, toggleSidebar, openShortcutsDialog, closeShortcutsDialog } from './sidebar';
 import {
   showError,
   hideError,
@@ -11,6 +11,7 @@ import {
   clearConsole,
   toggleConsole,
   showNotification,
+  announce,
 } from './ui';
 import type { ExampleKey } from './types';
 
@@ -37,10 +38,12 @@ function updateRunState(running: boolean): void {
     runBtn.disabled = running;
     const label = runBtn.querySelector('.sidebar-label');
     if (label) label.textContent = running ? 'Running...' : 'Run';
+    runBtn.setAttribute('aria-label', running ? 'Running...' : 'Run');
   }
   if (stopBtn) {
     stopBtn.disabled = !running;
   }
+  announce(running ? 'Code is running' : 'Code execution stopped');
 }
 
 // ---- Callbacks wired to the DOM ----
@@ -136,10 +139,59 @@ function setViewMode(mode: ViewMode): void {
     outPanel.style.flex = '1';
   }
 
-  // Update active button state
-  document.getElementById('view-code-btn')?.classList.toggle('active', mode === 'code');
-  document.getElementById('view-split-btn')?.classList.toggle('active', mode === 'split');
-  document.getElementById('view-output-btn')?.classList.toggle('active', mode === 'output');
+  // Update active button state and aria-pressed
+  const codeBtn = document.getElementById('view-code-btn');
+  const splitBtn = document.getElementById('view-split-btn');
+  const outputBtn = document.getElementById('view-output-btn');
+  codeBtn?.classList.toggle('active', mode === 'code');
+  splitBtn?.classList.toggle('active', mode === 'split');
+  outputBtn?.classList.toggle('active', mode === 'output');
+  codeBtn?.setAttribute('aria-pressed', String(mode === 'code'));
+  splitBtn?.setAttribute('aria-pressed', String(mode === 'split'));
+  outputBtn?.setAttribute('aria-pressed', String(mode === 'output'));
+
+  const modeLabels: Record<ViewMode, string> = {
+    code: 'Code only',
+    split: 'Split',
+    output: 'Output only',
+  };
+  announce(`View mode: ${modeLabels[mode]}`);
+}
+
+// ---- Global keyboard shortcuts ----
+
+function initGlobalShortcuts(): void {
+  document.addEventListener('keydown', (e) => {
+    // Don't trigger shortcuts when typing in inputs/textareas
+    const target = e.target as HTMLElement;
+    const tagName = target.tagName.toLowerCase();
+    const isEditing = tagName === 'input' || tagName === 'textarea' || tagName === 'select';
+    const isInEditor = target.closest('.cm-editor') !== null;
+
+    // ? key (without modifiers) opens shortcuts dialog — only when not editing
+    if (e.key === '?' && !e.ctrlKey && !e.metaKey && !e.altKey && !isEditing && !isInEditor) {
+      e.preventDefault();
+      openShortcutsDialog();
+      return;
+    }
+
+    // Ctrl/Cmd + B toggles sidebar
+    if ((e.ctrlKey || e.metaKey) && e.key === 'b' && !e.altKey && !e.shiftKey) {
+      // Don't prevent default in editor (bold text in some contexts)
+      if (!isInEditor) {
+        e.preventDefault();
+        toggleSidebar();
+      }
+    }
+
+    // Escape closes shortcuts dialog
+    if (e.key === 'Escape') {
+      const overlay = document.getElementById('shortcuts-dialog-overlay');
+      if (overlay?.classList.contains('visible')) {
+        closeShortcutsDialog();
+      }
+    }
+  });
 }
 
 // ---- Bootstrap ----
@@ -202,6 +254,9 @@ function init(): void {
 
   // Initial output placeholder
   outputDiv.innerHTML = '<div class="loading">Click "Run" to execute your VPython code</div>';
+
+  // Initialize global keyboard shortcuts
+  initGlobalShortcuts();
 }
 
 if (document.readyState === 'loading') {
