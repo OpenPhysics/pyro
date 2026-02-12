@@ -164,8 +164,16 @@ export async function executeInIframe(
 
   const iframe = document.createElement("iframe");
   iframe.style.cssText = "width:100%;height:100%;border:none;background:#1a1a1a;";
+  // Allow iframe to receive keyboard events for camera control (shift+drag, etc.)
+  iframe.setAttribute("tabindex", "0");
+  iframe.setAttribute("aria-label", "VPython 3D visualization");
   currentIframe = iframe;
   outputDiv.appendChild(iframe);
+
+  // Focus iframe so it can receive keyboard events for camera control
+  iframe.addEventListener("load", () => {
+    iframe.focus();
+  });
 
   let glowCode = code.trim();
   glowCode = glowCode.replace(/^(GlowScript|Web VPython).*\n?/i, "");
@@ -188,9 +196,12 @@ export async function executeInIframe(
           callbacks.onError(event.data.message ?? "Unknown error");
           isRunning = false;
           callbacks.onReady();
+          window.removeEventListener("message", messageHandler);
         } else if (event.data.type === "glowscript-ready") {
           clearTimeout(timeout);
-          callbacks.onReady();
+          // Note: We do NOT call onReady() here or set isRunning=false
+          // because the animation continues running. The stop button
+          // should remain enabled while the iframe exists.
           resolve();
         } else if (event.data.type === "console-log") {
           callbacks.onConsoleLog(event.data.message ?? "");
@@ -231,14 +242,20 @@ export async function runCode(
 
   try {
     await executeInIframe(code, outputDiv, {
-      onError: callbacks.onError,
+      onError: (msg) => {
+        callbacks.onError(msg);
+        // Only set running to false on error
+        callbacks.onRunStateChange(false);
+      },
       onConsoleLog: callbacks.onConsoleLog,
       onReady: () => {
-        callbacks.onRunStateChange(false);
+        // Program initialized but animation continues running
+        // Stop button should remain enabled
       },
     });
   } catch (error) {
     const msg = error instanceof Error ? error.message : String(error);
     callbacks.onError(`Error: ${msg}`);
+    callbacks.onRunStateChange(false);
   }
 }
