@@ -78,56 +78,28 @@ function buildIframeContent(glowCode: string): string {
             document.body.appendChild(errorDiv);
         }
 
-        // GlowScript's print() uses console.log internally
-        // Intercept console.log to capture print output
-        var programStarted = false;
-        (function() {
-            var origLog = console.log;
-            var origWarn = console.warn;
-            var origError = console.error;
+        // Save the browser's native print function and replace it
+        // GlowScript's VPython print() should NOT trigger the browser print dialog
+        var browserPrint = window.print;
 
-            function sendToParent(args) {
-                if (!programStarted) return;
-                var msg = Array.prototype.slice.call(args).map(function(a) {
-                    if (a === null) return 'None';
-                    if (a === undefined) return 'undefined';
-                    if (typeof a === 'object') {
-                        try { return JSON.stringify(a); } catch(e) { return String(a); }
-                    }
-                    return String(a);
-                }).join(' ');
-
-                // Filter out GlowScript system messages
-                if (msg.indexOf('GlowScript') >= 0 ||
-                    msg.indexOf('glowscript') >= 0 ||
-                    msg.indexOf('Loading') >= 0 ||
-                    msg.indexOf('Compil') >= 0 ||
-                    msg.indexOf('WARNING') >= 0 ||
-                    msg === '') {
-                    return;
+        // Create a proper print function for VPython
+        window.print = function() {
+            var args = Array.prototype.slice.call(arguments);
+            var msg = args.map(function(a) {
+                if (a === null) return 'None';
+                if (a === undefined) return 'undefined';
+                if (typeof a === 'object') {
+                    try { return JSON.stringify(a); } catch(e) { return String(a); }
                 }
+                return String(a);
+            }).join(' ');
 
-                parent.postMessage({ type: 'console-log', message: msg }, '*');
-            }
+            // Send to parent window console
+            parent.postMessage({ type: 'console-log', message: msg }, '*');
 
-            console.log = function() {
-                origLog.apply(console, arguments);
-                sendToParent(arguments);
-            };
-            console.warn = function() {
-                origWarn.apply(console, arguments);
-                sendToParent(arguments);
-            };
-            console.error = function() {
-                origError.apply(console, arguments);
-                sendToParent(arguments);
-            };
-        })();
-
-        // Mark when program actually starts (after GlowScript setup)
-        function markProgramStart() {
-            programStarted = true;
-        }
+            // Also log to browser console for debugging
+            console.log('[VPython print]', msg);
+        };
 
         async function loadAndRun() {
             try {
@@ -163,9 +135,6 @@ function buildIframeContent(glowCode: string): string {
                 };
 
                 eval(program);
-
-                // Mark that user code is about to run - start capturing console output
-                markProgramStart();
 
                 if (typeof __main__ === 'function') {
                     await __main__();
