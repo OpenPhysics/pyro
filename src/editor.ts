@@ -69,13 +69,10 @@ function vpythonCompletions(context: CompletionContext): CompletionResult | null
 export function initEditor(
   container: HTMLElement,
   onRun: () => void,
-  onSave: () => void,
 ): void {
   const runKeymap = keymap.of([
     { key: 'Ctrl-Enter', run: () => { onRun(); return true; } },
     { key: 'Cmd-Enter', run: () => { onRun(); return true; } },
-    { key: 'Ctrl-s', run: () => { onSave(); return true; } },
-    { key: 'Cmd-s', run: () => { onSave(); return true; } },
   ]);
 
   const savedCode = localStorage.getItem(STORAGE_KEY);
