@@ -61,11 +61,15 @@ export function buildSnippetsDialog(): HTMLElement {
   const saveForm = document.createElement("div");
   saveForm.className = "snippets-save-form";
 
+  const nameLabel = document.createElement("label");
+  nameLabel.htmlFor = "snippet-name-input";
+  nameLabel.textContent = "Snippet name";
+  nameLabel.className = "snippets-input-label";
+
   const nameInput = document.createElement("input");
   nameInput.type = "text";
   nameInput.id = "snippet-name-input";
-  nameInput.placeholder = "Snippet name...";
-  nameInput.setAttribute("aria-label", "Snippet name");
+  nameInput.placeholder = "Enter a name...";
   nameInput.maxLength = 60;
 
   const saveBtn = document.createElement("button");
@@ -81,6 +85,7 @@ export function buildSnippetsDialog(): HTMLElement {
     }
   });
 
+  saveForm.appendChild(nameLabel);
   saveForm.appendChild(nameInput);
   saveForm.appendChild(saveBtn);
   saveSection.appendChild(saveForm);
@@ -127,6 +132,7 @@ export function closeSnippetsDialog(): void {
   overlay.removeEventListener("keydown", trapFocusInSnippetsDialog);
   const triggerBtn = document.getElementById("snippets-sidebar-btn");
   triggerBtn?.focus();
+  announce("Snippets dialog closed");
 }
 
 function handleSaveSnippet(nameInput: HTMLInputElement): void {

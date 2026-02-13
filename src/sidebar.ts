@@ -66,9 +66,11 @@ export function createSidebar(callbacks: SidebarCallbacks): HTMLElement {
   // --- File section ---
   nav.appendChild(divider());
   nav.appendChild(sectionLabel("File"));
-  nav.appendChild(
-    navButton("snippets-sidebar-btn", ICONS.snippet, "Snippets", () => callbacks.onSnippets?.()),
+  const snippetsBtn = navButton("snippets-sidebar-btn", ICONS.snippet, "Snippets", () =>
+    callbacks.onSnippets?.(),
   );
+  snippetsBtn.setAttribute("aria-controls", "snippets-dialog-overlay");
+  nav.appendChild(snippetsBtn);
   nav.appendChild(
     navButton("download-sidebar-btn", ICONS.download, "Download", () => callbacks.onDownload?.()),
   );
@@ -97,13 +99,19 @@ export function createSidebar(callbacks: SidebarCallbacks): HTMLElement {
   // --- Help section ---
   nav.appendChild(divider());
   nav.appendChild(sectionLabel("Help"));
-  nav.appendChild(
-    navButton("keyboard-shortcuts-btn", ICONS.keyboard, "Shortcuts", () => openShortcutsDialog()),
+  const shortcutsBtn = navButton("keyboard-shortcuts-btn", ICONS.keyboard, "Shortcuts", () =>
+    openShortcutsDialog(),
   );
+  shortcutsBtn.setAttribute("aria-controls", "shortcuts-dialog-overlay");
+  nav.appendChild(shortcutsBtn);
 
   // --- Theme section ---
   nav.appendChild(divider());
   nav.appendChild(sectionLabel("Theme"));
+
+  const themeGroup = document.createElement("div");
+  themeGroup.setAttribute("role", "group");
+  themeGroup.setAttribute("aria-label", "Theme selection");
 
   const darkBtn = navButton(
     "dark-sidebar-btn",
@@ -113,7 +121,7 @@ export function createSidebar(callbacks: SidebarCallbacks): HTMLElement {
     "sidebar-theme-dark active",
   );
   darkBtn.setAttribute("aria-pressed", "true");
-  nav.appendChild(darkBtn);
+  themeGroup.appendChild(darkBtn);
 
   const projBtn = navButton(
     "projector-sidebar-btn",
@@ -123,7 +131,9 @@ export function createSidebar(callbacks: SidebarCallbacks): HTMLElement {
     "sidebar-theme-projector",
   );
   projBtn.setAttribute("aria-pressed", "false");
-  nav.appendChild(projBtn);
+  themeGroup.appendChild(projBtn);
+
+  nav.appendChild(themeGroup);
 
   sidebar.appendChild(nav);
 

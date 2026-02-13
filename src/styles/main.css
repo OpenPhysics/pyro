@@ -1001,7 +1001,15 @@ main.view-output-only .gutter {
 
 .snippets-save-form {
   display: flex;
+  flex-wrap: wrap;
   gap: 0.5rem;
+}
+
+.snippets-input-label {
+  width: 100%;
+  font-size: 0.8rem;
+  color: #aaa;
+  margin-bottom: -0.25rem;
 }
 
 .snippets-save-form input {
@@ -1484,6 +1492,9 @@ body.projector-mode .snippets-save-form input::placeholder {
 }
 body.projector-mode .snippets-save-form input:focus {
   border-color: #007acc;
+}
+body.projector-mode .snippets-input-label {
+  color: #555;
 }
 body.projector-mode .snippet-row {
   background-color: #f5f5f5;

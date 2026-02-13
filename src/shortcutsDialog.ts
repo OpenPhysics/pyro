@@ -1,3 +1,5 @@
+import { announce } from "./ui";
+
 export function buildShortcutsDialog(): HTMLElement {
   const overlay = document.createElement("div");
   overlay.id = "shortcuts-dialog-overlay";
@@ -127,6 +129,7 @@ export function closeShortcutsDialog(): void {
   // Return focus to the shortcuts button
   const triggerBtn = document.getElementById("keyboard-shortcuts-btn");
   triggerBtn?.focus();
+  announce("Keyboard shortcuts dialog closed");
 }
 
 function trapFocusInDialog(e: KeyboardEvent): void {
