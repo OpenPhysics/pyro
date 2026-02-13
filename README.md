@@ -120,7 +120,21 @@ This is a static site suitable for GitHub Pages. The repository includes a GitHu
 - **Runtime**: [GlowScript VPython 3.2](https://www.glowscript.org/)
 - **Linting & Formatting**: [Biome](https://biomejs.dev/)
 - **Markdown**: [marked](https://marked.js.org/) for rendering instructions
+- **Math Rendering**: [KaTeX](https://katex.org/) for LaTeX equations in instructions
 - **Styling**: Custom CSS (no framework)
+
+## Architecture
+
+The codebase follows a modular architecture with clear separation of concerns:
+
+- **Bootstrap** (`main.ts`) - Minimal entry point that imports styles and calls init
+- **Initialization** (`init.ts`) - DOM setup, component wiring, query parameter application
+- **Handlers** (`handlers.ts`) - All user interaction event handlers
+- **Configuration** (`config.ts`) - Centralized constants (timeouts, sizes, storage keys)
+- **DOM** (`dom.ts`) - Lazy-evaluated DOM element references
+- **Events** (`events.ts`) - Type-safe event bus for decoupled communication
+- **Services** (`services/`) - Abstracted operations (storage, etc.)
+- **Utilities** (`utils/`) - Helper functions (error boundaries, etc.)
 
 ## File Structure
 
@@ -131,22 +145,35 @@ This is a static site suitable for GitHub Pages. The repository includes a GitHu
 ├── biome.json              # Biome lint/format configuration
 ├── tsconfig.json           # TypeScript configuration
 ├── vite.config.ts          # Vite build configuration
+├── public/
+│   └── favicon.svg         # Application favicon
 ├── docs/
 │   └── embedding.md        # iframe embedding documentation
 ├── src/
-│   ├── main.ts             # App bootstrap & event handling
-│   ├── editor.ts           # CodeMirror initialization & font size control
-│   ├── sidebar.ts          # Sidebar UI component (buttons, icons, theme toggle)
-│   ├── ui.ts               # UI utilities (notifications, console, errors)
-│   ├── queryParams.ts      # URL query parameter parsing & validation
+│   ├── main.ts             # App bootstrap (imports & init call)
+│   ├── init.ts             # Initialization sequence & query params
+│   ├── handlers.ts         # Event handlers (run, stop, download, etc.)
+│   ├── config.ts           # Centralized configuration constants
+│   ├── dom.ts              # Lazy DOM element references
+│   ├── events.ts           # Type-safe event bus
+│   ├── editor.ts           # CodeMirror initialization & font size
 │   ├── executor.ts         # Code execution in sandboxed iframe
+│   ├── markdown.ts         # Markdown/KaTeX rendering utilities
+│   ├── shortcuts.ts        # Global keyboard shortcuts
+│   ├── sidebar.ts          # Sidebar UI component
+│   ├── ui.ts               # UI utilities (notifications, console, errors)
+│   ├── queryParams.ts      # URL query parameter parsing
 │   ├── resizable.ts        # Panel resize handling
 │   ├── completions.ts      # VPython autocomplete definitions
 │   ├── examples.ts         # Loads examples from src/examples/
-│   ├── examples/           # Example .py and .md files (one pair per example)
-│   ├── snippets.ts         # Local storage snippets logic
+│   ├── examples/           # Example .py and .md files
+│   ├── snippets.ts         # Snippets business logic
 │   ├── snippetsDialog.ts   # Save/load snippets UI
 │   ├── types.ts            # TypeScript type definitions
+│   ├── services/
+│   │   └── storage.ts      # LocalStorage operations
+│   ├── utils/
+│   │   └── safeCall.ts     # Error boundary utilities
 │   └── styles/
 │       └── main.css        # Application stylesheet
 └── .github/
