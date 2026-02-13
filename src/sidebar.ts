@@ -15,6 +15,7 @@ export interface SidebarCallbacks {
   onReset: () => void;
   onToggleConsole: () => void;
   onSnippets?: () => void;
+  onDownload?: () => void;
   onThemeChange?: (dark: boolean) => void;
   onFontIncrease?: () => void;
   onFontDecrease?: () => void;
@@ -67,6 +68,9 @@ export function createSidebar(callbacks: SidebarCallbacks): HTMLElement {
   nav.appendChild(sectionLabel("File"));
   nav.appendChild(
     navButton("snippets-sidebar-btn", ICONS.snippet, "Snippets", () => callbacks.onSnippets?.()),
+  );
+  nav.appendChild(
+    navButton("download-sidebar-btn", ICONS.download, "Download", () => callbacks.onDownload?.()),
   );
 
   // --- View section ---

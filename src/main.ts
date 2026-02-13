@@ -90,6 +90,21 @@ function handleSnippets(): void {
   openSnippetsDialog();
 }
 
+function handleDownload(): void {
+  const code = getCode();
+  const filename = currentExampleKey ? `${currentExampleKey}.py` : "vpython-code.py";
+  const blob = new Blob([code], { type: "text/x-python" });
+  const url = URL.createObjectURL(blob);
+  const a = document.createElement("a");
+  a.href = url;
+  a.download = filename;
+  document.body.appendChild(a);
+  a.click();
+  document.body.removeChild(a);
+  URL.revokeObjectURL(url);
+  announce(`Downloaded ${filename}`);
+}
+
 function handleReset(): void {
   stopExecution();
   updateRunState(false);
@@ -326,6 +341,7 @@ function init(): void {
     onReset: handleReset,
     onToggleConsole: handleToggleConsole,
     onSnippets: handleSnippets,
+    onDownload: handleDownload,
     onThemeChange: handleThemeChange,
     onFontIncrease: handleFontIncrease,
     onFontDecrease: handleFontDecrease,
