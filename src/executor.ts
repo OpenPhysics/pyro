@@ -1,3 +1,4 @@
+import { appState } from "./state";
 import type { IframeMessage } from "./types";
 
 const GS_VERSION = "3.2";
@@ -7,10 +8,9 @@ const POLL_INTERVAL_MS = 100;
 const IFRAME_BG_COLOR = "#1a1a1a";
 
 let currentIframe: HTMLIFrameElement | null = null;
-let isRunning = false;
 
 export function getIsRunning(): boolean {
-  return isRunning;
+  return appState.isRunning;
 }
 
 /** Remove the current iframe and reset execution state. */
@@ -19,11 +19,11 @@ export function stopExecution(): void {
     currentIframe.remove();
     currentIframe = null;
   }
-  isRunning = false;
+  appState.isRunning = false;
 }
 
 /** Build iframe srcdoc HTML for the given VPython source. */
-function buildIframeContent(glowCode: string): string {
+function buildIframeContent(glowCode: string, parentOrigin: string): string {
   return `<!DOCTYPE html>
 <html>
 <head>
@@ -67,9 +67,10 @@ function buildIframeContent(glowCode: string): string {
 <body>
     <div id="glowscript"></div>
     <script type="text/javascript">
+        var __parentOrigin = ${JSON.stringify(parentOrigin)};
         window.onerror = function(msg, url, line) {
             showError(msg + (line ? ' at line ' + line : ''));
-            parent.postMessage({ type: 'glowscript-error', message: msg }, '*');
+            parent.postMessage({ type: 'glowscript-error', message: msg }, __parentOrigin);
             return true;
         };
 
@@ -133,7 +134,7 @@ function buildIframeContent(glowCode: string): string {
                         }
                         return String(a);
                     }).join(' ');
-                    parent.postMessage({ type: 'console-log', message: msg }, '*');
+                    parent.postMessage({ type: 'console-log', message: msg }, __parentOrigin);
                     console.log('[VPython]', msg);
                 };
 
@@ -143,10 +144,10 @@ function buildIframeContent(glowCode: string): string {
                     await __main__();
                 }
 
-                parent.postMessage({ type: 'glowscript-ready' }, '*');
+                parent.postMessage({ type: 'glowscript-ready' }, __parentOrigin);
             } catch (e) {
                 showError(e.message || String(e));
-                parent.postMessage({ type: 'glowscript-error', message: e.message || String(e) }, '*');
+                parent.postMessage({ type: 'glowscript-error', message: e.message || String(e) }, __parentOrigin);
             }
         }
 
@@ -185,7 +186,7 @@ export async function executeInIframe(
   glowCode = glowCode.replace(/^(GlowScript|Web VPython).*\n?/i, "");
   glowCode = `GlowScript ${GS_VERSION} VPython\n${glowCode}`;
 
-  iframe.srcdoc = buildIframeContent(glowCode);
+  iframe.srcdoc = buildIframeContent(glowCode, window.location.origin);
 
   return new Promise<void>((resolve) => {
     const timeout = setTimeout(() => {
@@ -199,7 +200,7 @@ export async function executeInIframe(
       const data = event.data;
       if (data.type === "glowscript-error") {
         callbacks.onError(data.message ?? "Unknown error");
-        isRunning = false;
+        appState.isRunning = false;
         callbacks.onReady();
         window.removeEventListener("message", messageHandler);
         return;
@@ -230,7 +231,7 @@ export async function runCode(
     onRunStateChange: (running: boolean) => void;
   },
 ): Promise<void> {
-  if (isRunning) {
+  if (appState.isRunning) {
     return;
   }
 
@@ -242,7 +243,7 @@ export async function runCode(
 
   outputDiv.innerHTML = '<div class="loading">Initializing GlowScript...</div>';
 
-  isRunning = true;
+  appState.isRunning = true;
   callbacks.onRunStateChange(true);
 
   try {

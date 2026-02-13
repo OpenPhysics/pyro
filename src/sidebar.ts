@@ -1,10 +1,10 @@
 import { ICONS } from "./icons";
 import { buildShortcutsDialog, openShortcutsDialog } from "./shortcutsDialog";
+import { appState } from "./state";
 import { initTheme, setDarkMode, toggleFullScreen } from "./theme";
 
 // ---- State ----
 
-let isCollapsed = true;
 let sidebarEl: HTMLElement | null = null;
 
 // ---- Public API ----
@@ -42,11 +42,11 @@ export function createSidebar(callbacks: SidebarCallbacks): HTMLElement {
   toggle.innerHTML = ICONS.menu;
   toggle.title = "Toggle sidebar";
   toggle.setAttribute("aria-label", "Toggle sidebar");
-  toggle.setAttribute("aria-expanded", String(!isCollapsed));
+  toggle.setAttribute("aria-expanded", String(!appState.isSidebarCollapsed));
   toggle.setAttribute("aria-controls", "sidebar-nav");
   toggle.addEventListener("click", () => {
     toggleSidebar();
-    toggle.setAttribute("aria-expanded", String(!isCollapsed));
+    toggle.setAttribute("aria-expanded", String(!appState.isSidebarCollapsed));
   });
   sidebar.appendChild(toggle);
 
@@ -139,8 +139,8 @@ export function toggleSidebar(): void {
   if (!sidebarEl) {
     return;
   }
-  isCollapsed = !isCollapsed;
-  sidebarEl.classList.toggle("collapsed", isCollapsed);
+  appState.isSidebarCollapsed = !appState.isSidebarCollapsed;
+  sidebarEl.classList.toggle("collapsed", appState.isSidebarCollapsed);
 }
 
 /** Hide or show the sidebar entirely (not just collapse). */

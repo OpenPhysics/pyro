@@ -53,16 +53,11 @@
     "marked": "^17.0.2"
   },
   "lint-staged": {
-    "*.{ts,tsx,js,jsx}": [
-      "biome check --write",
-      "biome format --write"
+    "*.{ts,tsx,js,jsx,css}": [
+      "biome check --write"
     ],
     "*.{json,jsonc}": [
-      "biome format --write"
-    ],
-    "*.css": [
-      "biome check --write",
-      "biome format --write"
+      "biome check --write"
     ]
   }
 }

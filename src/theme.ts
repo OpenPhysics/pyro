@@ -1,6 +1,6 @@
 import { ICONS } from "./icons";
+import { appState } from "./state";
 
-let isFullScreen = false;
 let themeChangeCallback: ((dark: boolean) => void) | undefined;
 
 export function initTheme(onThemeChange?: (dark: boolean) => void): void {
@@ -21,8 +21,8 @@ export function setDarkMode(dark: boolean): void {
 }
 
 export function toggleFullScreen(): void {
-  isFullScreen = !isFullScreen;
-  if (isFullScreen) {
+  appState.isFullScreen = !appState.isFullScreen;
+  if (appState.isFullScreen) {
     document.documentElement.requestFullscreen?.();
   } else {
     document.exitFullscreen?.();
@@ -31,20 +31,20 @@ export function toggleFullScreen(): void {
   if (btn) {
     const icon = btn.querySelector(".sidebar-icon");
     if (icon) {
-      icon.innerHTML = isFullScreen ? ICONS.exitFullscreen : ICONS.fullscreen;
+      icon.innerHTML = appState.isFullScreen ? ICONS.exitFullscreen : ICONS.fullscreen;
     }
     const label = btn.querySelector(".sidebar-label");
     if (label) {
-      label.textContent = isFullScreen ? "Exit Full Screen" : "Full Screen";
+      label.textContent = appState.isFullScreen ? "Exit Full Screen" : "Full Screen";
     }
-    btn.setAttribute("aria-label", isFullScreen ? "Exit full screen" : "Full screen");
+    btn.setAttribute("aria-label", appState.isFullScreen ? "Exit full screen" : "Full screen");
   }
 }
 
 // Listen for browser-initiated fullscreen changes (e.g. Escape key)
 document.addEventListener("fullscreenchange", () => {
-  if (!document.fullscreenElement && isFullScreen) {
-    isFullScreen = false;
+  if (!document.fullscreenElement && appState.isFullScreen) {
+    appState.isFullScreen = false;
     const btn = document.getElementById("fullscreen-sidebar-btn");
     if (btn) {
       const icon = btn.querySelector(".sidebar-icon");

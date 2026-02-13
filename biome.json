@@ -55,6 +55,6 @@
     "lineWidth": 100
   },
   "files": {
-    "includes": ["**", "!**/node_modules", "!**/dist"]
+    "includes": ["**", "!**/node_modules", "!**/dist", "!package-lock.json"]
   }
 }
