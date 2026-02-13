@@ -1,4 +1,4 @@
-const NOTIFICATION_DURATION_MS = 2_000;
+import { CONFIG } from "./config";
 
 /** Escape HTML to prevent XSS. */
 export function escapeHtml(text: string): string {
@@ -95,5 +95,5 @@ export function showNotification(
   }
   document.body.appendChild(notification);
   announce(message);
-  setTimeout(() => notification.remove(), NOTIFICATION_DURATION_MS);
+  setTimeout(() => notification.remove(), CONFIG.ui.notificationDurationMs);
 }

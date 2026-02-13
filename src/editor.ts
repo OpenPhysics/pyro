@@ -12,10 +12,10 @@ import {
   VPYTHON_COLORS,
   VPYTHON_SCENE,
 } from "./completions";
+import { CONFIG } from "./config";
 import { DEFAULT_CODE } from "./examples";
+import { storageService } from "./services/storage";
 import { appState } from "./state";
-
-const STORAGE_KEY = "vpython-editor-code";
 
 let editor: EditorView | null = null;
 const themeCompartment = new Compartment();
@@ -90,7 +90,7 @@ export function initEditor(container: HTMLElement, onRun: () => void): void {
     },
   ]);
 
-  const savedCode = localStorage.getItem(STORAGE_KEY);
+  const savedCode = storageService.getEditorCode();
   const initialCode = savedCode || DEFAULT_CODE;
 
   editor = new EditorView({
@@ -142,13 +142,11 @@ export function setEditorTheme(dark: boolean): void {
 }
 
 /** Change the editor font size by a delta (in pixels). */
-const MIN_FONT_SIZE = 10;
-const MAX_FONT_SIZE = 28;
-
 export function changeEditorFontSize(delta: number): void {
+  const { minFontSize, maxFontSize } = CONFIG.editor;
   appState.currentFontSize = Math.max(
-    MIN_FONT_SIZE,
-    Math.min(MAX_FONT_SIZE, appState.currentFontSize + delta),
+    minFontSize,
+    Math.min(maxFontSize, appState.currentFontSize + delta),
   );
   const cmEditor = document.querySelector(".cm-editor") as HTMLElement | null;
   if (cmEditor) {
@@ -156,9 +154,10 @@ export function changeEditorFontSize(delta: number): void {
   }
 }
 
-/** Set the editor font size directly (clamped to 10-28 pixels). */
+/** Set the editor font size directly (clamped to min-max pixels). */
 export function setEditorFontSize(size: number): void {
-  appState.currentFontSize = Math.max(MIN_FONT_SIZE, Math.min(MAX_FONT_SIZE, size));
+  const { minFontSize, maxFontSize } = CONFIG.editor;
+  appState.currentFontSize = Math.max(minFontSize, Math.min(maxFontSize, size));
   const cmEditor = document.querySelector(".cm-editor") as HTMLElement | null;
   if (cmEditor) {
     cmEditor.style.fontSize = `${appState.currentFontSize}px`;

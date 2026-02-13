@@ -21,3 +21,44 @@ export interface Snippet {
   code: string;
   createdAt: number;
 }
+
+/** Callbacks for sidebar actions */
+export interface SidebarCallbacks {
+  onRun: () => void;
+  onStop: () => void;
+  onReset: () => void;
+  onToggleConsole: () => void;
+  onSnippets?: () => void;
+  onDownload?: () => void;
+  onThemeChange?: (dark: boolean) => void;
+  onFontIncrease?: () => void;
+  onFontDecrease?: () => void;
+}
+
+/** Callbacks for code execution */
+export interface ExecutionCallbacks {
+  onError: (message: string) => void;
+  onConsoleLog: (message: string) => void;
+  hideError: () => void;
+  clearConsole: () => void;
+  onRunStateChange: (running: boolean) => void;
+}
+
+/** Callbacks for iframe execution */
+export interface IframeCallbacks {
+  onError: (message: string) => void;
+  onConsoleLog: (message: string) => void;
+  onReady: () => void;
+}
+
+/** Callbacks for snippets dialog */
+export interface SnippetsDialogCallbacks {
+  getCode: () => string;
+  setCode: (code: string) => void;
+}
+
+/** Theme change callback */
+export type ThemeChangeCallback = (dark: boolean) => void;
+
+/** Run state change callback */
+export type RunStateChangeCallback = (running: boolean) => void;

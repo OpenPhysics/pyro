@@ -13,6 +13,7 @@
  * - run: true/false (default: false) - Auto-run code on load
  */
 
+import { CONFIG } from "./config";
 import type { ViewMode } from "./viewMode";
 
 export type OutputTab = "output" | "instructions";
@@ -38,7 +39,7 @@ const DEFAULT_PARAMS: QueryParams = {
   tab: "instructions",
   console: false,
   theme: "dark",
-  fontSize: 14,
+  fontSize: CONFIG.editor.defaultFontSize,
   run: false,
 };
 
@@ -150,7 +151,12 @@ export function parseQueryParams(validExampleKeys: readonly string[] = []): Quer
     tab,
     console: parseBoolean(params.get("console"), DEFAULT_PARAMS.console),
     theme,
-    fontSize: parseNumber(params.get("fontSize"), 10, 28, DEFAULT_PARAMS.fontSize),
+    fontSize: parseNumber(
+      params.get("fontSize"),
+      CONFIG.editor.minFontSize,
+      CONFIG.editor.maxFontSize,
+      DEFAULT_PARAMS.fontSize,
+    ),
     run: parseBoolean(params.get("run"), DEFAULT_PARAMS.run),
   };
 }

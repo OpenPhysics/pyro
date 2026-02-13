@@ -1,24 +1,9 @@
+import { storageService } from "./services/storage";
 import type { Snippet } from "./types";
-
-const SNIPPETS_KEY = "vpython-snippets";
 
 /** Load all saved snippets from localStorage. */
 export function loadSnippets(): Snippet[] {
-  const raw = localStorage.getItem(SNIPPETS_KEY);
-  if (!raw) {
-    return [];
-  }
-  try {
-    const parsed = JSON.parse(raw);
-    if (!Array.isArray(parsed)) {
-      return [];
-    }
-    return parsed as Snippet[];
-  } catch (e) {
-    // biome-ignore lint/suspicious/noConsole: intentional warning for corrupted data
-    console.warn("Failed to parse saved snippets from localStorage:", e);
-    return [];
-  }
+  return storageService.getSnippets();
 }
 
 /** Save a snippet to localStorage. Returns true if saved, false if name is duplicate. */
@@ -29,7 +14,7 @@ export function saveSnippet(name: string, code: string): boolean {
   }
   snippets.push({ name, code, createdAt: Date.now() });
   snippets.sort((a, b) => b.createdAt - a.createdAt);
-  localStorage.setItem(SNIPPETS_KEY, JSON.stringify(snippets));
+  storageService.setSnippets(snippets);
   return true;
 }
 
@@ -38,13 +23,13 @@ export function overwriteSnippet(name: string, code: string): void {
   const snippets = loadSnippets().filter((s) => s.name !== name);
   snippets.push({ name, code, createdAt: Date.now() });
   snippets.sort((a, b) => b.createdAt - a.createdAt);
-  localStorage.setItem(SNIPPETS_KEY, JSON.stringify(snippets));
+  storageService.setSnippets(snippets);
 }
 
 /** Delete a snippet by name. */
 export function deleteSnippet(name: string): void {
   const snippets = loadSnippets().filter((s) => s.name !== name);
-  localStorage.setItem(SNIPPETS_KEY, JSON.stringify(snippets));
+  storageService.setSnippets(snippets);
 }
 
 /** Get a single snippet by name. */

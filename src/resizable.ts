@@ -1,3 +1,4 @@
+import { CONFIG } from "./config";
 import { announce } from "./ui";
 
 /** Set up drag-to-resize behaviour on the gutter between two panels. */
@@ -11,8 +12,8 @@ export function initResizable(
   let startEditorWidth: number;
   let startOutputWidth: number;
 
-  const KEYBOARD_STEP = 50; // pixels to move per arrow key press
-  const MIN_PANEL_WIDTH = 200;
+  const KEYBOARD_STEP = CONFIG.ui.keyboardResizeStep;
+  const MIN_PANEL_WIDTH = CONFIG.ui.minPanelWidth;
 
   /** Update ARIA value to reflect current split percentage */
   function updateAriaValue(): void {

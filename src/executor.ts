@@ -1,11 +1,14 @@
+import { CONFIG } from "./config";
 import { appState } from "./state";
-import type { IframeMessage } from "./types";
+import type { ExecutionCallbacks, IframeCallbacks, IframeMessage } from "./types";
 
-const GS_VERSION = "3.2";
-const EXECUTION_TIMEOUT_MS = 20_000;
-const MAX_POLL_ATTEMPTS = 50;
-const POLL_INTERVAL_MS = 100;
-const IFRAME_BG_COLOR = "#1a1a1a";
+const {
+  glowscriptVersion: GS_VERSION,
+  timeoutMs: EXECUTION_TIMEOUT_MS,
+  maxPollAttempts: MAX_POLL_ATTEMPTS,
+  pollIntervalMs: POLL_INTERVAL_MS,
+  iframeBgColor: IFRAME_BG_COLOR,
+} = CONFIG.executor;
 
 let currentIframe: HTMLIFrameElement | null = null;
 
@@ -161,11 +164,7 @@ function buildIframeContent(glowCode: string, parentOrigin: string): string {
 export async function executeInIframe(
   code: string,
   outputDiv: HTMLElement,
-  callbacks: {
-    onError: (message: string) => void;
-    onConsoleLog: (message: string) => void;
-    onReady: () => void;
-  },
+  callbacks: IframeCallbacks,
 ): Promise<void> {
   outputDiv.innerHTML = "";
 
@@ -223,13 +222,7 @@ export async function executeInIframe(
 export async function runCode(
   getCode: () => string,
   outputDiv: HTMLElement,
-  callbacks: {
-    onError: (message: string) => void;
-    onConsoleLog: (message: string) => void;
-    hideError: () => void;
-    clearConsole: () => void;
-    onRunStateChange: (running: boolean) => void;
-  },
+  callbacks: ExecutionCallbacks,
 ): Promise<void> {
   if (appState.isRunning) {
     return;
