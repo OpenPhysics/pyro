@@ -6,7 +6,7 @@ Pyro can be embedded in external websites using iframes with configurable UI thr
 
 ```html
 <iframe
-  src="https://your-domain.com/pyro/"
+  src="https://openphysics.github.io/pyro/"
   width="100%"
   height="600"
   frameborder="0"
@@ -42,7 +42,7 @@ Show just the 3D output with no UI chrome - perfect for displaying a simulation 
 
 ```html
 <iframe
-  src="?header=false&sidebar=false&view=output&example=bouncing-ball&run=true"
+  src="https://openphysics.github.io/pyro/?header=false&sidebar=false&view=output&example=bouncing-ball&run=true"
   width="100%"
   height="400">
 </iframe>
@@ -54,7 +54,7 @@ Light theme with larger font for classroom projection:
 
 ```html
 <iframe
-  src="?theme=light&fontSize=18&example=basic-shapes"
+  src="https://openphysics.github.io/pyro/?theme=light&fontSize=18&example=basic-shapes"
   width="100%"
   height="600">
 </iframe>
@@ -66,7 +66,7 @@ Full interface with console visible and auto-run:
 
 ```html
 <iframe
-  src="?run=true&tab=output&console=true&example=projectile-motion"
+  src="https://openphysics.github.io/pyro/?run=true&tab=output&console=true&example=projectile-motion"
   width="100%"
   height="700">
 </iframe>
@@ -78,7 +78,7 @@ Show just the editor for code review or documentation:
 
 ```html
 <iframe
-  src="?header=false&sidebar=false&view=code&example=binary-star"
+  src="https://openphysics.github.io/pyro/?header=false&sidebar=false&view=code&example=binary-star"
   width="100%"
   height="500">
 </iframe>
@@ -90,7 +90,7 @@ Perfect for embedding a running simulation in a blog post:
 
 ```html
 <iframe
-  src="?sidebar=false&view=output&tab=output&run=true&example=spring-mass"
+  src="https://openphysics.github.io/pyro/?sidebar=false&view=output&tab=output&run=true&example=spring-mass"
   width="100%"
   height="450">
 </iframe>
