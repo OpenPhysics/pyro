@@ -3,19 +3,37 @@ import katex from "katex";
 import "katex/dist/katex.min.css";
 import { marked } from "marked";
 import "./styles/main.css";
-import { changeEditorFontSize, getCode, initEditor, setCode, setEditorTheme } from "./editor";
+import {
+  changeEditorFontSize,
+  getCode,
+  initEditor,
+  setCode,
+  setEditorFontSize,
+  setEditorTheme,
+} from "./editor";
 import { EXAMPLE_DISPLAY_NAMES, EXAMPLE_INSTRUCTIONS, EXAMPLE_KEYS, EXAMPLES } from "./examples";
 import { runCode, stopExecution } from "./executor";
+import type { QueryParams } from "./queryParams";
+import { parseQueryParams } from "./queryParams";
 import { initResizable } from "./resizable";
 import { closeShortcutsDialog, openShortcutsDialog } from "./shortcutsDialog";
-import { createSidebar, toggleSidebar } from "./sidebar";
+import { createSidebar, setSidebarVisible, toggleSidebar } from "./sidebar";
 import {
   buildSnippetsDialog,
   closeSnippetsDialog,
   initSnippetsDialog,
   openSnippetsDialog,
 } from "./snippetsDialog";
-import { addConsoleLog, announce, clearConsole, hideError, showError, toggleConsole } from "./ui";
+import { setDarkMode } from "./theme";
+import {
+  addConsoleLog,
+  announce,
+  clearConsole,
+  hideError,
+  showConsole,
+  showError,
+  toggleConsole,
+} from "./ui";
 import { setViewMode } from "./viewMode";
 
 // ---- DOM references (populated in init) ----
@@ -161,15 +179,6 @@ function setOutputTab(tab: OutputTab): void {
   instructionsContent.hidden = isOutput;
 }
 
-function getDefaultOutputTab(): OutputTab {
-  const params = new URLSearchParams(window.location.search);
-  const showInstructions = params.get("showInstructions");
-  if (showInstructions === "false") {
-    return "output";
-  }
-  return "instructions";
-}
-
 function handleToggleConsole(): void {
   toggleConsole(consolePanel, toggleConsoleBtn);
 }
@@ -229,6 +238,53 @@ function initGlobalShortcuts(): void {
   document.addEventListener("keydown", handleShortcutsKeydown);
 }
 
+// ---- Query Parameters Application ----
+
+function applyQueryParams(params: QueryParams): void {
+  // Apply header visibility
+  const header = document.querySelector("header");
+  if (header instanceof HTMLElement) {
+    header.style.display = params.header ? "" : "none";
+  }
+
+  // Apply sidebar visibility
+  setSidebarVisible(params.sidebar);
+
+  // Apply theme (before font size so theme changes don't override)
+  const isDark = params.theme === "dark";
+  setDarkMode(isDark);
+  setEditorTheme(isDark);
+
+  // Apply font size
+  if (params.fontSize !== 14) {
+    setEditorFontSize(params.fontSize);
+  }
+
+  // Apply view mode
+  setViewMode(params.view);
+
+  // Load example (before run so auto-run uses the correct code)
+  // params.example is already sanitized against EXAMPLE_KEYS whitelist in parseQueryParams
+  if (params.example && params.example in EXAMPLES) {
+    handleExample(params.example);
+  }
+
+  // Apply output tab
+  setOutputTab(params.tab);
+
+  // Apply console visibility
+  if (params.console) {
+    showConsole(consolePanel, toggleConsoleBtn);
+  }
+
+  // Auto-run with delay to ensure initialization complete
+  if (params.run) {
+    setTimeout(() => {
+      handleRun();
+    }, 100);
+  }
+}
+
 // ---- Bootstrap ----
 
 function getRequiredElement(id: string): HTMLElement {
@@ -248,6 +304,9 @@ function getRequiredElementBySelector(selector: string): HTMLElement {
 }
 
 function init(): void {
+  // Parse query parameters at the start
+  const queryParams = parseQueryParams(EXAMPLE_KEYS);
+
   // Resolve DOM elements
   outputDiv = getRequiredElement("output");
   errorDisplay = getRequiredElement("error-display");
@@ -303,7 +362,6 @@ function init(): void {
   // Output panel tabs (Output | Instructions)
   currentExampleKey = EXAMPLE_KEYS[0] ?? null;
   updateInstructionsDisplay();
-  setOutputTab(getDefaultOutputTab());
 
   document.getElementById("tab-output")?.addEventListener("click", () => setOutputTab("output"));
   document.getElementById("tab-instructions")?.addEventListener("click", () => {
@@ -333,6 +391,9 @@ function init(): void {
 
   // Initialize global keyboard shortcuts
   initGlobalShortcuts();
+
+  // Apply query parameters after all initialization is complete
+  applyQueryParams(queryParams);
 }
 
 if (document.readyState === "loading") {

@@ -69,6 +69,16 @@ export function toggleConsole(
   toggleConsoleBtn.textContent = "Console";
 }
 
+/** Show the console panel (idempotent - does nothing if already visible). */
+export function showConsole(consolePanel: HTMLElement, toggleConsoleBtn: HTMLButtonElement): void {
+  if (!consolePanel.classList.contains("visible")) {
+    consolePanel.classList.add("visible");
+    toggleConsoleBtn.classList.add("active");
+    toggleConsoleBtn.setAttribute("aria-expanded", "true");
+    toggleConsoleBtn.textContent = "Console";
+  }
+}
+
 /** Show a toast notification. */
 export function showNotification(
   message: string,

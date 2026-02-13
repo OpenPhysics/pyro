@@ -240,6 +240,11 @@ body {
   margin-left: 220px;
 }
 
+/* When sidebar is completely hidden (via query param) */
+#app-wrapper.sidebar-hidden {
+  margin-left: 0;
+}
+
 /* ----- 4. Header ----- */
 header {
   display: flex;

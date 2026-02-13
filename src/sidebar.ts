@@ -139,6 +139,18 @@ export function toggleSidebar(): void {
   sidebarEl.classList.toggle("collapsed", isCollapsed);
 }
 
+/** Hide or show the sidebar entirely (not just collapse). */
+export function setSidebarVisible(visible: boolean): void {
+  if (!sidebarEl) {
+    return;
+  }
+  sidebarEl.style.display = visible ? "" : "none";
+  const appWrapper = document.getElementById("app-wrapper");
+  if (appWrapper) {
+    appWrapper.classList.toggle("sidebar-hidden", !visible);
+  }
+}
+
 // ---- DOM helpers ----
 
 function sectionLabel(text: string): HTMLElement {

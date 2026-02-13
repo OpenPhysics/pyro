@@ -152,3 +152,12 @@ export function changeEditorFontSize(delta: number): void {
     cmEditor.style.fontSize = `${currentFontSize}px`;
   }
 }
+
+/** Set the editor font size directly (clamped to 10-28 pixels). */
+export function setEditorFontSize(size: number): void {
+  currentFontSize = Math.max(MIN_FONT_SIZE, Math.min(MAX_FONT_SIZE, size));
+  const cmEditor = document.querySelector(".cm-editor") as HTMLElement | null;
+  if (cmEditor) {
+    cmEditor.style.fontSize = `${currentFontSize}px`;
+  }
+}
