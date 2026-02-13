@@ -1,3 +1,4 @@
+import { showConfirmDialog } from "./confirmDialog";
 import { deleteSnippet, loadSnippets, overwriteSnippet, saveSnippet } from "./snippets";
 import type { Snippet } from "./types";
 import { announce, escapeHtml, showNotification } from "./ui";
@@ -81,7 +82,7 @@ export function buildSnippetsDialog(): HTMLElement {
   nameInput.addEventListener("keydown", (e) => {
     if (e.key === "Enter") {
       e.preventDefault();
-      handleSaveSnippet(nameInput);
+      void handleSaveSnippet(nameInput);
     }
   });
 
@@ -135,7 +136,7 @@ export function closeSnippetsDialog(): void {
   announce("Snippets dialog closed");
 }
 
-function handleSaveSnippet(nameInput: HTMLInputElement): void {
+async function handleSaveSnippet(nameInput: HTMLInputElement): Promise<void> {
   const name = nameInput.value.trim();
   if (!name) {
     showNotification("Please enter a snippet name", "error");
@@ -153,11 +154,15 @@ function handleSaveSnippet(nameInput: HTMLInputElement): void {
 
   const saved = saveSnippet(name, code);
   if (!saved) {
-    // Name already exists — ask to overwrite via a confirm-style UI
-    if (confirm(`A snippet named "${name}" already exists. Overwrite it?`)) {
+    // Name already exists — ask to overwrite
+    const confirmed = await showConfirmDialog(
+      `A snippet named "${name}" already exists. Overwrite it?`,
+    );
+    if (confirmed) {
       overwriteSnippet(name, code);
       showNotification(`Snippet "${name}" updated!`);
     } else {
+      nameInput.focus();
       return;
     }
   } else {
@@ -234,8 +239,9 @@ function buildSnippetRow(snippet: Snippet): HTMLElement {
   deleteBtn.className = "snippet-delete-btn";
   deleteBtn.textContent = "Delete";
   deleteBtn.setAttribute("aria-label", `Delete snippet "${snippet.name}"`);
-  deleteBtn.addEventListener("click", () => {
-    if (confirm(`Delete snippet "${snippet.name}"?`)) {
+  deleteBtn.addEventListener("click", async () => {
+    const confirmed = await showConfirmDialog(`Delete snippet "${snippet.name}"?`);
+    if (confirmed) {
       deleteSnippet(snippet.name);
       showNotification(`Deleted "${snippet.name}"`, "info");
       refreshSnippetsList();
