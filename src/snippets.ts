@@ -14,7 +14,9 @@ export function loadSnippets(): Snippet[] {
       return [];
     }
     return parsed as Snippet[];
-  } catch {
+  } catch (e) {
+    // biome-ignore lint/suspicious/noConsole: intentional warning for corrupted data
+    console.warn("Failed to parse saved snippets from localStorage:", e);
     return [];
   }
 }

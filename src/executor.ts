@@ -1,6 +1,10 @@
 import type { IframeMessage } from "./types";
 
 const GS_VERSION = "3.2";
+const EXECUTION_TIMEOUT_MS = 20_000;
+const MAX_POLL_ATTEMPTS = 50;
+const POLL_INTERVAL_MS = 100;
+const IFRAME_BG_COLOR = "#1a1a1a";
 
 let currentIframe: HTMLIFrameElement | null = null;
 let isRunning = false;
@@ -31,7 +35,7 @@ function buildIframeContent(glowCode: string): string {
         html, body {
             width: 100%;
             height: 100%;
-            background: #1a1a1a;
+            background: ${IFRAME_BG_COLOR};
             overflow: hidden;
         }
         #glowscript {
@@ -91,9 +95,9 @@ function buildIframeContent(glowCode: string): string {
                     document.head.appendChild(script);
                 });
 
-                var maxWait = 50;
+                var maxWait = ${MAX_POLL_ATTEMPTS};
                 while (typeof window.glowscript_compile !== 'function' && maxWait-- > 0) {
-                    await new Promise(function(r) { setTimeout(r, 100); });
+                    await new Promise(function(r) { setTimeout(r, ${POLL_INTERVAL_MS}); });
                 }
 
                 if (typeof window.glowscript_compile !== 'function') {
@@ -125,7 +129,7 @@ function buildIframeContent(glowCode: string): string {
                         if (a === null) return 'None';
                         if (a === undefined) return 'undefined';
                         if (typeof a === 'object') {
-                            try { return JSON.stringify(a); } catch(e) { return String(a); }
+                            try { return JSON.stringify(a); } catch(e) { console.warn('JSON.stringify failed:', e); return String(a); }
                         }
                         return String(a);
                     }).join(' ');
@@ -165,7 +169,7 @@ export async function executeInIframe(
   outputDiv.innerHTML = "";
 
   const iframe = document.createElement("iframe");
-  iframe.style.cssText = "width:100%;height:100%;border:none;background:#1a1a1a;";
+  iframe.style.cssText = `width:100%;height:100%;border:none;background:${IFRAME_BG_COLOR};`;
   // Allow iframe to receive keyboard events for camera control (shift+drag, etc.)
   iframe.setAttribute("tabindex", "0");
   iframe.setAttribute("aria-label", "VPython 3D visualization");
@@ -186,7 +190,7 @@ export async function executeInIframe(
   return new Promise<void>((resolve) => {
     const timeout = setTimeout(() => {
       resolve();
-    }, 20000);
+    }, EXECUTION_TIMEOUT_MS);
 
     const messageHandler = (event: MessageEvent<IframeMessage>) => {
       if (!currentIframe || event.source !== currentIframe.contentWindow || !event.data) {

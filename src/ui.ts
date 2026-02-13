@@ -1,3 +1,5 @@
+const NOTIFICATION_DURATION_MS = 2_000;
+
 /** Escape HTML to prevent XSS. */
 export function escapeHtml(text: string): string {
   const div = document.createElement("div");
@@ -83,5 +85,5 @@ export function showNotification(
   }
   document.body.appendChild(notification);
   announce(message);
-  setTimeout(() => notification.remove(), 2000);
+  setTimeout(() => notification.remove(), NOTIFICATION_DURATION_MS);
 }

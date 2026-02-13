@@ -1,10 +1,12 @@
-import "./styles/main.css";
+import DOMPurify from "dompurify";
 import { marked } from "marked";
+import "./styles/main.css";
 import { changeEditorFontSize, getCode, initEditor, setCode, setEditorTheme } from "./editor";
 import { EXAMPLE_DISPLAY_NAMES, EXAMPLE_INSTRUCTIONS, EXAMPLE_KEYS, EXAMPLES } from "./examples";
 import { runCode, stopExecution } from "./executor";
 import { initResizable } from "./resizable";
-import { closeShortcutsDialog, createSidebar, openShortcutsDialog, toggleSidebar } from "./sidebar";
+import { closeShortcutsDialog, openShortcutsDialog } from "./shortcutsDialog";
+import { createSidebar, toggleSidebar } from "./sidebar";
 import {
   buildSnippetsDialog,
   closeSnippetsDialog,
@@ -12,6 +14,7 @@ import {
   openSnippetsDialog,
 } from "./snippetsDialog";
 import { addConsoleLog, announce, clearConsole, hideError, showError, toggleConsole } from "./ui";
+import { setViewMode } from "./viewMode";
 
 // ---- DOM references (populated in init) ----
 
@@ -91,7 +94,7 @@ function updateInstructionsDisplay(): void {
       ? EXAMPLE_INSTRUCTIONS[currentExampleKey]
       : null;
   instructionsBody.innerHTML = md
-    ? marked(md, { async: false })
+    ? DOMPurify.sanitize(marked(md, { async: false }))
     : '<p class="instructions-placeholder">Select an example from the dropdown to see its instructions.</p>';
 }
 
@@ -137,61 +140,6 @@ function handleFontIncrease(): void {
 
 function handleFontDecrease(): void {
   changeEditorFontSize(-2);
-}
-
-// ---- View mode (code-only, split, output-only) ----
-
-type ViewMode = "code" | "split" | "output";
-
-function setViewMode(mode: ViewMode): void {
-  const edPanel = document.querySelector(".editor-panel") as HTMLElement | null;
-  const outPanel = document.querySelector(".output-panel") as HTMLElement | null;
-  const gutterEl = document.getElementById("gutter");
-  if (!(edPanel && outPanel && gutterEl)) {
-    return;
-  }
-
-  // Reset inline styles from resizable dragging
-  edPanel.style.width = "";
-  outPanel.style.width = "";
-
-  // Remove all view-mode classes and add the correct one
-  const main = document.querySelector("main");
-  if (!main) {
-    return;
-  }
-  main.classList.remove("view-code-only", "view-output-only");
-
-  if (mode === "code") {
-    main.classList.add("view-code-only");
-    edPanel.style.flex = "1";
-    outPanel.style.flex = "";
-  } else if (mode === "output") {
-    main.classList.add("view-output-only");
-    edPanel.style.flex = "";
-    outPanel.style.flex = "1";
-  } else {
-    edPanel.style.flex = "1";
-    outPanel.style.flex = "1";
-  }
-
-  // Update active button state and aria-pressed
-  const codeBtn = document.getElementById("view-code-btn");
-  const splitBtn = document.getElementById("view-split-btn");
-  const outputBtn = document.getElementById("view-output-btn");
-  codeBtn?.classList.toggle("active", mode === "code");
-  splitBtn?.classList.toggle("active", mode === "split");
-  outputBtn?.classList.toggle("active", mode === "output");
-  codeBtn?.setAttribute("aria-pressed", String(mode === "code"));
-  splitBtn?.setAttribute("aria-pressed", String(mode === "split"));
-  outputBtn?.setAttribute("aria-pressed", String(mode === "output"));
-
-  const modeLabels: Record<ViewMode, string> = {
-    code: "Code only",
-    split: "Split",
-    output: "Output only",
-  };
-  announce(`View mode: ${modeLabels[mode]}`);
 }
 
 // ---- Global keyboard shortcuts ----
