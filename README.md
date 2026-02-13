@@ -18,6 +18,7 @@ A modern single-page web application for writing and running VPython code direct
 - **Local Storage** - Code is saved to and loaded from the browser's local storage
 - **Resizable Panels** - Drag the gutter between editor and output to resize
 - **Responsive Layout** - Works on desktop and tablet devices
+- **Embeddable** - Configurable via URL parameters for iframe embedding ([docs](docs/embedding.md))
 
 ## Usage
 
@@ -31,7 +32,23 @@ A modern single-page web application for writing and running VPython code direct
 
 ### URL Parameters
 
-- `?showInstructions=false` - Start with the Output tab selected instead of Instructions
+Pyro supports URL query parameters for customizing the initial state:
+
+| Parameter | Example | Description |
+|-----------|---------|-------------|
+| `header` | `?header=false` | Hide the top navigation bar |
+| `sidebar` | `?sidebar=false` | Hide the sidebar completely |
+| `example` | `?example=bouncing-ball` | Load a specific example |
+| `view` | `?view=output` | Set view mode (`code`, `split`, `output`) |
+| `tab` | `?tab=output` | Set active tab (`output`, `instructions`) |
+| `console` | `?console=true` | Show the console panel |
+| `theme` | `?theme=light` | Set theme (`dark`, `light`) |
+| `fontSize` | `?fontSize=18` | Set editor font size (10-28) |
+| `run` | `?run=true` | Auto-run code on load |
+
+Parameters can be combined: `?theme=light&fontSize=18&run=true`
+
+For detailed embedding documentation, see **[Embedding Guide](docs/embedding.md)**.
 
 ## Example Code
 
@@ -114,11 +131,14 @@ This is a static site suitable for GitHub Pages. The repository includes a GitHu
 ├── biome.json              # Biome lint/format configuration
 ├── tsconfig.json           # TypeScript configuration
 ├── vite.config.ts          # Vite build configuration
+├── docs/
+│   └── embedding.md        # iframe embedding documentation
 ├── src/
 │   ├── main.ts             # App bootstrap & event handling
 │   ├── editor.ts           # CodeMirror initialization & font size control
 │   ├── sidebar.ts          # Sidebar UI component (buttons, icons, theme toggle)
 │   ├── ui.ts               # UI utilities (notifications, console, errors)
+│   ├── queryParams.ts      # URL query parameter parsing & validation
 │   ├── executor.ts         # Code execution in sandboxed iframe
 │   ├── resizable.ts        # Panel resize handling
 │   ├── completions.ts      # VPython autocomplete definitions
