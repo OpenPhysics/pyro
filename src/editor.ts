@@ -5,7 +5,10 @@ import { python } from "@codemirror/lang-python";
 import { Compartment } from "@codemirror/state";
 import { oneDark } from "@codemirror/theme-one-dark";
 import { keymap } from "@codemirror/view";
+import { indentationMarkers } from "@replit/codemirror-indentation-markers";
 import { basicSetup, EditorView } from "codemirror";
+// biome-ignore lint/nursery/noUnresolvedImports: package resolves correctly via "main" field
+import rainbowBrackets from "rainbowbrackets";
 import {
   ALL_COMPLETIONS,
   PROPERTY_COMPLETIONS,
@@ -17,6 +20,7 @@ import { DEFAULT_CODE } from "./examples";
 import { ruffLinter } from "./linter";
 import { storageService } from "./services/storage";
 import { appState } from "./state";
+import { vpythonTooltips } from "./tooltips";
 
 let editor: EditorView | null = null;
 const themeCompartment = new Compartment();
@@ -109,6 +113,12 @@ export function initEditor(container: HTMLElement, onRun: () => void): void {
         activateOnTyping: true,
         maxRenderedOptions: 50,
       }),
+      indentationMarkers({
+        highlightActiveBlock: true,
+        hideFirstIndent: true,
+      }),
+      rainbowBrackets(),
+      vpythonTooltips(),
       ruffLinter(),
     ],
     parent: container,
