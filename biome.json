@@ -56,5 +56,17 @@
   },
   "files": {
     "includes": ["**", "!**/node_modules", "!**/dist", "!package-lock.json"]
-  }
+  },
+  "overrides": [
+    {
+      "includes": ["src/snippets-completions.ts"],
+      "linter": {
+        "rules": {
+          "suspicious": {
+            "noTemplateCurlyInString": "off"
+          }
+        }
+      }
+    }
+  ]
 }

@@ -550,6 +550,23 @@ main.view-output-only .gutter {
   overflow: auto;
 }
 
+/* Selection match highlighting (basicSetup includes highlightSelectionMatches) */
+.cm-selectionMatch {
+  background-color: rgba(255, 215, 0, 0.25);
+  border-radius: 2px;
+}
+.cm-searchMatch {
+  background-color: rgba(255, 215, 0, 0.3);
+  border-radius: 2px;
+}
+
+/* Snippet tab-stop field highlighting */
+.cm-snippetField {
+  background-color: rgba(0, 122, 204, 0.25);
+  border: 1px solid rgba(0, 122, 204, 0.5);
+  border-radius: 2px;
+}
+
 /* ----- 9. Output & GlowScript canvas ----- */
 #output {
   flex: 1;
@@ -711,7 +728,90 @@ main.view-output-only .gutter {
   }
 }
 
-/* ----- 14. CodeMirror autocomplete ----- */
+/* ----- 14a. Rainbow brackets ----- */
+.rainbow-bracket-red,
+.rainbow-bracket-red > span {
+  color: #e06c75;
+}
+.rainbow-bracket-orange,
+.rainbow-bracket-orange > span {
+  color: #d19a66;
+}
+.rainbow-bracket-yellow,
+.rainbow-bracket-yellow > span {
+  color: #e5c07b;
+}
+.rainbow-bracket-green,
+.rainbow-bracket-green > span {
+  color: #98c379;
+}
+.rainbow-bracket-blue,
+.rainbow-bracket-blue > span {
+  color: #61afef;
+}
+.rainbow-bracket-indigo,
+.rainbow-bracket-indigo > span {
+  color: #c678dd;
+}
+.rainbow-bracket-violet,
+.rainbow-bracket-violet > span {
+  color: #56b6c2;
+}
+
+/* ----- 14b. Hover tooltips ----- */
+.cm-tooltip.cm-tooltip-hover {
+  border: none;
+  padding: 0;
+  border-radius: 6px;
+  overflow: hidden;
+  box-shadow: 0 4px 16px rgba(0, 0, 0, 0.4);
+}
+
+.cm-vpython-tooltip {
+  background-color: #252526;
+  border: 1px solid #404040;
+  border-radius: 6px;
+  padding: 0.5rem 0.7rem;
+  max-width: 350px;
+  font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+  font-size: 0.82rem;
+  line-height: 1.4;
+}
+
+.cm-vpython-tooltip-header {
+  display: flex;
+  align-items: baseline;
+  gap: 0.2rem;
+  margin-bottom: 0.25rem;
+}
+
+.cm-vpython-tooltip-name {
+  font-family: "Consolas", "Monaco", monospace;
+  font-weight: 600;
+  color: #dcdcaa;
+}
+
+.cm-vpython-tooltip-detail {
+  font-family: "Consolas", "Monaco", monospace;
+  color: #888;
+  font-size: 0.78rem;
+}
+
+.cm-vpython-tooltip-info {
+  color: #b0b0b0;
+}
+
+.cm-vpython-tooltip-type {
+  display: inline-block;
+  margin-top: 0.3rem;
+  padding: 0.1rem 0.4rem;
+  font-size: 0.7rem;
+  background-color: #333;
+  color: #888;
+  border-radius: 3px;
+}
+
+/* ----- 14c. CodeMirror autocomplete ----- */
 .cm-tooltip-autocomplete {
   background-color: #252526;
   border: 1px solid #404040;
@@ -1358,6 +1458,67 @@ body.projector-mode .instructions-body blockquote {
 body.projector-mode .instructions-body strong {
   color: #000;
   font-weight: 600;
+}
+
+/* Projector rainbow brackets */
+body.projector-mode .rainbow-bracket-red,
+body.projector-mode .rainbow-bracket-red > span {
+  color: #c41a16;
+}
+body.projector-mode .rainbow-bracket-orange,
+body.projector-mode .rainbow-bracket-orange > span {
+  color: #c46210;
+}
+body.projector-mode .rainbow-bracket-yellow,
+body.projector-mode .rainbow-bracket-yellow > span {
+  color: #8e6a00;
+}
+body.projector-mode .rainbow-bracket-green,
+body.projector-mode .rainbow-bracket-green > span {
+  color: #2e7d32;
+}
+body.projector-mode .rainbow-bracket-blue,
+body.projector-mode .rainbow-bracket-blue > span {
+  color: #1565c0;
+}
+body.projector-mode .rainbow-bracket-indigo,
+body.projector-mode .rainbow-bracket-indigo > span {
+  color: #7b1fa2;
+}
+body.projector-mode .rainbow-bracket-violet,
+body.projector-mode .rainbow-bracket-violet > span {
+  color: #00838f;
+}
+
+/* Projector hover tooltips */
+body.projector-mode .cm-vpython-tooltip {
+  background-color: #fff;
+  border-color: #ccc;
+}
+body.projector-mode .cm-vpython-tooltip-name {
+  color: #795e26;
+}
+body.projector-mode .cm-vpython-tooltip-detail {
+  color: #777;
+}
+body.projector-mode .cm-vpython-tooltip-info {
+  color: #444;
+}
+body.projector-mode .cm-vpython-tooltip-type {
+  background-color: #f0f0f0;
+  color: #666;
+}
+
+/* Projector selection match highlighting */
+body.projector-mode .cm-selectionMatch {
+  background-color: rgba(255, 200, 0, 0.35);
+}
+body.projector-mode .cm-searchMatch {
+  background-color: rgba(255, 200, 0, 0.4);
+}
+body.projector-mode .cm-snippetField {
+  background-color: rgba(0, 122, 204, 0.15);
+  border-color: rgba(0, 122, 204, 0.4);
 }
 
 /* Projector editor (CodeMirror light theme) overrides */
