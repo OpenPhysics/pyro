@@ -1,8 +1,9 @@
 import type { Diagnostic as RuffDiagnostic } from "@astral-sh/ruff-wasm-web";
 import type { Diagnostic as CmDiagnostic } from "@codemirror/lint";
-import { linter, lintGutter } from "@codemirror/lint";
+import { linter, lintGutter, lintKeymap } from "@codemirror/lint";
 import type { Extension } from "@codemirror/state";
 import type { EditorView } from "@codemirror/view";
+import { keymap } from "@codemirror/view";
 
 /** Ruff WASM workspace loaded lazily on first lint run. */
 let workspace: import("@astral-sh/ruff-wasm-web").Workspace | null = null;
@@ -20,6 +21,14 @@ const LINT_RULES = [
   "SIM", // flake8-simplify
   "RUF", // Ruff-specific rules
 ];
+
+/**
+ * Rules to ignore in the VPython context.
+ * - F403: `from module import *` (standard VPython pattern)
+ * - F405: name may be undefined from star import
+ * - F821: undefined name (VPython globals like sphere, vector, etc.)
+ */
+const IGNORED_RULES = new Set(["F403", "F405", "F821"]);
 
 /** Initialize the Ruff WASM module and workspace (idempotent). */
 async function initRuff(): Promise<void> {
@@ -141,7 +150,9 @@ async function ruffLintSource(view: EditorView): Promise<readonly CmDiagnostic[]
 
   try {
     const diagnostics = workspace.check(code) as RuffDiagnostic[];
-    return diagnostics.map((d) => convertDiagnostic(view, d));
+    return diagnostics
+      .filter((d) => !(d.code && IGNORED_RULES.has(d.code)))
+      .map((d) => convertDiagnostic(view, d));
   } catch {
     return [];
   }
@@ -154,5 +165,6 @@ export function ruffLinter(): Extension {
       delay: 300,
     }),
     lintGutter(),
+    keymap.of(lintKeymap),
   ];
 }
