@@ -7,6 +7,9 @@ export default defineConfig({
     outDir: "dist",
     emptyOutDir: true,
   },
+  optimizeDeps: {
+    exclude: ["@astral-sh/ruff-wasm-web"],
+  },
   server: {
     port: 8080,
     open: true,
