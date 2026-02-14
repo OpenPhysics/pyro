@@ -27,9 +27,12 @@ const LINT_RULES = [
  * Rules to ignore in the VPython context.
  * - F403: `from module import *` (standard VPython pattern)
  * - F405: name may be undefined from star import
- * - F821: undefined name (VPython globals like sphere, vector, etc.)
+ *
+ * Note: F821 (undefined name) is NOT blanket-suppressed here.
+ * Instead, it is selectively handled in ruffLintSource:
+ * known VPython names are suppressed, while typos get "did you mean?" suggestions.
  */
-const IGNORED_RULES = new Set(["F403", "F405", "F821"]);
+const IGNORED_RULES = new Set(["F403", "F405"]);
 
 /** Initialize the Ruff WASM module and workspace (idempotent). */
 async function initRuff(): Promise<void> {
@@ -107,6 +110,18 @@ const KNOWN_NAMES: string[] = [
   ...ALL_COMPLETIONS.map((c) => c.label),
   ...PROPERTY_COMPLETIONS.map((c) => c.label),
 ];
+
+/** Set of known names for fast lookup (used to suppress F821 for valid VPython globals). */
+const KNOWN_NAMES_SET = new Set(KNOWN_NAMES);
+
+/**
+ * Check if an F821 "undefined name" should be suppressed.
+ * Returns true if the name is a known VPython/Python identifier
+ * (i.e., it's not actually a typo — Ruff just doesn't know about VPython globals).
+ */
+function isKnownName(name: string): boolean {
+  return KNOWN_NAMES_SET.has(name);
+}
 
 /** Levenshtein edit distance between two strings (two-row approach). */
 function editDistance(a: string, b: string): number {
@@ -272,7 +287,22 @@ async function ruffLintSource(view: EditorView): Promise<readonly CmDiagnostic[]
   try {
     const diagnostics = workspace.check(code) as RuffDiagnostic[];
     return diagnostics
-      .filter((d) => !(d.code && IGNORED_RULES.has(d.code)))
+      .filter((d) => {
+        if (!d.code) {
+          return true;
+        }
+        if (IGNORED_RULES.has(d.code)) {
+          return false;
+        }
+        // Selectively suppress F821 only for known VPython/Python names
+        if (d.code === "F821") {
+          const name = d.message.match(/Undefined name `(\w+)`/)?.[1];
+          if (name && isKnownName(name)) {
+            return false;
+          }
+        }
+        return true;
+      })
       .map((d) => convertDiagnostic(view, d));
   } catch {
     return [];

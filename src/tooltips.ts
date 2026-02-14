@@ -12,10 +12,12 @@ import type { CompletionItem } from "./types";
 /** Lookup map from identifier to completion item for fast hover resolution. */
 const HOVER_LOOKUP: Map<string, CompletionItem> = new Map();
 
-for (const item of ALL_COMPLETIONS) {
+// Add property completions first so that top-level functions (with richer docs)
+// take priority over property variants for shared names like mag, dot, cross, etc.
+for (const item of PROPERTY_COMPLETIONS) {
   HOVER_LOOKUP.set(item.label, item);
 }
-for (const item of PROPERTY_COMPLETIONS) {
+for (const item of ALL_COMPLETIONS) {
   HOVER_LOOKUP.set(item.label, item);
 }
 
