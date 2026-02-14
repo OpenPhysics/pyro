@@ -1,4 +1,4 @@
-import type { CompletionContext, CompletionResult } from "@codemirror/autocomplete";
+import type { Completion, CompletionContext, CompletionResult } from "@codemirror/autocomplete";
 import { autocompletion } from "@codemirror/autocomplete";
 import { defaultKeymap, history, historyKeymap, indentWithTab } from "@codemirror/commands";
 import { python } from "@codemirror/lang-python";
@@ -19,11 +19,21 @@ import { CONFIG } from "./config";
 import { DEFAULT_CODE } from "./examples";
 import { ruffLinter } from "./linter";
 import { storageService } from "./services/storage";
+import { PYTHON_SNIPPETS, SNIPPET_KEYWORD_LABELS } from "./snippets-completions";
 import { appState } from "./state";
 import { vpythonTooltips } from "./tooltips";
 
 let editor: EditorView | null = null;
 const themeCompartment = new Compartment();
+
+/**
+ * ALL_COMPLETIONS with plain keywords replaced by snippet-expanding versions.
+ * Keywords like `for`, `while`, `def`, `if`, etc. expand with tab stops.
+ */
+const ALL_COMPLETIONS_WITH_SNIPPETS: Completion[] = [
+  ...ALL_COMPLETIONS.filter((c) => !SNIPPET_KEYWORD_LABELS.has(c.label)),
+  ...PYTHON_SNIPPETS,
+];
 
 /** Custom completion source for VPython. */
 function vpythonCompletions(context: CompletionContext): CompletionResult | null {
@@ -71,7 +81,7 @@ function vpythonCompletions(context: CompletionContext): CompletionResult | null
 
   return {
     from: beforeCursor.from,
-    options: ALL_COMPLETIONS,
+    options: ALL_COMPLETIONS_WITH_SNIPPETS,
     validFor: /^[\w]*$/,
   };
 }

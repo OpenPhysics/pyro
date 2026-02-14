@@ -550,6 +550,23 @@ main.view-output-only .gutter {
   overflow: auto;
 }
 
+/* Selection match highlighting (basicSetup includes highlightSelectionMatches) */
+.cm-selectionMatch {
+  background-color: rgba(255, 215, 0, 0.25);
+  border-radius: 2px;
+}
+.cm-searchMatch {
+  background-color: rgba(255, 215, 0, 0.3);
+  border-radius: 2px;
+}
+
+/* Snippet tab-stop field highlighting */
+.cm-snippetField {
+  background-color: rgba(0, 122, 204, 0.25);
+  border: 1px solid rgba(0, 122, 204, 0.5);
+  border-radius: 2px;
+}
+
 /* ----- 9. Output & GlowScript canvas ----- */
 #output {
   flex: 1;
@@ -1490,6 +1507,18 @@ body.projector-mode .cm-vpython-tooltip-info {
 body.projector-mode .cm-vpython-tooltip-type {
   background-color: #f0f0f0;
   color: #666;
+}
+
+/* Projector selection match highlighting */
+body.projector-mode .cm-selectionMatch {
+  background-color: rgba(255, 200, 0, 0.35);
+}
+body.projector-mode .cm-searchMatch {
+  background-color: rgba(255, 200, 0, 0.4);
+}
+body.projector-mode .cm-snippetField {
+  background-color: rgba(0, 122, 204, 0.15);
+  border-color: rgba(0, 122, 204, 0.4);
 }
 
 /* Projector editor (CodeMirror light theme) overrides */
