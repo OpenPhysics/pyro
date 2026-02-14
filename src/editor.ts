@@ -14,6 +14,7 @@ import {
 } from "./completions";
 import { CONFIG } from "./config";
 import { DEFAULT_CODE } from "./examples";
+import { ruffLinter } from "./linter";
 import { storageService } from "./services/storage";
 import { appState } from "./state";
 
@@ -108,6 +109,7 @@ export function initEditor(container: HTMLElement, onRun: () => void): void {
         activateOnTyping: true,
         maxRenderedOptions: 50,
       }),
+      ruffLinter(),
     ],
     parent: container,
   });

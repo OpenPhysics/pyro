@@ -61,6 +61,13 @@ export function buildShortcutsDialog(): HTMLElement {
       ],
     },
     {
+      title: "Linting",
+      shortcuts: [
+        { keys: "F8", description: "Go to next lint diagnostic" },
+        { keys: `${ctrlKey} + Shift + M`, description: "Open lint panel" },
+      ],
+    },
+    {
       title: "Navigation",
       shortcuts: [
         { keys: `${ctrlKey} + B`, description: "Toggle sidebar" },
