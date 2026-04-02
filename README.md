@@ -114,8 +114,8 @@ This is a static site suitable for GitHub Pages. The repository includes a GitHu
 
 ## Technical Stack
 
-- **Language**: TypeScript 5.9
-- **Build Tool**: [Vite 7](https://vitejs.dev/)
+- **Language**: TypeScript 6.0
+- **Build Tool**: [Vite 8](https://vitejs.dev/)
 - **Editor**: [CodeMirror 6](https://codemirror.net/) with Python language support and custom VPython autocomplete
 - **Runtime**: [GlowScript VPython 3.2](https://www.glowscript.org/)
 - **Linting & Formatting**: [Biome](https://biomejs.dev/)

@@ -6,7 +6,7 @@ This document helps AI agents understand the Pyro codebase structure, architectu
 
 **Pyro** is a browser-based VPython editor. Users write Python code in the browser; it runs in a sandboxed iframe using GlowScript VPython 3.2 and renders 3D visualizations. No backend — static SPA suitable for GitHub Pages.
 
-- **Tech stack**: TypeScript 5.9, Vite 7, CodeMirror 6, GlowScript VPython 3.2, KaTeX
+- **Tech stack**: TypeScript 6.0, Vite 8, CodeMirror 6, GlowScript VPython 3.2, KaTeX
 - **Entry point**: `index.html` → `src/main.ts` → `src/init.ts`
 - **Build**: `npm run dev` (port 8080), `npm run build` → `dist/`
 

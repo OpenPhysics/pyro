@@ -7,7 +7,7 @@ import { oneDark } from "@codemirror/theme-one-dark";
 import { keymap } from "@codemirror/view";
 import { indentationMarkers } from "@replit/codemirror-indentation-markers";
 import { basicSetup, EditorView } from "codemirror";
-// biome-ignore lint/nursery/noUnresolvedImports: package resolves correctly via "main" field
+// biome-ignore lint/correctness/noUnresolvedImports: no upstream types; see rainbowbrackets.d.ts
 import rainbowBrackets from "rainbowbrackets";
 import {
   ALL_COMPLETIONS,

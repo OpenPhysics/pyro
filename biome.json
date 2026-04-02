@@ -1,5 +1,5 @@
 {
-  "$schema": "https://biomejs.dev/schemas/2.3.15/schema.json",
+  "$schema": "https://biomejs.dev/schemas/2.4.10/schema.json",
   "assist": { "actions": { "source": { "organizeImports": "on" } } },
   "linter": {
     "enabled": true,
@@ -8,6 +8,7 @@
       "correctness": {
         "recommended": true,
         "noUndeclaredVariables": "error",
+        "noUnresolvedImports": "error",
         "noUnusedImports": "error",
         "noUnusedVariables": "error",
         "noUnusedPrivateClassMembers": "error",
@@ -43,8 +44,7 @@
       },
       "nursery": {
         "noFloatingPromises": "error",
-        "noShadow": "error",
-        "noUnresolvedImports": "error"
+        "noShadow": "error"
       }
     }
   },
