@@ -58,10 +58,10 @@
   },
   "lint-staged": {
     "*.{ts,tsx,js,jsx,css}": [
-      "biome check --write"
+      "biome check --write --no-errors-on-unmatched"
     ],
     "*.{json,jsonc}": [
-      "biome check --write"
+      "biome check --write --no-errors-on-unmatched"
     ]
   }
 }
