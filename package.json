@@ -53,7 +53,7 @@
     "codemirror": "^6.0.2",
     "dompurify": "^3.4.0",
     "katex": "^0.16.44",
-    "marked": "^17.0.5",
+    "marked": "^18.0.5",
     "rainbowbrackets": "^2.0.2"
   },
   "lint-staged": {
