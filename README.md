@@ -191,4 +191,4 @@ Works in modern browsers with WebGL support:
 
 ## License
 
-MIT License
+GNU Affero General Public License v3.0 — see [OpenPhysics org license](https://github.com/OpenPhysics/.github/blob/main/LICENSE).
