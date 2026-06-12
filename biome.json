@@ -1,12 +1,12 @@
 {
-  "$schema": "https://biomejs.dev/schemas/2.4.10/schema.json",
+  "$schema": "https://biomejs.dev/schemas/2.5.0/schema.json",
   "assist": { "actions": { "source": { "organizeImports": "on" } } },
   "linter": {
     "enabled": true,
     "rules": {
-      "recommended": true,
+      "preset": "recommended",
       "correctness": {
-        "recommended": true,
+        "preset": "recommended",
         "noUndeclaredVariables": "error",
         "noUnresolvedImports": "error",
         "noUnusedImports": "error",
@@ -16,20 +16,21 @@
         "useHookAtTopLevel": "error"
       },
       "suspicious": {
-        "recommended": true,
+        "preset": "recommended",
         "noConsole": "warn",
         "noEmptyBlockStatements": "error",
         "noExplicitAny": "error",
-        "noImplicitAnyLet": "error"
+        "noImplicitAnyLet": "error",
+        "noShadow": "error"
       },
       "complexity": {
-        "recommended": true,
+        "preset": "recommended",
         "noExcessiveCognitiveComplexity": "warn",
         "noVoid": "off",
         "useSimplifiedLogicExpression": "error"
       },
       "style": {
-        "recommended": true,
+        "preset": "recommended",
         "noNonNullAssertion": "warn",
         "useBlockStatements": "error",
         "useCollapsedElseIf": "error",
@@ -38,13 +39,12 @@
         "useShorthandAssign": "error"
       },
       "performance": {
-        "recommended": true,
+        "preset": "recommended",
         "noBarrelFile": "error",
         "noReExportAll": "error"
       },
       "nursery": {
-        "noFloatingPromises": "error",
-        "noShadow": "error"
+        "noFloatingPromises": "error"
       }
     }
   },

@@ -16,9 +16,10 @@
     <div id="sr-announcements" class="sr-only" aria-live="polite" aria-atomic="true"></div>
 
     <div id="app-wrapper">
-        <header role="banner">
+        <header>
             <h1>Pyro</h1>
             <div class="controls" role="toolbar" aria-label="View controls">
+                <!-- biome-ignore lint/a11y/useSemanticElements: <fieldset>/<legend> would break button-group layout and require CSS restructuring -->
                 <div class="view-mode-group" role="group" aria-label="Layout mode">
                     <button type="button" id="view-code-btn" class="view-mode-btn" title="Code only" aria-label="Code only view" aria-pressed="false">
                         <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><polyline points="16 18 22 12 16 6"/><polyline points="8 6 2 12 8 18"/></svg>
@@ -37,13 +38,14 @@
             </div>
         </header>
 
-        <main role="main">
-            <div class="panel editor-panel" role="region" aria-label="Code editor">
+        <main>
+            <section class="panel editor-panel" aria-label="Code editor">
                 <div class="panel-header" id="editor-panel-header">Editor</div>
-                <div id="editor" role="textbox" aria-label="VPython code editor" aria-multiline="true"></div>
-            </div>
+                <div id="editor"></div>
+            </section>
+            <!-- biome-ignore lint/a11y/useSemanticElements: interactive splitter widget requires role="separator" on a div; <hr> cannot hold tabindex or aria-valuenow -->
             <div class="gutter" id="gutter" role="separator" aria-label="Resize panels: use left/right arrows to adjust, Home/End for min/max" aria-orientation="horizontal" aria-valuenow="50" aria-valuemin="0" aria-valuemax="100" tabindex="0"></div>
-            <div class="panel output-panel" role="region" aria-label="Output and instructions">
+            <section class="panel output-panel" aria-label="Output and instructions">
                 <div class="panel-header output-panel-header">
                     <div class="output-panel-tabs" role="tablist" aria-label="Output panel tabs">
                         <button type="button" id="tab-output" role="tab" aria-selected="false" aria-controls="output-content" data-tab="output">Output</button>
@@ -52,7 +54,8 @@
                     <button type="button" id="toggle-console" class="console-toggle" title="Toggle console" aria-label="Toggle console panel" aria-expanded="false">Console</button>
                 </div>
                 <div id="output-content" role="tabpanel" class="output-tab-content" aria-labelledby="tab-output" hidden>
-                    <div id="output" aria-label="3D visualization output"></div>
+                    <section id="output" aria-label="3D visualization output"></section>
+                    <!-- biome-ignore lint/a11y/useSemanticElements: live console log requires role="log"; no equivalent semantic HTML element exists -->
                     <div id="console-panel" role="log" aria-label="Console output">
                         <div class="console-header">
                             <span>Console Output</span>
@@ -65,7 +68,7 @@
                 <div id="instructions-content" role="tabpanel" class="instructions-tab-content" aria-labelledby="tab-instructions">
                     <div id="instructions-body" class="instructions-body"></div>
                 </div>
-            </div>
+            </section>
         </main>
     </div>
 

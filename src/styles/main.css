@@ -521,6 +521,7 @@ main.view-output-only .gutter {
 }
 
 /* ----- 7. Resizable gutter ----- */
+/* biome-ignore lint/style/noDescendingSpecificity: view-mode overrides above have intentionally higher specificity */
 .gutter {
   width: 6px;
   background-color: #1e1e1e;
@@ -1733,6 +1734,7 @@ body.projector-mode .skip-nav {
     min-width: unset;
   }
 
+  /* biome-ignore lint/style/noDescendingSpecificity: responsive override for portrait orientation */
   .gutter {
     width: 100%;
     height: 6px;
