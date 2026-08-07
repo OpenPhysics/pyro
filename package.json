@@ -55,7 +55,7 @@
     "@codemirror/view": "^6.43.7",
     "@replit/codemirror-indentation-markers": "^6.5.3",
     "codemirror": "^6.0.2",
-    "dompurify": "^3.4.12",
+    "dompurify": "^3.4.13",
     "katex": "^0.18.1",
     "marked": "^18.0.7",
     "rainbowbrackets": "^2.0.2"
