@@ -47,7 +47,7 @@
     "vite": "^8.2.2"
   },
   "dependencies": {
-    "@astral-sh/ruff-wasm-web": "^0.16.4",
+    "@astral-sh/ruff-wasm-web": "^0.16.5",
     "@codemirror/autocomplete": "^6.20.3",
     "@codemirror/lang-python": "^6.2.1",
     "@codemirror/lint": "^6.9.7",
@@ -57,7 +57,7 @@
     "codemirror": "^6.0.2",
     "dompurify": "^3.4.14",
     "katex": "^0.18.4",
-    "marked": "^18.0.10",
+    "marked": "^18.0.11",
     "rainbowbrackets": "^2.0.2"
   },
   "lint-staged": {
