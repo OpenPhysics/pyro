@@ -20,7 +20,7 @@
   },
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/OpenPhysics/pyro.git"
+    "url": "git+https://github.com/OpenLyceum/pyro.git"
   },
   "keywords": [
     "vpython",
@@ -33,12 +33,12 @@
     "editor",
     "typescript"
   ],
-  "author": "OpenPhysics",
+  "author": "OpenLyceum",
   "license": "AGPL-3.0-or-later",
   "bugs": {
-    "url": "https://github.com/OpenPhysics/pyro/issues"
+    "url": "https://github.com/OpenLyceum/pyro/issues"
   },
-  "homepage": "https://openphysics.github.io/pyro",
+  "homepage": "https://openlyceum.github.io/pyro",
   "devDependencies": {
     "@biomejs/biome": "^2.5.12",
     "husky": "^9.1.7",
