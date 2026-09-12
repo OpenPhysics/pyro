@@ -111,7 +111,7 @@ There is **no** `tests/` directory, Vitest config, or Playwright fuzz suite in t
 | Typecheck + build | `npm run build` | `tsc --noEmit`, then Vite production bundle |
 | Preview prod build | `npm run preview` | Serve `dist/` locally |
 
-CI (`.github/workflows/ci.yml`) delegates to the OpenPhysics Baton fleet workflow — effectively the same lint/typecheck/build gates, not a unit-test matrix.
+CI (`.github/workflows/ci.yml`) delegates to the OpenPhysics relay fleet workflow — effectively the same lint/typecheck/build gates, not a unit-test matrix.
 
 **Manual verification** (required for behavior changes): run `npm run dev`, exercise run/stop, examples, snippets, console, view modes, themes, resize gutter, and embed query params. GlowScript runs only in a real browser with WebGL.
 
