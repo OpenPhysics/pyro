@@ -12,9 +12,9 @@ earth.trail_color = color.blue
 mars = sphere(pos=vector(4.5, 0, 0), radius=0.1, color=color.red, make_trail=True)
 mars.trail_color = color.red
 
-# Orbital speeds (simplified)
+# Orbital speeds from Kepler's third law: omega is proportional to r^(-3/2)
 earth_omega = 1
-mars_omega = 0.5
+mars_omega = earth_omega * (4.5 / 3) ** -1.5  # about 0.544
 
 t = 0
 dt = 0.02

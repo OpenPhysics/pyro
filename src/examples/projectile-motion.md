@@ -1,12 +1,12 @@
 # Projectile Motion
 
-Classic projectile motion with air resistance. A ball is launched at an angle and follows a parabolic trajectory until it hits the ground. The simulation prints the range when complete.
+Classic projectile motion with air resistance. A ball is launched at an angle and follows a trajectory — no longer a parabola, because of drag — until it hits the ground. The simulation prints the range when complete.
 
 ## What You'll See
 
 - A red ball launched at 45° with initial speed 20 m/s
 - A visible trail showing the trajectory
-- Air resistance (drag) reducing range compared to a vacuum
+- Air resistance (drag) reducing range and making the descent steeper than the ascent, unlike the symmetric parabola in a vacuum
 - The ball lands on a green ground plane
 - Console output: initial conditions and final range
 

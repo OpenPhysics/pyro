@@ -6,8 +6,8 @@ A ball bounces off the floor and walls under gravity, with energy loss on each f
 
 - A red ball with a trail, dropped from above
 - Gravity pulls the ball downward
-- Elastic bounces off the floor (90% energy retained per bounce)
-- Perfectly elastic bounces off the side walls
+- Inelastic bounces off the floor (vertical speed × 0.9, so 81% of the vertical kinetic energy retained per bounce)
+- Perfectly elastic bounces off the translucent side walls
 - The trail shows the ball's path over time
 
 ## Physics
@@ -22,7 +22,7 @@ A ball bounces off the floor and walls under gravity, with energy loss on each f
 |-----------|-------|-------------|
 | Initial velocity | (2, 0, 1) | Launch direction and speed |
 | Gravity | -9.8 | Downward acceleration |
-| Floor restitution | 0.9 | Energy retained per bounce |
+| Floor restitution | 0.9 | Fraction of vertical speed retained per bounce |
 | Wall bounds | ±4.5 | x and z boundaries |
 
 ## Tips

@@ -3,11 +3,12 @@ from vpython import *
 # Projectile motion with air resistance
 scene.background = color.gray(0.2)
 
-# Ground
+# Ground (top surface at y = 0)
 ground = box(pos=vector(25, -0.5, 0), size=vector(60, 1, 10), color=color.green)
 
-# Projectile
-ball = sphere(pos=vector(0, 0, 0), radius=0.5, color=color.red, make_trail=True)
+# Projectile, resting on the ground; ball.pos.y is the height of its centre
+r = 0.5
+ball = sphere(pos=vector(0, r, 0), radius=r, color=color.red, make_trail=True)
 
 # Initial conditions
 v0 = 20  # initial speed
@@ -24,8 +25,9 @@ dt = 0.01
 print("Projectile launched at", angle, "degrees")
 print("Initial velocity:", v0, "m/s")
 
-while ball.pos.y >= 0:
+while ball.pos.y >= r:
     rate(100)
+    prev_pos = vector(ball.pos)
 
     # Air resistance (proportional to v^2)
     v_mag = mag(ball.velocity)
@@ -36,5 +38,10 @@ while ball.pos.y >= 0:
     ball.velocity = ball.velocity + F_drag * dt
     ball.pos = ball.pos + ball.velocity * dt
 
-print("Range:", round(ball.pos.x, 2), "meters")
+# Interpolate back to the exact moment the ball touched the ground
+frac = (prev_pos.y - r) / (prev_pos.y - ball.pos.y)
+landing_x = prev_pos.x + frac * (ball.pos.x - prev_pos.x)
+ball.pos = vector(landing_x, r, 0)
+
+print("Range:", round(landing_x, 2), "meters")
 print("Simulation complete!")
