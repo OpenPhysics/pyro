@@ -1,4 +1,4 @@
-# CLAUDE.md — Pyro
+# AGENTS.md — Pyro
 
 Pyro-specific context for AI assistants. **Pyro is not a SceneryStack simulation** — it is a standalone Vite SPA with vanilla TypeScript and DOM APIs. Do not apply SceneryStack patterns (joist `Sim`/`Screen`, `Property`, model/view folders, fleet Vitest layout, `*Colors.ts` / `*Constants.ts` sim conventions, etc.) here unless explicitly porting code from a sim.
 
