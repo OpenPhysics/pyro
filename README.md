@@ -15,7 +15,8 @@ A modern single-page web application for writing and running VPython code direct
 - **Dark / Projector Themes** - Dark mode (default) and a light projector mode for presentations (WCAG-compliant)
 - **Console Panel** - Toggleable console output for `print()` statements
 - **Keyboard Shortcuts** - `Ctrl+Enter` / `Cmd+Enter` to run, `Ctrl+S` / `Cmd+S` to save, `?` for shortcuts
-- **Local Storage** - Code is saved to and loaded from the browser's local storage
+- **Local Storage** - Code is saved to and loaded from the browser's local storage, plus named snippets you can save and reload
+- **Python Linting** - Ruff (WASM) lint gutter with VPython-aware suppressions
 - **Resizable Panels** - Drag the gutter between editor and output to resize
 - **Responsive Layout** - Works on desktop and tablet devices
 - **Embeddable** - Configurable via URL parameters for iframe embedding ([docs](docs/embedding.md))
@@ -101,7 +102,8 @@ Output will be in the `dist/` directory.
 - `npm run dev` - Start development server
 - `npm run build` - Build for production
 - `npm run preview` - Preview production build
-- `npm run check` - Lint and format check (Biome)
+- `npm run check` (alias `npm run lint`) - Lint and format check (Biome)
+- `npm run format` - Format with Biome
 - `npm run lint:fix` - Auto-fix lint and format issues
 
 ## Deployment
@@ -114,12 +116,12 @@ This is a static site suitable for GitHub Pages. The repository includes a GitHu
 
 ## Technical Stack
 
-- **Language**: TypeScript 6.0
+- **Language**: TypeScript 7
 - **Build Tool**: [Vite 8](https://vitejs.dev/)
-- **Editor**: [CodeMirror 6](https://codemirror.net/) with Python language support and custom VPython autocomplete
+- **Editor**: [CodeMirror 6](https://codemirror.net/) with Python language support, custom VPython autocomplete, and a [Ruff](https://docs.astral.sh/ruff/) WASM lint gutter
 - **Runtime**: [GlowScript VPython 3.2](https://www.glowscript.org/)
 - **Linting & Formatting**: [Biome](https://biomejs.dev/)
-- **Markdown**: [marked](https://marked.js.org/) for rendering instructions
+- **Markdown**: [marked](https://marked.js.org/) with [DOMPurify](https://github.com/cure53/DOMPurify) for rendering instructions
 - **Math Rendering**: [KaTeX](https://katex.org/) for LaTeX equations in instructions
 - **Styling**: Custom CSS (no framework)
 
@@ -133,6 +135,7 @@ The codebase follows a modular architecture with clear separation of concerns:
 - **Configuration** (`config.ts`) - Centralized constants (timeouts, sizes, storage keys)
 - **DOM** (`dom.ts`) - Lazy-evaluated DOM element references
 - **Events** (`events.ts`) - Type-safe event bus for decoupled communication
+- **State** (`state.ts`) - Small mutable runtime flags (running, font size, sidebar, fullscreen)
 - **Services** (`services/`) - Abstracted operations (storage, etc.)
 - **Utilities** (`utils/`) - Helper functions (error boundaries, etc.)
 
@@ -155,20 +158,30 @@ The codebase follows a modular architecture with clear separation of concerns:
 │   ├── handlers.ts         # Event handlers (run, stop, download, etc.)
 │   ├── config.ts           # Centralized configuration constants
 │   ├── dom.ts              # Lazy DOM element references
+│   ├── state.ts            # Mutable runtime flags
 │   ├── events.ts           # Type-safe event bus
 │   ├── editor.ts           # CodeMirror initialization & font size
+│   ├── completions.ts      # VPython autocomplete definitions
+│   ├── snippets-completions.ts  # Python keyword snippet expansions
+│   ├── tooltips.ts         # Hover docs for completion items
+│   ├── linter.ts           # Ruff WASM lint gutter
 │   ├── executor.ts         # Code execution in sandboxed iframe
 │   ├── markdown.ts         # Markdown/KaTeX rendering utilities
-│   ├── shortcuts.ts        # Global keyboard shortcuts
-│   ├── sidebar.ts          # Sidebar UI component
-│   ├── ui.ts               # UI utilities (notifications, console, errors)
-│   ├── queryParams.ts      # URL query parameter parsing
-│   ├── resizable.ts        # Panel resize handling
-│   ├── completions.ts      # VPython autocomplete definitions
 │   ├── examples.ts         # Loads examples from src/examples/
 │   ├── examples/           # Example .py and .md files
+│   ├── queryParams.ts      # URL query parameter parsing
+│   ├── viewMode.ts         # Code / split / output layouts
+│   ├── theme.ts            # Dark / projector theme switching
+│   ├── resizable.ts        # Panel resize handling
+│   ├── shortcuts.ts        # Global keyboard shortcuts
+│   ├── shortcutsDialog.ts  # `?` keyboard-help dialog
+│   ├── sidebar.ts          # Sidebar UI component
+│   ├── ui.ts               # UI utilities (notifications, console, errors)
 │   ├── snippets.ts         # Snippets business logic
 │   ├── snippetsDialog.ts   # Save/load snippets UI
+│   ├── confirmDialog.ts    # Reusable confirmation modal
+│   ├── icons.ts            # Inline SVG icons
+│   ├── rainbowbrackets.d.ts # Type shim for rainbowbrackets
 │   ├── types.ts            # TypeScript type definitions
 │   ├── services/
 │   │   └── storage.ts      # LocalStorage operations
@@ -178,6 +191,7 @@ The codebase follows a modular architecture with clear separation of concerns:
 │       └── main.css        # Application stylesheet
 └── .github/
     └── workflows/
+        ├── ci.yml          # CI (delegates to the relay fleet workflow)
         └── deploy.yml      # GitHub Pages deployment
 ```
 
@@ -191,4 +205,4 @@ Works in modern browsers with WebGL support:
 
 ## License
 
-GNU Affero General Public License v3.0 — see [OpenPhysics org license](https://github.com/OpenPhysics/.github/blob/main/LICENSE).
+GNU Affero General Public License v3.0 or later (see `license` in `package.json`).
