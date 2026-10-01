@@ -108,7 +108,7 @@ function buildIframeContent(glowCode: string, parentOrigin: string): string {
                     throw new Error('GlowScript compiler not available');
                 }
 
-                var code = ${JSON.stringify(glowCode)};
+                var code = ${JSON.stringify(glowCode).replace(/</g, "\\u003c")};
                 var container = document.getElementById('glowscript');
 
                 var program = window.glowscript_compile(code, {
@@ -169,6 +169,8 @@ export async function executeInIframe(
   outputDiv.innerHTML = "";
 
   const iframe = document.createElement("iframe");
+  // srcdoc otherwise inherits our origin, giving executed code access to the editor.
+  iframe.setAttribute("sandbox", "allow-scripts");
   iframe.style.cssText = `width:100%;height:100%;border:none;background:${IFRAME_BG_COLOR};`;
   // Allow iframe to receive keyboard events for camera control (shift+drag, etc.)
   iframe.setAttribute("tabindex", "0");
