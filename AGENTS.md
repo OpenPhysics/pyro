@@ -15,7 +15,7 @@ Browser-based VPython editor and runner. Users write Python in CodeMirror; code 
 | **Entry** | `index.html` → `src/main.ts` → `src/init.ts` |
 | **Deploy** | `dist/` via `.github/workflows/deploy.yml` |
 
-Requires Node ≥ 22.12 and npm ≥ 10 (`package.json` `engines`).
+Requires Node ≥ 24 and npm ≥ 10 (`package.json` `engines`).
 
 ## Key files
 
