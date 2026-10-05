@@ -26,6 +26,33 @@ import { vpythonTooltips } from "./tooltips";
 let editor: EditorView | null = null;
 const themeCompartment = new Compartment();
 
+let saveTimer: ReturnType<typeof setTimeout> | null = null;
+let pendingEditorCode: string | null = null;
+let pagehideBound = false;
+
+/** Persist the latest editor buffer. Snippets use a different storage key. */
+function flushEditorCode(): void {
+  if (saveTimer !== null) {
+    clearTimeout(saveTimer);
+    saveTimer = null;
+  }
+  if (pendingEditorCode !== null) {
+    storageService.setEditorCode(pendingEditorCode);
+    pendingEditorCode = null;
+  }
+}
+
+function scheduleEditorSave(code: string): void {
+  pendingEditorCode = code;
+  if (saveTimer !== null) {
+    clearTimeout(saveTimer);
+  }
+  saveTimer = setTimeout(() => {
+    saveTimer = null;
+    flushEditorCode();
+  }, CONFIG.editor.saveDebounceMs);
+}
+
 /**
  * ALL_COMPLETIONS with plain keywords replaced by snippet-expanding versions.
  * Keywords like `for`, `while`, `def`, `if`, etc. expand with tab stops.
@@ -130,9 +157,19 @@ export function initEditor(container: HTMLElement, onRun: () => void): void {
       rainbowBrackets(),
       vpythonTooltips(),
       ruffLinter(),
+      EditorView.updateListener.of((update) => {
+        if (update.docChanged) {
+          scheduleEditorSave(update.state.doc.toString());
+        }
+      }),
     ],
     parent: container,
   });
+
+  if (!pagehideBound) {
+    pagehideBound = true;
+    window.addEventListener("pagehide", flushEditorCode);
+  }
 }
 
 /** Get the current editor content. */

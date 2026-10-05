@@ -12,6 +12,10 @@ let resolvePromise: ((value: boolean) => void) | null = null;
  * Returns a Promise that resolves to true (confirm) or false (cancel).
  */
 export function showConfirmDialog(message: string): Promise<boolean> {
+  if (currentDialog || resolvePromise) {
+    closeConfirmDialog(false);
+  }
+
   return new Promise((resolve) => {
     resolvePromise = resolve;
 

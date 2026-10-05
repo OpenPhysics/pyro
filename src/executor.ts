@@ -11,18 +11,43 @@ const {
 } = CONFIG.executor;
 
 let currentIframe: HTMLIFrameElement | null = null;
+let activeListener: ((event: MessageEvent<IframeMessage>) => void) | null = null;
+let activeTimer: ReturnType<typeof setTimeout> | null = null;
+let activeResolve: (() => void) | null = null;
+let runGeneration = 0;
 
 export function getIsRunning(): boolean {
   return appState.isRunning;
 }
 
-/** Remove the current iframe and reset execution state. */
+function detachMessageListener(): void {
+  if (activeListener) {
+    window.removeEventListener("message", activeListener);
+    activeListener = null;
+  }
+}
+
+/** Clear the run timer and resolve the in-flight executeInIframe promise once. */
+function settleExecution(): void {
+  if (activeTimer !== null) {
+    clearTimeout(activeTimer);
+    activeTimer = null;
+  }
+  const resolve = activeResolve;
+  activeResolve = null;
+  resolve?.();
+}
+
+/** Remove the current iframe, the message listener, and reset execution state. */
 export function stopExecution(): void {
+  runGeneration += 1;
+  detachMessageListener();
   if (currentIframe) {
     currentIframe.remove();
     currentIframe = null;
   }
   appState.isRunning = false;
+  settleExecution();
 }
 
 /** Build iframe srcdoc HTML for the given VPython source. */
@@ -116,12 +141,6 @@ function buildIframeContent(glowCode: string, parentOrigin: string): string {
                     version: '${GS_VERSION}'
                 });
 
-                // Replace print calls in compiled code with our custom function
-                // This handles cases where GlowScript uses the global print
-                // Use simple string split/join to avoid regex escaping issues
-                program = program.split('print(').join('window.GS_print(');
-                program = program.split('print (').join('window.GS_print(');
-
                 window.__context = {
                     glowscript_container: $(container).removeAttr('id')
                 };
@@ -141,6 +160,9 @@ function buildIframeContent(glowCode: string, parentOrigin: string): string {
                     console.log('[VPython]', msg);
                 };
 
+                // Shadow print in this classic script before eval. Rewriting the
+                // compiled text also changed string literals and names like fingerprint(.
+                var print = window.GS_print;
                 eval(program);
 
                 if (typeof __main__ === 'function') {
@@ -190,9 +212,8 @@ export async function executeInIframe(
   iframe.srcdoc = buildIframeContent(glowCode, window.location.origin);
 
   return new Promise<void>((resolve) => {
-    const timeout = setTimeout(() => {
-      resolve();
-    }, EXECUTION_TIMEOUT_MS);
+    const generation = runGeneration;
+    activeResolve = resolve;
 
     const messageHandler = (event: MessageEvent<IframeMessage>) => {
       if (!currentIframe || event.source !== currentIframe.contentWindow || !event.data) {
@@ -203,12 +224,13 @@ export async function executeInIframe(
         callbacks.onError(data.message ?? "Unknown error");
         appState.isRunning = false;
         callbacks.onReady();
-        window.removeEventListener("message", messageHandler);
+        detachMessageListener();
+        settleExecution();
         return;
       }
       if (data.type === "glowscript-ready") {
-        clearTimeout(timeout);
-        resolve();
+        // Keep the listener so later console-log messages still arrive.
+        settleExecution();
         return;
       }
       if (data.type === "console-log") {
@@ -216,7 +238,23 @@ export async function executeInIframe(
       }
     };
 
+    activeListener = messageHandler;
     window.addEventListener("message", messageHandler);
+
+    activeTimer = setTimeout(() => {
+      activeTimer = null;
+      if (generation !== runGeneration || activeResolve === null) {
+        return;
+      }
+      callbacks.onError("Timed out waiting for GlowScript to start.");
+      appState.isRunning = false;
+      detachMessageListener();
+      if (currentIframe === iframe) {
+        iframe.remove();
+        currentIframe = null;
+      }
+      settleExecution();
+    }, EXECUTION_TIMEOUT_MS);
   });
 }
 

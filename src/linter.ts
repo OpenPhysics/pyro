@@ -100,7 +100,9 @@ function toOffset(view: EditorView, row: number, column: number): number {
   }
 
   const line = view.state.doc.line(row);
-  return Math.min(line.from + column, line.to);
+  // Ruff columns are 1-based. Both the start and the exclusive end use this
+  // base; do not subtract again at the call site.
+  return Math.min(Math.max(line.from + column - 1, 0), line.to);
 }
 
 // ---- Beginner-friendly message rewriting ----

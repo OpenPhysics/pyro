@@ -12,6 +12,7 @@ export const CONFIG = {
     minFontSize: 10,
     maxFontSize: 28,
     defaultFontSize: 14,
+    saveDebounceMs: 400,
   },
   executor: {
     timeoutMs: 20_000,
