@@ -47,11 +47,11 @@
   },
   "homepage": "https://openphysics.github.io/pyro",
   "devDependencies": {
-    "@biomejs/biome": "^2.5.15",
+    "@biomejs/biome": "^2.6.3",
     "husky": "^9.1.7",
     "lint-staged": "^17.6.0",
     "typescript": "^7.0.2",
-    "vite": "^8.3.4"
+    "vite": "^8.3.5"
   },
   "dependencies": {
     "@astral-sh/ruff-wasm-web": "^0.17.2",
