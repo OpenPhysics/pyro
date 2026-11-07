@@ -18,12 +18,12 @@ A ball bounces off the floor and walls under gravity, with energy loss on each f
 
 ## Key Parameters
 
-| Parameter | Value | Description |
-|-----------|-------|-------------|
-| Initial velocity | (2, 0, 1) | Launch direction and speed |
-| Gravity | -9.8 | Downward acceleration |
-| Floor restitution | 0.9 | Fraction of vertical speed retained per bounce |
-| Wall bounds | ±4.5 | x and z boundaries |
+| Parameter         | Value     | Description                                    |
+| ----------------- | --------- | ---------------------------------------------- |
+| Initial velocity  | (2, 0, 1) | Launch direction and speed                     |
+| Gravity           | -9.8      | Downward acceleration                          |
+| Floor restitution | 0.9       | Fraction of vertical speed retained per bounce |
+| Wall bounds       | ±4.5      | x and z boundaries                             |
 
 ## Tips
 

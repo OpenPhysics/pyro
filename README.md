@@ -35,17 +35,17 @@ A modern single-page web application for writing and running VPython code direct
 
 Pyro supports URL query parameters for customizing the initial state:
 
-| Parameter | Example | Description |
-|-----------|---------|-------------|
-| `header` | `?header=false` | Hide the top navigation bar |
-| `sidebar` | `?sidebar=false` | Hide the sidebar completely |
-| `example` | `?example=bouncing-ball` | Load a specific example |
-| `view` | `?view=output` | Set view mode (`code`, `split`, `output`) |
-| `tab` | `?tab=output` | Set active tab (`output`, `instructions`) |
-| `console` | `?console=true` | Show the console panel |
-| `theme` | `?theme=light` | Set theme (`dark`, `light`) |
-| `fontSize` | `?fontSize=18` | Set editor font size (10-28) |
-| `run` | `?run=true` | Auto-run code on load |
+| Parameter  | Example                  | Description                               |
+| ---------- | ------------------------ | ----------------------------------------- |
+| `header`   | `?header=false`          | Hide the top navigation bar               |
+| `sidebar`  | `?sidebar=false`         | Hide the sidebar completely               |
+| `example`  | `?example=bouncing-ball` | Load a specific example                   |
+| `view`     | `?view=output`           | Set view mode (`code`, `split`, `output`) |
+| `tab`      | `?tab=output`            | Set active tab (`output`, `instructions`) |
+| `console`  | `?console=true`          | Show the console panel                    |
+| `theme`    | `?theme=light`           | Set theme (`dark`, `light`)               |
+| `fontSize` | `?fontSize=18`           | Set editor font size (10-28)              |
+| `run`      | `?run=true`              | Auto-run code on load                     |
 
 Parameters can be combined: `?theme=light&fontSize=18&run=true`
 

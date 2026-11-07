@@ -6,56 +6,56 @@ Pyro-specific context for AI assistants. **Pyro is not a SceneryStack simulation
 
 Browser-based VPython editor and runner. Users write Python in CodeMirror; code executes in a sandboxed iframe via GlowScript VPython 3.2 and renders interactive 3D graphics. Static site with no backend — suitable for GitHub Pages embedding.
 
-| | |
-|---|---|
-| **Runtime** | GlowScript VPython 3.2 (CDN, iframe `srcdoc`) |
-| **Editor** | CodeMirror 6 + custom VPython autocomplete, Ruff WASM lint gutter |
-| **Build** | Vite 8, TypeScript 7 (strict), Biome 2 |
-| **Storage** | `localStorage` for editor code and user snippets |
-| **Entry** | `index.html` → `src/main.ts` → `src/init.ts` |
-| **Deploy** | `dist/` via `.github/workflows/deploy.yml` |
+|             |                                                                   |
+| ----------- | ----------------------------------------------------------------- |
+| **Runtime** | GlowScript VPython 3.2 (CDN, iframe `srcdoc`)                     |
+| **Editor**  | CodeMirror 6 + custom VPython autocomplete, Ruff WASM lint gutter |
+| **Build**   | Vite 8, TypeScript 7 (strict), Biome 2                            |
+| **Storage** | `localStorage` for editor code and user snippets                  |
+| **Entry**   | `index.html` → `src/main.ts` → `src/init.ts`                      |
+| **Deploy**  | `dist/` via `.github/workflows/deploy.yml`                        |
 
 Requires Node ≥ 26 and npm ≥ 10 (`package.json` `engines`).
 
 ## Key files
 
-| File | Purpose |
-|---|---|
-| `index.html` | Shell markup; sidebar is injected at runtime |
-| `src/main.ts` | Bootstrap: CSS imports, `init()` on DOM ready |
-| `src/init.ts` | DOM wiring, sidebar, editor, resizers, query-param application |
-| `src/handlers.ts` | Run/stop/download/reset/example/console/theme/font handlers |
-| `src/config.ts` | Central constants (storage keys, font bounds, executor timeouts, GlowScript version) |
-| `src/dom.ts` | Lazy DOM element getters |
-| `src/state.ts` | Small mutable runtime flags (`isRunning`, font size, sidebar, fullscreen) |
-| `src/events.ts` | Typed event bus for decoupled module communication |
-| `src/editor.ts` | CodeMirror setup, theme/font compartments, Ctrl+Enter run, completions |
-| `src/completions.ts` | VPython object/color/scene autocomplete definitions |
-| `src/snippets-completions.ts` | Python keyword snippet expansions merged into autocomplete |
-| `src/linter.ts` | Ruff WASM lint gutter; VPython-aware suppressions for star imports |
-| `src/tooltips.ts` | Hover docs for VPython completion items |
-| `src/executor.ts` | `runCode` / `stopExecution` — builds GlowScript iframe, `postMessage` bridge |
-| `src/examples.ts` | Loads `src/examples/*.{py,md}` via `import.meta.glob` |
-| `src/examples/` | Example `.py` + matching `.md` instruction pairs |
-| `src/markdown.ts` | Instructions tab: marked + DOMPurify + KaTeX |
-| `src/queryParams.ts` | URL query parsing/validation for embed mode |
-| `src/viewMode.ts` | Code / split / output layout modes |
-| `src/resizable.ts` | Draggable gutter between editor and output panels |
-| `src/sidebar.ts` | Collapsible sidebar controls (created dynamically) |
-| `src/ui.ts` | Notifications, console output, error display, screen-reader announcements |
-| `src/theme.ts` | Dark vs projector (light) CSS theme switching |
-| `src/shortcuts.ts` | Global keyboard shortcuts |
-| `src/shortcutsDialog.ts` | `?` keyboard-help dialog content |
-| `src/snippets.ts` | Snippet CRUD business logic |
-| `src/snippetsDialog.ts` | Save/load snippets UI |
-| `src/confirmDialog.ts` | Reusable confirmation modal |
-| `src/icons.ts` | Inline SVG icon strings for sidebar/buttons |
-| `src/types.ts` | Shared TypeScript types (execution callbacks, iframe messages) |
-| `src/services/storage.ts` | `localStorage` read/write for editor code and snippets |
-| `src/utils/safeCall.ts` | Error-boundary wrapper for handler calls |
-| `src/styles/main.css` | Application stylesheet (no CSS framework) |
-| `vite.config.ts` | Port 8080 dev server; excludes Ruff WASM from prebundle |
-| `docs/embedding.md` | iframe embedding guide (user-facing) |
+| File                          | Purpose                                                                              |
+| ----------------------------- | ------------------------------------------------------------------------------------ |
+| `index.html`                  | Shell markup; sidebar is injected at runtime                                         |
+| `src/main.ts`                 | Bootstrap: CSS imports, `init()` on DOM ready                                        |
+| `src/init.ts`                 | DOM wiring, sidebar, editor, resizers, query-param application                       |
+| `src/handlers.ts`             | Run/stop/download/reset/example/console/theme/font handlers                          |
+| `src/config.ts`               | Central constants (storage keys, font bounds, executor timeouts, GlowScript version) |
+| `src/dom.ts`                  | Lazy DOM element getters                                                             |
+| `src/state.ts`                | Small mutable runtime flags (`isRunning`, font size, sidebar, fullscreen)            |
+| `src/events.ts`               | Typed event bus for decoupled module communication                                   |
+| `src/editor.ts`               | CodeMirror setup, theme/font compartments, Ctrl+Enter run, completions               |
+| `src/completions.ts`          | VPython object/color/scene autocomplete definitions                                  |
+| `src/snippets-completions.ts` | Python keyword snippet expansions merged into autocomplete                           |
+| `src/linter.ts`               | Ruff WASM lint gutter; VPython-aware suppressions for star imports                   |
+| `src/tooltips.ts`             | Hover docs for VPython completion items                                              |
+| `src/executor.ts`             | `runCode` / `stopExecution` — builds GlowScript iframe, `postMessage` bridge         |
+| `src/examples.ts`             | Loads `src/examples/*.{py,md}` via `import.meta.glob`                                |
+| `src/examples/`               | Example `.py` + matching `.md` instruction pairs                                     |
+| `src/markdown.ts`             | Instructions tab: marked + DOMPurify + KaTeX                                         |
+| `src/queryParams.ts`          | URL query parsing/validation for embed mode                                          |
+| `src/viewMode.ts`             | Code / split / output layout modes                                                   |
+| `src/resizable.ts`            | Draggable gutter between editor and output panels                                    |
+| `src/sidebar.ts`              | Collapsible sidebar controls (created dynamically)                                   |
+| `src/ui.ts`                   | Notifications, console output, error display, screen-reader announcements            |
+| `src/theme.ts`                | Dark vs projector (light) CSS theme switching                                        |
+| `src/shortcuts.ts`            | Global keyboard shortcuts                                                            |
+| `src/shortcutsDialog.ts`      | `?` keyboard-help dialog content                                                     |
+| `src/snippets.ts`             | Snippet CRUD business logic                                                          |
+| `src/snippetsDialog.ts`       | Save/load snippets UI                                                                |
+| `src/confirmDialog.ts`        | Reusable confirmation modal                                                          |
+| `src/icons.ts`                | Inline SVG icon strings for sidebar/buttons                                          |
+| `src/types.ts`                | Shared TypeScript types (execution callbacks, iframe messages)                       |
+| `src/services/storage.ts`     | `localStorage` read/write for editor code and snippets                               |
+| `src/utils/safeCall.ts`       | Error-boundary wrapper for handler calls                                             |
+| `src/styles/main.css`         | Application stylesheet (no CSS framework)                                            |
+| `vite.config.ts`              | Port 8080 dev server; excludes Ruff WASM from prebundle                              |
+| `docs/embedding.md`           | iframe embedding guide (user-facing)                                                 |
 
 ## Architecture
 
@@ -89,27 +89,27 @@ index.html
 
 **Embed URL parameters** (parsed in `queryParams.ts`, applied in `init.ts`)
 
-| Param | Values | Default |
-|---|---|---|
-| `header` | `true` / `false` | `true` |
-| `sidebar` | `true` / `false` | `true` |
-| `example` | example key | none |
-| `view` | `code` / `split` / `output` | `split` |
-| `tab` | `output` / `instructions` | `instructions` |
-| `console` | `true` / `false` | `false` |
-| `theme` | `dark` / `light` (`projector` → `light`) | `dark` |
-| `fontSize` | 10–28 | 14 |
-| `run` | `true` / `false` | `false` |
+| Param      | Values                                   | Default        |
+| ---------- | ---------------------------------------- | -------------- |
+| `header`   | `true` / `false`                         | `true`         |
+| `sidebar`  | `true` / `false`                         | `true`         |
+| `example`  | example key                              | none           |
+| `view`     | `code` / `split` / `output`              | `split`        |
+| `tab`      | `output` / `instructions`                | `instructions` |
+| `console`  | `true` / `false`                         | `false`        |
+| `theme`    | `dark` / `light` (`projector` → `light`) | `dark`         |
+| `fontSize` | 10–28                                    | 14             |
+| `run`      | `true` / `false`                         | `false`        |
 
 ## Testing
 
 There is **no** `tests/` directory, Vitest config, or Playwright fuzz suite in this repo.
 
-| Check | Command | What it covers |
-|---|---|---|
-| Lint + format | `npm run check` | Biome across the repo |
-| Typecheck + build | `npm run build` | `tsc --noEmit`, then Vite production bundle |
-| Preview prod build | `npm run preview` | Serve `dist/` locally |
+| Check              | Command           | What it covers                              |
+| ------------------ | ----------------- | ------------------------------------------- |
+| Lint + format      | `npm run check`   | Biome across the repo                       |
+| Typecheck + build  | `npm run build`   | `tsc --noEmit`, then Vite production bundle |
+| Preview prod build | `npm run preview` | Serve `dist/` locally                       |
 
 CI (`.github/workflows/ci.yml`) delegates to the OpenPhysics relay fleet workflow — effectively the same lint/typecheck/build gates, not a unit-test matrix.
 
@@ -160,15 +160,15 @@ User-facing docs: `README.md`, `docs/embedding.md`.
 
 **Common tasks**
 
-| Task | Where |
-|---|---|
-| Add example | `src/examples/name.py` + `name.md` |
-| Change autocomplete | `src/completions.ts`, `src/tooltips.ts` |
-| Python lint rules | `src/linter.ts` (`LINT_RULES`, `IGNORED_RULES`) |
-| Sidebar control | `src/sidebar.ts` + handler in `handlers.ts` |
-| Keyboard shortcut | `src/shortcuts.ts` / `shortcutsDialog.ts` |
-| Persisted data | `src/services/storage.ts` |
-| Embed behavior | `src/queryParams.ts`, `docs/embedding.md` |
+| Task                | Where                                           |
+| ------------------- | ----------------------------------------------- |
+| Add example         | `src/examples/name.py` + `name.md`              |
+| Change autocomplete | `src/completions.ts`, `src/tooltips.ts`         |
+| Python lint rules   | `src/linter.ts` (`LINT_RULES`, `IGNORED_RULES`) |
+| Sidebar control     | `src/sidebar.ts` + handler in `handlers.ts`     |
+| Keyboard shortcut   | `src/shortcuts.ts` / `shortcutsDialog.ts`       |
+| Persisted data      | `src/services/storage.ts`                       |
+| Embed behavior      | `src/queryParams.ts`, `docs/embedding.md`       |
 
 **Not applicable here**
 

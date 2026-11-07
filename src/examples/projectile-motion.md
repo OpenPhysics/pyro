@@ -19,12 +19,12 @@ Classic projectile motion with air resistance. A ball is launched at an angle an
 
 ## Key Parameters
 
-| Parameter | Value | Description |
-|-----------|-------|-------------|
-| Initial speed (v₀) | 20 m/s | Launch magnitude |
-| Launch angle | 45° | Angle above horizontal |
-| Drag coefficient | 0.02 | Air resistance strength |
-| Gravity | 9.8 m/s² | Downward acceleration |
+| Parameter          | Value    | Description             |
+| ------------------ | -------- | ----------------------- |
+| Initial speed (v₀) | 20 m/s   | Launch magnitude        |
+| Launch angle       | 45°      | Angle above horizontal  |
+| Drag coefficient   | 0.02     | Air resistance strength |
+| Gravity            | 9.8 m/s² | Downward acceleration   |
 
 ## Tips
 

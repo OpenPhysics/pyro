@@ -18,17 +18,17 @@ Pyro can be embedded in external websites using iframes with configurable UI thr
 
 All parameters are optional. When not specified, default values are used.
 
-| Parameter | Values | Default | Description |
-|-----------|--------|---------|-------------|
-| `header` | `true` / `false` | `true` | Show or hide the top navigation bar |
-| `sidebar` | `true` / `false` | `true` | Show or hide the sidebar completely |
-| `example` | example key | none | Load an example: flat key (`bouncing-ball`) or nested path (`mechanics/demo` — encode as `mechanics%2Fdemo` when building URLs if needed; see below) |
-| `view` | `code` / `split` / `output` | `split` | Set the initial view mode |
-| `tab` | `output` / `instructions` | `instructions` | Set the active tab in the output panel |
-| `console` | `true` / `false` | `false` | Show the console panel by default |
-| `theme` | `dark` / `light` | `dark` | Set the color theme (`projector` is an alias for `light`) |
-| `fontSize` | `10` - `28` | `14` | Set the editor font size in pixels |
-| `run` | `true` / `false` | `false` | Auto-run the code when the page loads |
+| Parameter  | Values                      | Default        | Description                                                                                                                                          |
+| ---------- | --------------------------- | -------------- | ---------------------------------------------------------------------------------------------------------------------------------------------------- |
+| `header`   | `true` / `false`            | `true`         | Show or hide the top navigation bar                                                                                                                  |
+| `sidebar`  | `true` / `false`            | `true`         | Show or hide the sidebar completely                                                                                                                  |
+| `example`  | example key                 | none           | Load an example: flat key (`bouncing-ball`) or nested path (`mechanics/demo` — encode as `mechanics%2Fdemo` when building URLs if needed; see below) |
+| `view`     | `code` / `split` / `output` | `split`        | Set the initial view mode                                                                                                                            |
+| `tab`      | `output` / `instructions`   | `instructions` | Set the active tab in the output panel                                                                                                               |
+| `console`  | `true` / `false`            | `false`        | Show the console panel by default                                                                                                                    |
+| `theme`    | `dark` / `light`            | `dark`         | Set the color theme (`projector` is an alias for `light`)                                                                                            |
+| `fontSize` | `10` - `28`                 | `14`           | Set the editor font size in pixels                                                                                                                   |
+| `run`      | `true` / `false`            | `false`        | Auto-run the code when the page loads                                                                                                                |
 
 ### Backward Compatibility
 

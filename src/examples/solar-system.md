@@ -17,11 +17,11 @@ A simplified solar system: the Sun at the center with Earth and Mars moving on p
 
 ## Key Parameters
 
-| Parameter | Earth | Mars |
-|-----------|-------|------|
-| Orbital radius | 3 | 4.5 |
-| Angular speed (ω) | 1 | ≈ 0.544 |
-| Relative period | 2π | ≈ 11.5 (1.84 × Earth's) |
+| Parameter         | Earth | Mars                    |
+| ----------------- | ----- | ----------------------- |
+| Orbital radius    | 3     | 4.5                     |
+| Angular speed (ω) | 1     | ≈ 0.544                 |
+| Relative period   | 2π    | ≈ 11.5 (1.84 × Earth's) |
 
 ## Tips
 

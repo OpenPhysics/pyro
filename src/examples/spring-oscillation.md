@@ -19,12 +19,12 @@ A mass suspended from a spring oscillates vertically with damping. The spring fo
 
 ## Key Parameters
 
-| Parameter | Value | Description |
-|-----------|-------|-------------|
-| Spring constant (k) | 10 | Stiffness |
-| Mass (m) | 1 | Oscillating mass |
-| Natural length (L₀) | 3 | Unstretched spring length |
-| Damping (c) | 0.1 | Energy loss per unit velocity |
+| Parameter           | Value | Description                   |
+| ------------------- | ----- | ----------------------------- |
+| Spring constant (k) | 10    | Stiffness                     |
+| Mass (m)            | 1     | Oscillating mass              |
+| Natural length (L₀) | 3     | Unstretched spring length     |
+| Damping (c)         | 0.1   | Energy loss per unit velocity |
 
 ## Tips
 
